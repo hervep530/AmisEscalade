@@ -12,20 +12,20 @@ import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.ServiceProxy;
 
 /**
- * Servlet implementation class Default
+ * Servlet implementation class Session
  */
-@WebServlet("/")
-public class Default extends HttpServlet {
-	
+@WebServlet("/session/*")
+public class Session extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
        
-	private static final String VUE = "/WEB-INF/DefaultLayout.jsp";
+	private static final String VUE = "/WEB-INF/SessionLayout.jsp";
 	private static final String PAGE_ERROR = "/WEB-INF/Error.jsp";
 
-	/**
+    /**
      * @see HttpServlet#HttpServlet()
      */
-    public Default() {
+    public Session() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -34,15 +34,14 @@ public class Default extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 		request.setAttribute("uri", request.getRequestURI());
 		
-		Parameters parameters = ServiceProxy.getInstance().getDefaultService().setParameters(request);
-		Delivry delivry = ServiceProxy.getInstance().getDefaultService().doGetAction(parameters);
+		Parameters parameters = ServiceProxy.getInstance().getSessionService().setParameters(request);
+		Delivry delivry = ServiceProxy.getInstance().getSessionService().doGetAction(parameters);
 
 		request.setAttribute("delivry", delivry);
 
-		if ( request.getRequestURI().contentEquals(request.getContextPath() + "/") )
+		if ( request.getRequestURI().contentEquals(request.getContextPath() + "/session/inscription") )
 			this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
 		else
 			this.getServletContext().getRequestDispatcher(PAGE_ERROR).forward(request, response);

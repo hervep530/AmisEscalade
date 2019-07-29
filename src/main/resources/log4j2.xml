@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <CustomLevels>
+    <CustomLevel name="VALUE" intLevel="510" />
+    <CustomLevel name="COMMENT" intLevel="530" />
+    <CustomLevel name="LOOP" intLevel="550" />
+  </CustomLevels>
+  <Appenders>
+    <Console name="console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %F:%L - %m%n"/>
+    </Console>
+    <File name="supportFile" fileName="/home/1072/3/.dev/Donnees/Projets/JavaEE/Eclipse/workspace/AmisEscalade/log/jcm_support.log">
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %F:%L - %m%n"/>
+    </File>
+    <File name="developmentFile" fileName="/home/1072/3/.dev/Donnees/Projets/JavaEE/Eclipse/workspace/AmisEscalade/log/jcm_development.log">
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %F:%L - %m%n"/>
+    </File>
+    <File name="testFile" fileName="/home/1072/3/.dev/Donnees/Projets/JavaEE/Eclipse/workspace/AmisEscalade/log/jcm_test.log">
+      <!-- ${PROJECT_LOC} -->
+      <PatternLayout pattern="%d %-7level %logger{36} - %msg%n"/>
+    </File>
+  </Appenders>
+  <Loggers>
+    <logger name="test_file" level="WARN" additivity="false">
+      <appender-ref ref="testFile" />
+    </logger>
+    <logger name="development_file" level="WARN" additivity="false">
+      <appender-ref ref="developmentFile" />
+    </logger>
+    <logger name="development_console" level="WARN" additivity="false">
+      <appender-ref ref="console" />
+    </logger>
+    <logger name="com.ocherve.jcm.DefaultServlet" level="WARN" additivity="false">
+      <appender-ref ref="developmentFile" />
+    </logger>
+    <logger name="com.ocherve.jcm.services.ServiceImpl" level="WARN" additivity="false">
+      <appender-ref ref="developmentFile" />
+    </logger>
+    <logger name="com.ocherve.jcm.services.Action" level="WARN" additivity="false">
+      <appender-ref ref="developmentFile" />
+    </logger>
+    <logger name="com.ocherve.jcm.utils.ParseUrl" level="WARN" additivity="false">
+      <appender-ref ref="developmentFile" />
+    </logger>
+    <logger name="com.ocherve.jcm.utils.Pool" level="WARN" additivity="false">
+      <appender-ref ref="developmentFile" />
+    </logger>
+    <logger name="com.ocherve.jcm.beans.JcmBean" level="WARN" additivity="false">
+      <appender-ref ref="developmentFile" />
+    </logger>
+    <logger name="com.ocherve.jcm.dao.DaoPgImpl" level="WARN" additivity="false">
+      <appender-ref ref="developmentFile" />
+    </logger>
+    <logger name="com.ocherve.jcm.forms.JcmForms" level="WARN" additivity="false">
+      <appender-ref ref="developmentFile" />
+    </logger>
+    <logger name="com.ocherve.jcm.utils.StringTool" level="WARN" additivity="false">
+      <appender-ref ref="developmentFile" />
+    </logger>
+    <logger name="support" level="WARN" additivity="false">
+      <appender-ref ref="supportFile" />
+    </logger>
+    <Root level="error">
+      <AppenderRef ref="console"/>
+    </Root>
+  </Loggers>
+</Configuration>
