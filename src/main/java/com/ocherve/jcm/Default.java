@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
+import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.ServiceProxy;
 
 /**
@@ -36,9 +37,15 @@ public class Default extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		request.setAttribute("uri", request.getRequestURI());
+		Parameters parameters = null;
+		Delivry delivry = null;
 		
-		Parameters parameters = ServiceProxy.getInstance().getDefaultService().setParameters(request);
-		Delivry delivry = ServiceProxy.getInstance().getDefaultService().doGetAction(parameters);
+		try {		
+		parameters = ServiceProxy.getInstance().getDefaultService().setParameters(request);
+		delivry = ServiceProxy.getInstance().getDefaultService().doGetAction(parameters);
+		} catch (ServiceException e) {
+			delivry = ServiceProxy.getInstance().getDefaultService().abort(parameters);
+		}
 
 		request.setAttribute("delivry", delivry);
 

@@ -12,14 +12,17 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
+import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.UrlException;
 import com.ocherve.jcm.service.factory.Service;
 
 public abstract class ServiceImpl implements Service {
 
 	// Logger (default log level can be adjust in each service impl
+    public static final Logger SLOG = LogManager.getLogger("support_file");
     public static final Logger DLOG = LogManager.getLogger("development_file");
-    private static final Level LOGLEVEL = Level.TRACE;
+    private static final Level SLOGLEVEL = Level.ERROR;
+    private static final Level DLOGLEVEL = Level.TRACE;
     
 	// Persistent variable because each service are initialized once and keep as cache in proxy
     private String serviceName;
@@ -28,17 +31,22 @@ public abstract class ServiceImpl implements Service {
 	@SuppressWarnings("unused")
 	private String defaultUrl;
 	private Map<String,String> actions;
+	// Not persistent : set to null for garbage collector after init
+    private Map<String, String> errors;
+    private String[] servletPaths;
 
 	/**
-	 * == Service Proxy usage ==
-	 * Constructor : should be call for each service impl
+	 *  
+	 * Constructor : check Service Proxy usage requirement.
+	 * Should be call for each service impl - check error on servlet and service
+	 * 
 	 * Mandatory for each service :
 	 *  - Class name is $servletName + "ServiceImpl"
 	 *  - paths in servlet must match with (@WebServlet declaration) must be "/" + $servleName.toLowerCase + "/.*"
 	 *  - action paths need to match with one of @WebServlet Path
-	 * Application need a Default servlet with a default path "/" or "/*" and matching service DefaultServiceImpl 
+	 * Application need a Default servlet with a default path "/" and matching service DefaultServiceImpl 
 	 *     contains empty action path {"empty","/"}
-	 * == End of usage instructions ==
+	 * 
 	 * @param serviceName  : String (ClassName without "ServiceImpl" pattern : must be same as servlet name)
 	 * @param servicePattern  : String used in paths as followed ("/" + servicePattern + "/.*")
 	 * @param defaultUrl  : String to define fallback url for this service (unused)
@@ -46,7 +54,8 @@ public abstract class ServiceImpl implements Service {
 	 */
 	public ServiceImpl(String defaultUrl, String[][] actions) {
 		// Set all Service Properties
-		Configurator.setLevel(DLOG.getName(), LOGLEVEL);
+		Configurator.setLevel(SLOG.getName(), SLOGLEVEL);
+		Configurator.setLevel(DLOG.getName(), DLOGLEVEL);
 		this.serviceName = this.getClass().getSimpleName().replaceAll("ServiceImpl", "");
 		this.servicePattern = this.serviceName.toLowerCase();
 		this.defaultUrl = defaultUrl;
@@ -54,10 +63,61 @@ public abstract class ServiceImpl implements Service {
 		for ( int a = 0; a < actions.length; a++ ) {
 			this.actions.put(actions[a][0], actions[a][1]);
 		}
-		String info = "Service " + this.serviceName + " is now instanciated.";
+	    // Analyse Service Class definition and log errors
+        this.errors = new HashMap<>();
+        this.setServletPaths();
+        //this.validateServletPaths();
+        if ( this.errors.isEmpty() ) this.validateServicePaths();
+        if ( ! this.errors.isEmpty() ) 
+        	throw new ServiceException("Service " + this.serviceName + " can not be instanciated.");
+
+        // Unused variable set to null for garbage collection
+        this.errors = null;
+        this.servletPaths = null;
+ 		String info = "Service " + this.serviceName + " is now instanciated.";
 		DLOG.log(Level.INFO , info);
 	}
 
+    private void setServletPaths() {
+    	try {
+    		this.servletPaths = ServletChecker.getAnnotationPaths(this.serviceName);
+    		ServletChecker.validatePathsCount(this.serviceName, this.servletPaths);
+    	} catch (ServiceException e) {
+    		this.errors.put(this.serviceName + "Servlet", e.getMessage());
+    	}
+    	if ( ! this.errors.isEmpty() ) return;
+		for (int p=0; p < this.servletPaths.length; p++) {
+			try {
+				ServletChecker.validatePath(this.serviceName, this.servletPaths[p]);
+			} catch (ServiceException e) {
+				this.errors.put(this.serviceName + "ServletPath" + p, e.getMessage());
+			}
+		}
+    }
+
+	private void validateServicePaths() {
+		// Method available only if this.servletPaths has at least one element
+		if (this.servletPaths == null) {
+			return;
+		}
+		// Check if Default Service contains the empty action path
+		if (this.serviceName.contentEquals("Default")) {
+			try {
+				ServiceChecker.hasEmptyServletPath(this.servletPaths);
+			} catch (ServiceException e) {
+				errors.put("DefaultService", e.getMessage());
+			}
+		}
+		// For each action path, Check if it matches with one servlet Path (Call ServiceChecker method)
+		this.actions.forEach((actionName, actionPath) -> {
+			try {
+				ServiceChecker.validatePathFromServlet(this.servicePattern, actionPath, this.servletPaths);
+			} catch (ServiceException e) {
+				errors.put(serviceName + "Service_" + actionName, e.getMessage());
+			}
+		});
+	}
+	
 	@Override
 	public Parameters setParameters(HttpServletRequest request) throws UrlException {
 		String info = "Service " + this.serviceName + " set parameters";

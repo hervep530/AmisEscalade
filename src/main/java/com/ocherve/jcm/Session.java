@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
+import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.ServiceProxy;
 
 /**
@@ -35,9 +36,16 @@ public class Session extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setAttribute("uri", request.getRequestURI());
+		Parameters parameters = null;
+		Delivry delivry = null;
 		
-		Parameters parameters = ServiceProxy.getInstance().getSessionService().setParameters(request);
-		Delivry delivry = ServiceProxy.getInstance().getSessionService().doGetAction(parameters);
+		try {
+			parameters = ServiceProxy.getInstance().getSessionService().setParameters(request);
+			delivry = ServiceProxy.getInstance().getSessionService().doGetAction(parameters);
+		} catch (ServiceException e ) {
+			System.out.println("Erreur Servlet Session");
+			delivry = ServiceProxy.getInstance().getSessionService().abort(parameters);
+		}
 
 		request.setAttribute("delivry", delivry);
 
