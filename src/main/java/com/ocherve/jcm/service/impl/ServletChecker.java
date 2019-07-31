@@ -9,17 +9,36 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import com.ocherve.jcm.service.ServiceException;
 
+/**
+ * @author herve_dev
+ * 
+ * This class is used to make control on servlet when services are instanciated.
+ */
 public class ServletChecker {
 	
     public static final Logger DLOG = LogManager.getLogger("development_file");
     public static final Level LOGLEVEL = Level.TRACE;
+    public static boolean  isInitialized = false;
 
-    public ServletChecker() {
-    	super();
+    /**
+     * Replace constructor
+     */
+    private static void ServletCheckerInit() {
+    	if ( ServletChecker.isInitialized ) return;
         Configurator.setLevel(DLOG.getName(), LOGLEVEL);
+        ServletChecker.isInitialized = true;
     }
 
+	/**
+	 * Get @WebServlet annotation values
+	 * 
+	 * @param servletName			String : name of servlet
+	 * @return						String[] : array of paths used for routing
+	 * @throws ServiceException		ServiceException means that there's a technical error on service
+	 */
 	public static String[] getAnnotationPaths(String servletName) throws ServiceException {
+		
+		ServletCheckerInit();
 		
         String message = "";
         String[] servletPaths = null;
@@ -38,7 +57,17 @@ public class ServletChecker {
         return servletPaths;
 	}
 
+	/**
+	 * Check paths count in @WebServlet annotation (0 is wrong, more than 1 not necesserly useful)
+	 * 
+	 * @param servletName			String : Servlet name
+	 * @param servletPaths			String[] : array of paths
+	 * @throws ServiceException		
+	 */
 	public static void validatePathsCount(String servletName, String[] servletPaths) throws ServiceException {
+
+		ServletCheckerInit();
+
 		String message;
 		if ( servletPaths == null ) {
         	message = "Servlet \"" + servletName + "\" hasn't any valid path in @WebServlet annotation.";
@@ -66,7 +95,10 @@ public class ServletChecker {
      * @throws ServiceException		Exception if checking fails
      */
     public static void hasEmptyPath(String[] paths) throws ServiceException {
-        boolean hasEmptyPath = false;
+
+		ServletCheckerInit();
+
+		boolean hasEmptyPath = false;
         String message;
         int p = 0;
         while (!hasEmptyPath && p < paths.length) {
@@ -82,7 +114,18 @@ public class ServletChecker {
         }
     }
 
+	/**
+	 * Given a servlet name and paths in annotation, check if Servlet is compliant with
+	 *     usage of Services
+	 *     
+	 * @param servletName			String : Servlet name
+	 * @param servletPath			String : path (value used for routing)
+	 * @throws ServiceException
+	 */
 	public static void validatePath(String servletName, String servletPath) throws ServiceException {
+		
+		ServletCheckerInit();
+
 		// Pattern are not the same for Default Servlet and others
 		String pathPattern = "/(\\w{3,})?" ;
 		String servletAlias = servletName.toLowerCase();
