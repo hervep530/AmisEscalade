@@ -24,7 +24,6 @@ public class UrlChecker {
     public static ParsedUrl validateServicePatternUrl(String serviceName, String[] arrayUrl, Map<String,String> actions)
     		throws UrlException {
 
-    	String servicePattern = "";
     	String action = "";
     	String urlPattern = "##";
     	int minus = 0;
@@ -36,7 +35,7 @@ public class UrlChecker {
     	// Set action
     	if ( arrayUrl.length > 1 ) action = arrayUrl[1];
     	if ( ! serviceName.contentEquals("Default") ) {
-    		servicePattern = arrayUrl[0];
+    		parsedUrl.setServiceAlias(arrayUrl[0]);
     	} else {
     		action = arrayUrl[0];
     		// Default service path is empty so index in arrayUrl is "-1" comparing other services
