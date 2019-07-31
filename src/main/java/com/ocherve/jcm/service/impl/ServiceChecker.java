@@ -1,38 +1,45 @@
 package com.ocherve.jcm.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import com.ocherve.jcm.service.ServiceException;
+import com.ocherve.jcm.service.UrlException;
 
+/**
+ * Provides checking methods to Services Classes
+ * @author herve_dev
+ *
+ */
 public class ServiceChecker {
 
-    public static final Logger DLOG = LogManager.getLogger("development_file");
-    public static final Level LOGLEVEL = Level.TRACE;
+    @SuppressWarnings("javadoc")
+	public static final Logger DLOG = LogManager.getLogger("development_file");
+    @SuppressWarnings("javadoc")
+	public static final Level LOGLEVEL = Level.TRACE;
 
+    /**
+     * Constructor
+     */
     public ServiceChecker() {
         Configurator.setLevel(DLOG.getName(), LOGLEVEL);
     }
     
-    public static void hasEmptyServletPath(String[] paths) throws ServiceException {
-        boolean hasEmptyPath = false;
-        String message;
-        int p = 0;
-        while (!hasEmptyPath && p < paths.length) {
-            if (paths[p].matches("^/$")) {
-                hasEmptyPath = true;
-            }
-            p++;
-        }
-        if (!hasEmptyPath) {
-        	message = "DefaultService : Default servlet @WebServlet hasn't empty path";
-            DLOG.log(Level.ERROR, message);
-            throw new ServiceException("ERROR:" + message);
-        }
-    }
-
+    /** 
+     * Validate rules defined in services : action paths matches with paths declared in @WebServlet
+     *    annotation from Servlet
+     *    
+     * @param servicePattern		String - alias for service as part of uri in pattern provided
+     *   by actions attribute in ServiceImpl Classe
+     * @param servicePath			String - request uri rule (requirements) define in service
+     * @param servletPaths			String - paths define in Servlet from @WebServlet annotation
+     * @throws ServiceException		Exception if checking fails
+     */
     public static void validatePathFromServlet(String servicePattern, String servicePath, String[] servletPaths) 
             throws ServiceException {
         // Validate global service pattern
@@ -63,5 +70,35 @@ public class ServiceChecker {
             throw new ServiceException("WARN:" + actionMessage);
         }
     }
-	
+
+    /**
+     * Validate uri requested by user from global rule defined here, in order to extract
+     *   service, action, id, and slug parameters in a String array
+     *  
+     * @param context			String - as found in servlet request
+     * @param serviceName		String - identify a service (serviceName = servletName)
+     * @param uri				String - as found in servlet request
+     * @return					String array up to 4 values : serviceAlias (if not defaut) / action / id / slug
+     * @throws ServiceException	Exception if checking fails
+     */
+    public static String[] validateGlobalPatternUrl(String context, String serviceName, String uri)
+    	throws ServiceException {
+    	String message = "";
+    	String[] parsedUrl = null;
+    	String url = uri.replaceAll("^[^/]{1,}:[^/]*/{1,}[^/]{1,}:?[^/]*/?", "");
+    	String globalPattern = "^(/[0-9a-zA-Z-.]{1,})?/?(\\w{1,})?(/\\w{1,})?(/\\d{1,8}|/\\d{1,8}/\\w{1,})?(#\\w*)?$";
+    	if ( serviceName.contentEquals("Default") )
+    		globalPattern = "";
+    	if ( ! uri.matches(globalPattern) ) {
+    		message = "";
+            DLOG.log(Level.ERROR, message);
+            throw new UrlException(message);
+    	}
+    	if ( ! context.isEmpty() ) url = url.replaceAll(".*" + context + "/", "");
+    	url.replaceAll(";(JSESSIONID|jsessionid)=\\w*", "");
+    	url.replaceAll("#\\w*", "");
+    	parsedUrl = url.split("/");    	
+		return parsedUrl;    	
+    }
+    
 }

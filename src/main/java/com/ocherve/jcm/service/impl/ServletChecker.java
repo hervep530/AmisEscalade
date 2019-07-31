@@ -59,6 +59,29 @@ public class ServletChecker {
 
 	}
 	
+    /**
+     * Validate rule defined in servlet : Default Servlet provices path matching with path "/"
+     * 
+     * @param paths					String[] - array of path from @WebServlet annotation in Servlet
+     * @throws ServiceException		Exception if checking fails
+     */
+    public static void hasEmptyPath(String[] paths) throws ServiceException {
+        boolean hasEmptyPath = false;
+        String message;
+        int p = 0;
+        while (!hasEmptyPath && p < paths.length) {
+            if (paths[p].matches("^/$")) {
+                hasEmptyPath = true;
+            }
+            p++;
+        }
+        if (!hasEmptyPath) {
+        	message = "DefaultService : Default servlet @WebServlet hasn't empty path";
+            DLOG.log(Level.ERROR, message);
+            throw new ServiceException("ERROR:" + message);
+        }
+    }
+
 	public static void validatePath(String servletName, String servletPath) throws ServiceException {
 		// Pattern are not the same for Default Servlet and others
 		String pathPattern = "/(\\w{3,})?" ;

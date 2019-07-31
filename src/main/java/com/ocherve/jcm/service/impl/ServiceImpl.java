@@ -78,7 +78,11 @@ public abstract class ServiceImpl implements Service {
 		DLOG.log(Level.INFO , info);
 	}
 
-    private void setServletPaths() {
+    /**
+     * Call from constructor to set servletPath
+     * uses ServletChecker which throws ServiceException
+     */
+	private void setServletPaths() {
     	try {
     		this.servletPaths = ServletChecker.getAnnotationPaths(this.serviceName);
     		ServletChecker.validatePathsCount(this.serviceName, this.servletPaths);
@@ -88,32 +92,42 @@ public abstract class ServiceImpl implements Service {
     	if ( ! this.errors.isEmpty() ) return;
 		for (int p=0; p < this.servletPaths.length; p++) {
 			try {
-				ServletChecker.validatePath(this.serviceName, this.servletPaths[p]);
+	 			ServletChecker.validatePath(this.serviceName, this.servletPaths[p]);
 			} catch (ServiceException e) {
 				this.errors.put(this.serviceName + "ServletPath" + p, e.getMessage());
 			}
 		}
+    	if ( ! this.errors.isEmpty() ) return;
+		// Check if Default Service contains the empty action path
+		if (this.serviceName.contentEquals("Default")) {
+			try {
+				ServletChecker.hasEmptyPath(this.servletPaths);
+			} catch (ServiceException e) {
+				errors.put("DefaultService", e.getMessage());
+			}
+		}
     }
 
+	/**
+	 * Called from constructor to validate that Service paths matches with servlet paths
+	 * uses ServiceChecker which throws ServiceException
+	 */
 	private void validateServicePaths() {
 		// Method available only if this.servletPaths has at least one element
 		if (this.servletPaths == null) {
 			return;
 		}
-		// Check if Default Service contains the empty action path
-		if (this.serviceName.contentEquals("Default")) {
-			try {
-				ServiceChecker.hasEmptyServletPath(this.servletPaths);
-			} catch (ServiceException e) {
-				errors.put("DefaultService", e.getMessage());
-			}
-		}
 		// For each action path, Check if it matches with one servlet Path (Call ServiceChecker method)
 		this.actions.forEach((actionName, actionPath) -> {
+			String message = "";
+			if ( ! this.serviceName.contentEquals("Default") && actionName.contentEquals("empty") ) {
+				message = "Only Default can contain empty action.";
+				errors.put(this.serviceName + "Service_" + actionName, message);
+			}
 			try {
 				ServiceChecker.validatePathFromServlet(this.servicePattern, actionPath, this.servletPaths);
 			} catch (ServiceException e) {
-				errors.put(serviceName + "Service_" + actionName, e.getMessage());
+				errors.put(this.serviceName + "Service_" + actionName, e.getMessage());
 			}
 		});
 	}
