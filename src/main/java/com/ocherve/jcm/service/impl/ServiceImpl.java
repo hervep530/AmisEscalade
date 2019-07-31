@@ -16,6 +16,13 @@ import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.UrlException;
 import com.ocherve.jcm.service.factory.Service;
 
+/**
+ * @author herve_dev
+ * 
+ * Abstract Service Class : Contains generic declaration and methods
+ * In particularly it provides the way to instanciate service with checking actions
+ * 
+ */
 public abstract class ServiceImpl implements Service {
 
 	// Logger (default log level can be adjust in each service impl
@@ -26,7 +33,6 @@ public abstract class ServiceImpl implements Service {
     
 	// Persistent variable because each service are initialized once and keep as cache in proxy
     private String serviceName;
-	@SuppressWarnings("unused")
 	private String servicePattern;
 	@SuppressWarnings("unused")
 	private String defaultUrl;
@@ -47,8 +53,6 @@ public abstract class ServiceImpl implements Service {
 	 * Application need a Default servlet with a default path "/" and matching service DefaultServiceImpl 
 	 *     contains empty action path {"empty","/"}
 	 * 
-	 * @param serviceName  : String (ClassName without "ServiceImpl" pattern : must be same as servlet name)
-	 * @param servicePattern  : String used in paths as followed ("/" + servicePattern + "/.*")
 	 * @param defaultUrl  : String to define fallback url for this service (unused)
 	 * @param actions  : String[][] to define list of {actionName, actionUrlPattern}
 	 */
