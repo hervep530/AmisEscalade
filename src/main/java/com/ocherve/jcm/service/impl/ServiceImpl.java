@@ -13,7 +13,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.ServiceException;
-import com.ocherve.jcm.service.UrlException;
 import com.ocherve.jcm.service.factory.Service;
 
 /**
