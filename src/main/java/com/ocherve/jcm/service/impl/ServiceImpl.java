@@ -170,6 +170,7 @@ public abstract class ServiceImpl implements Service {
 	@Override
 	public Delivry doGetAction(Parameters parameters) {
 		Delivry delivry = new Delivry();
+		delivry.setParameters(parameters);
 		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
 		String info = "Service " + this.serviceName + " do GetAction.";
 		DLOG.log(Level.DEBUG , info);
