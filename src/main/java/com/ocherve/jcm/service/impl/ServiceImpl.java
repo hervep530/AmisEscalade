@@ -25,8 +25,8 @@ import com.ocherve.jcm.service.factory.Service;
 public abstract class ServiceImpl implements Service {
 
 	// Logger (default log level can be adjust in each service impl
-    public static final Logger SLOG = LogManager.getLogger("support_file");
-    public static final Logger DLOG = LogManager.getLogger("development_file");
+    protected static final Logger SLOG = LogManager.getLogger("support_file");
+    protected static final Logger DLOG = LogManager.getLogger("development_file");
     private static final Level SLOGLEVEL = Level.ERROR;
     private static final Level DLOGLEVEL = Level.TRACE;
     
