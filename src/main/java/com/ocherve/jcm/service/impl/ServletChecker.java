@@ -16,9 +16,9 @@ import com.ocherve.jcm.service.ServiceException;
  */
 public class ServletChecker {
 	
-    public static final Logger DLOG = LogManager.getLogger("development_file");
-    public static final Level LOGLEVEL = Level.TRACE;
-    public static boolean  isInitialized = false;
+    private static final Logger DLOG = LogManager.getLogger("development_file");
+    private static final Level LOGLEVEL = Level.TRACE;
+    private static boolean  isInitialized = false;
 
     /**
      * Replace constructor
