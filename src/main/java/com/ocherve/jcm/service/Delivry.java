@@ -11,12 +11,14 @@ import java.util.Map;
 public class Delivry {
 	
 	private Map<String,String> errors;
+	private Parameters parameters;
 
 	/**
 	 * Constructor
 	 */
 	public Delivry() {
 		errors = new HashMap<>();
+		parameters = new Parameters();
 	}
 
 	/**
@@ -45,6 +47,24 @@ public class Delivry {
 	 */
 	public void appendError(String errorLabel, String ErrorDetail) {
 		this.errors.put(errorLabel, ErrorDetail);
+	}
+
+	/**
+	 * Getter
+	 * 
+	 * @return				Parameters : parameters that service defined from request
+	 */
+	public Parameters getParameters() {
+		return parameters;
+	}
+
+	/**
+	 * Setter
+	 * 
+	 * @param parameters	Parameters : parameters that service defined from request
+	 */
+	public void setParameters(Parameters parameters) {
+		this.parameters = parameters;
 	}
 	
 

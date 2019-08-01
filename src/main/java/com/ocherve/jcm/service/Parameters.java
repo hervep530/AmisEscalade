@@ -42,6 +42,26 @@ public class Parameters {
 	}
 	
 	/**
+	 * Map Entry Appender - easier to use than Setter
+	 * 
+	 * @param errorLabel		String : name identifing error 
+	 * @param errorDetail 		String : text describing error
+	 * 
+	 */
+	public void appendError(String errorLabel, String errorDetail) {
+		this.errors.put(errorLabel, errorDetail);
+	}
+	
+	/**
+	 * Map Appender - easier to use than Setter
+	 * 
+	 * @param errors 		Map<String,String> errors
+	 */
+	public void appendAllError(Map<String,String> errors) {
+		this.errors.putAll(errors);
+	}
+	
+	/**
 	 * Getter
 	 * 
 	 * @return		ParsedUrl : object containing all part of url as used by services

@@ -1,5 +1,8 @@
 package com.ocherve.jcm.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This objet stores parts of url analysed and used by services
  * @author herve_dev
@@ -11,6 +14,7 @@ public class ParsedUrl {
 	private String action;
 	private String id = "";
 	private String slug = "";
+	private Map<String,String> errors;
 	
 	/**
 	 * Constructor without parameters
@@ -18,6 +22,7 @@ public class ParsedUrl {
 	public ParsedUrl() {
 		this.serviceAlias = "";
 		this.action = "";
+		this.errors = new HashMap<>();
 	}
 	
 	/**
@@ -96,6 +101,24 @@ public class ParsedUrl {
 	 */
 	public void setSlug(String slug) {
 		this.slug = slug;
+	}
+
+	/**
+	 * Getter
+	 * 
+	 * @return				Map<String,String> errors
+	 */
+	public Map<String, String> getErrors() {
+		return errors;
+	}
+
+	/**
+	 * Setter
+	 * 
+	 * @param errors		Map<String,String> errors
+	 */
+	public void setErrors(Map<String, String> errors) {
+		this.errors = errors;
 	}
 	
 

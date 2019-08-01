@@ -8,5 +8,6 @@
 </head>
 <body>
 <p>Just hello for the moment.</p>
+<%@ include file="DebugDelivry.jsp" %>
 </body>
 </html>

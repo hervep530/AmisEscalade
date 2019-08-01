@@ -79,21 +79,31 @@ public class ServiceChecker {
     public static String[] validateGlobalPatternUrl(String context, String serviceName, String uri)
     	throws ServiceException {
     	String message = "";
-    	String[] parsedUrl = null;
+    	String[] arrayUrl = null;
     	String url = uri.replaceAll("^[^/]{1,}:[^/]*/{1,}[^/]{1,}:?[^/]*/?", "");
     	String globalPattern = "^(/[0-9a-zA-Z-.]{1,})?/?(\\w{1,})?(/\\w{1,})?(/\\d{1,8}|/\\d{1,8}/\\w{1,})?(#\\w*)?$";
     	if ( serviceName.contentEquals("Default") )
-    		globalPattern = "";
-    	if ( ! uri.matches(globalPattern) ) {
-    		message = "";
+    		globalPattern = "^(/[0-9a-zA-Z-.]{1,})?/?(/\\w{3,})?(/\\d{1,8}|/\\d{1,8}/\\w{1,})?(#\\w*)?$";
+    	if ( ! url.matches(globalPattern) ) {
+    		message = "Url \"" + url + "\" doesn't match with global pattern.";
             DLOG.log(Level.ERROR, message);
             throw new UrlException(message);
     	}
+
     	if ( ! context.isEmpty() ) url = url.replaceAll(".*" + context + "/", "");
+    	url = url.replaceAll("^/", "");
     	url.replaceAll(";(JSESSIONID|jsessionid)=\\w*", "");
     	url.replaceAll("#\\w*", "");
-    	parsedUrl = url.split("/");    	
-		return parsedUrl;    	
+
+    	DLOG.log(Level.DEBUG, "url : " + url);
+    	arrayUrl = url.split("/");    	
+    	message = "";
+    	for (int u = 0; u < arrayUrl.length; u++) {
+    		message += arrayUrl[u] + " / ";
+    	}
+    	DLOG.log(Level.DEBUG, "arrayUrl : " + message.trim().replaceAll("/$",""));
+    	
+		return arrayUrl;    	
     }
     
 }

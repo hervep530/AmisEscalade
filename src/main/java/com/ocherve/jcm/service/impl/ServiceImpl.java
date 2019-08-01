@@ -13,6 +13,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.ServiceException;
+import com.ocherve.jcm.service.UrlException;
 import com.ocherve.jcm.service.factory.Service;
 
 /**
@@ -138,6 +139,29 @@ public abstract class ServiceImpl implements Service {
 	@Override
 	public Parameters setParameters(HttpServletRequest request) {
 		Parameters parameters = new Parameters();
+		String context = request.getContextPath();
+		String uri = (String) request.getAttribute("uri");
+		String[] arrayUrl = null;
+		ParsedUrl parsedUrl = null;
+		
+		try {
+			arrayUrl = ServiceChecker.validateGlobalPatternUrl(context, serviceName, uri);
+		} catch (ServiceException e) {
+			DLOG.log(Level.ERROR, serviceName + "- " + e.getMessage());
+			arrayUrl = new String[] {""};
+			parameters.appendError(serviceName + "ServiceParameters", e.getMessage());
+		}
+		try {
+			parsedUrl = UrlChecker.validateServicePatternUrl(this.serviceName, arrayUrl, this.actions);
+		} catch (UrlException e) {
+			// TODO : bricolage pour recuperer une action en cas d'erreur - pas fiable... 
+			DLOG.log(Level.ERROR, serviceName + "- " + e.getMessage());
+			parsedUrl = new ParsedUrl(this.serviceName, e.getMessage().split(":")[0]);
+			parameters.appendError(serviceName + "ServiceParameters", e.getMessage().split(":")[1]);			
+		}
+		parameters.setParsedUrl(parsedUrl);
+		parameters.appendAllError(parsedUrl.getErrors());
+		
 		String info = "Service " + this.serviceName + " set parameters";
 		DLOG.log(Level.INFO , info);
 		return parameters;
@@ -146,6 +170,7 @@ public abstract class ServiceImpl implements Service {
 	@Override
 	public Delivry doGetAction(Parameters parameters) {
 		Delivry delivry = new Delivry();
+		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
 		String info = "Service " + this.serviceName + " do GetAction.";
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
