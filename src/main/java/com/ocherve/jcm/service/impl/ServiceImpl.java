@@ -137,28 +137,34 @@ public abstract class ServiceImpl implements Service {
 	
 	@Override
 	public Parameters setParameters(HttpServletRequest request) {
+		Parameters parameters = new Parameters();
 		String info = "Service " + this.serviceName + " set parameters";
 		DLOG.log(Level.INFO , info);
-		return null;
+		return parameters;
 	}
 
 	@Override
 	public Delivry doGetAction(Parameters parameters) {
+		Delivry delivry = new Delivry();
 		String info = "Service " + this.serviceName + " do GetAction.";
-		DLOG.log(Level.INFO , info);
-		return null;
+		DLOG.log(Level.DEBUG , info);
+		return delivry;
 	}
 
 	@Override
 	public Delivry doPostAction(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		Delivry delivry = new Delivry();
+		String info = "Service " + this.serviceName + " do PostAction.";
+		DLOG.log(Level.DEBUG , info);
+		return delivry;
 	}
 
 	@Override
 	public Delivry abort(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		Delivry delivry = new Delivry();
+		String info = "Service " + this.serviceName + " aborted.";
+		DLOG.log(Level.DEBUG , info);
+		return delivry;
 	}
 
 }

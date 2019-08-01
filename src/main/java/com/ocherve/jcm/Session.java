@@ -49,7 +49,7 @@ public class Session extends HttpServlet {
 
 		request.setAttribute("delivry", delivry);
 
-		if ( request.getRequestURI().contentEquals(request.getContextPath() + "/session/inscription") )
+		if ( delivry.getErrors().isEmpty() )
 			this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
 		else
 			this.getServletContext().getRequestDispatcher(PAGE_ERROR).forward(request, response);
