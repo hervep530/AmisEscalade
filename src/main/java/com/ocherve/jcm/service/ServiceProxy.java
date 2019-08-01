@@ -10,6 +10,11 @@ import com.ocherve.jcm.service.factory.Service;
 import com.ocherve.jcm.service.factory.ServiceFactory;
 import com.ocherve.jcm.service.factory.SessionService;
 
+/**
+ * @author herve_dev
+ * 
+ * Services proxy which instanciate all services and keep it as Class variable (cache)
+ */
 public class ServiceProxy {
 	
     protected static final Logger dev = LogManager.getLogger("development_file");
@@ -25,14 +30,27 @@ public class ServiceProxy {
 		this.sessionService = ServiceFactory.getService(SessionService.class);
 	}
 
+	/**
+	 * @return		ServiceProxy : the proxy itself
+	 */
 	public static ServiceProxy getInstance() {
 		return instance;
 	}
 
+	/**
+	 * Getter
+	 * 
+	 * @return		Service : DefaultServiceImpl under generic form
+	 */
 	public Service getDefaultService() {
 		return defaultService;
 	}
 
+	/**
+	 * Getter
+	 * 
+	 * @return		Service : SessionServiceImpl under generic form
+	 */
 	public Service getSessionService() {
 		return sessionService;
 	}
