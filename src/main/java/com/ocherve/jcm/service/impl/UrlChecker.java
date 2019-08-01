@@ -78,7 +78,7 @@ public class UrlChecker {
     	// Set and validate slug
 		if ( urlPattern.contains("$slug") ) {
 			if ( arrayUrl.length > 3 - minus )
-	    		parsedUrl.setId( arrayUrl[3 - minus]);
+	    		parsedUrl.setSlug( arrayUrl[3 - minus]);
 			else
 	    		errors.put("emptySlug", "Invalid Url.");				
 		}
