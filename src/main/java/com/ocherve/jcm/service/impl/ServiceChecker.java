@@ -55,7 +55,7 @@ public class ServiceChecker {
         String servletPattern = "";
         while (!hasMatchingPath && p < servletPaths.length) {
             servletPattern = servletPaths[p].replaceAll("/\\*$", "/") + ".*";
-            DLOG.log(Level.INFO, "Compare : " + servicePath + " / " + servletPattern);
+            DLOG.log(Level.DEBUG, "Compare : " + servicePath + " / " + servletPattern);
             if (servicePath.matches(servletPattern)) {
                 hasMatchingPath = true;
             }

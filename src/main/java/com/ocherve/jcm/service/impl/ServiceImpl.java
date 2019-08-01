@@ -137,21 +137,21 @@ public abstract class ServiceImpl implements Service {
 	}
 	
 	@Override
-	public Parameters setParameters(HttpServletRequest request) throws UrlException {
+	public Parameters setParameters(HttpServletRequest request) {
 		String info = "Service " + this.serviceName + " set parameters";
 		DLOG.log(Level.INFO , info);
 		return null;
 	}
 
 	@Override
-	public Delivry doGetAction(Parameters parameters) throws UrlException {
+	public Delivry doGetAction(Parameters parameters) {
 		String info = "Service " + this.serviceName + " do GetAction.";
 		DLOG.log(Level.INFO , info);
 		return null;
 	}
 
 	@Override
-	public Delivry doPostAction(Parameters parameters) throws UrlException {
+	public Delivry doPostAction(Parameters parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}
