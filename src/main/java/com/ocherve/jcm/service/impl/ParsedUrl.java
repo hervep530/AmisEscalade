@@ -30,34 +30,70 @@ public class ParsedUrl {
 		this.action = action;
 	}
 
+	/**
+	 * Getter
+	 * 
+	 * @return		String serviceAlias (service name as second part of url - the first is context)
+	 */
 	public String getServiceAlias() {
 		return serviceAlias;
 	}
 
+	/**
+	 * Setter
+	 * @param serviceAlias		String containg serviceAlias (service name as second part of url - the first is context)
+	 */
 	public void setServiceAlias(String serviceAlias) {
 		this.serviceAlias = serviceAlias;
 	}
 
+	/**
+	 * Getter
+	 * 
+	 * @return		String serviceAlias (service name as third part of url)
+	 */
 	public String getAction() {
 		return action;
 	}
 
+	/**
+	 * Setter
+	 * @param action		String containg action (service name as third part of url)
+	 */
 	public void setAction(String action) {
 		this.action = action;
 	}
 
+	/**
+	 * Getter
+	 * 
+	 * @return		String id (service name as fourth part of url)
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Setter
+	 * @param id		String containg id (service name as fourth part of url)
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * Getter
+	 * 
+	 * @return		String slug (fifth part of url)
+	 */
 	public String getSlug() {
 		return slug;
 	}
 
+	/**
+	 * Setter
+	 * @param slug		String containg slug (service name as fifth part of url)
+	 */
 	public void setSlug(String slug) {
 		this.slug = slug;
 	}
