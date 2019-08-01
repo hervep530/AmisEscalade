@@ -15,7 +15,7 @@ import com.ocherve.jcm.service.UrlException;
  */
 public class ServiceChecker {
 
-	protected static final Logger DLOG = LogManager.getLogger("development_file");
+	private static final Logger DLOG = LogManager.getLogger("development_file");
 	private static final Level LOGLEVEL = Level.TRACE;
 
     /**
