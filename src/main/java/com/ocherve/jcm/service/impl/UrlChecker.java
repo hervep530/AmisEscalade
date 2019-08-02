@@ -1,6 +1,5 @@
 package com.ocherve.jcm.service.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -27,70 +26,85 @@ public class UrlChecker {
         Configurator.setLevel(DLOG.getName(), LOGLEVEL);
 	}
     
-
-
-
-	/**
-     * Validate uri requested by user from service rules defined by actions attributes(Map)
+    /**
+     * ParseUrl split uri string to build object. Never fails... In the worst case,
+     *   it return object with empty values...
      * 
-     * @param serviceName		String name of service (=servlet)
-     * @param arrayUrl 			Array of string giving servicePattern / action / id / slug
-     * @param actions			Map<String, String> giving regex pattern (rule) for each action
-     * @return 					ParsedUrl (service / action / id / slug given by uri) 
-     * @throws UrlException 
+     * @param serviceName	String : service name
+     * @param uri			String : uri prepared to be splitted
+     * @return				ParsedUrl : uri under object form
      */
-    public static ParsedUrl validateServicePatternUrl(String serviceName, String[] arrayUrl, Map<String,String> actions)
-    		throws UrlException {
-
+    public static ParsedUrl parseUrl(String serviceName, String uri) {
+    	String[] arrayUrl = uri.split("/");
     	String action = "";
-    	String urlPattern = "##";
     	int minus = 0;
     	ParsedUrl parsedUrl = new ParsedUrl();
-    	Map<String,String> errors = new HashMap<>();
-    	
-    	if ( arrayUrl == null ) errors.put("nullArrayUrl", "Invalid Url.");
-    	
-    	// Set action
+    	// Set service and action values, regarding serviceName equals "Default" or not
     	if ( arrayUrl.length > 1 ) action = arrayUrl[1];
     	if ( ! serviceName.contentEquals("Default") ) {
     		parsedUrl.setServiceAlias(arrayUrl[0]);
     	} else {
-    		action = arrayUrl[0];
     		// Default service path is empty so index in arrayUrl is "-1" comparing other services
     		minus = 1;
+    		action = arrayUrl[0];
     	}
     	parsedUrl.setAction(action);
-    	if ( actions.containsKey(action) ) urlPattern = actions.get(action); 
+    	// Set id value
+		if ( arrayUrl.length > 2 - minus )
+    		parsedUrl.setId( arrayUrl[2 - minus]);
+		// Set slug value
+		if ( arrayUrl.length > 3 - minus )
+    		parsedUrl.setSlug( arrayUrl[3 - minus]);
+
+		return parsedUrl;	
+    }
+	
+	/**
+     * Validate uri requested by user from service rules defined by actions attributes(Map)
+     * 
+     * @param serviceName		String name of service (=servlet)
+     * @param actions			Map<String, String> giving regex pattern (rule) for each action
+	 * @param parsedUrl			ParsedUrl  object with attributes service / action / id / slug given by uri
+     * @throws UrlException 
+     */
+    public static void validateAction(String serviceName, Map<String,String> actions, ParsedUrl parsedUrl)
+    		throws UrlException {
+
+    	String action = parsedUrl.getAction();
+    	if ( action.isEmpty() ) action = "empty";
+    	    	
     	// Validate action
-    	if ( ! actions.containsKey("empty") && action.isEmpty() )
-    		errors.put("emptyAction", "Invalid Url.");
-    	if ( ! action.isEmpty() && ! actions.containsKey(action) )
-    		errors.put("noMatchingAction", "Invalid Url.");
+    	if ( ! actions.containsKey(action) ) {
+    		DLOG.log(Level.DEBUG, "Invalid url - action " + action + " can not be found in actions array.");
+    		throw new UrlException("Invalid Url.");
+    	}
     	
-    	// Set and validate id
-		if ( urlPattern.contains("$id") ) {
-			if ( arrayUrl.length > 2 - minus )
-	    		parsedUrl.setId( arrayUrl[2 - minus]);
-			else
-	    		errors.put("emptyId", "Invalid Url.");				
+    	String urlPattern = actions.get(action); 
+
+    	// Validate id
+		if ( urlPattern.contains("$id") && parsedUrl.getId().isEmpty() ) {
+    		DLOG.log(Level.DEBUG, "Invalid url - id is empty and doesn't match with action");
+			throw new UrlException("Invalid Url");
 		}
     	
-    	// Set and validate slug
-		if ( urlPattern.contains("$slug") ) {
-			if ( arrayUrl.length > 3 - minus )
-	    		parsedUrl.setSlug( arrayUrl[3 - minus]);
-			else
-	    		errors.put("emptySlug", "Invalid Url.");				
+		if ( ! urlPattern.contains("$id") && ! parsedUrl.getId().isEmpty() ) {
+    		DLOG.log(Level.DEBUG, "Invalid url - id is not empty and doesn't match with action");
+			throw new UrlException("Invalid Url");
+		}
+
+		// Set and validate slug
+		if ( urlPattern.contains("$slug") && parsedUrl.getSlug().isEmpty() ) {
+    		DLOG.log(Level.DEBUG, "Invalid url - slug is empty and doesn't match with action");
+			throw new UrlException("Invalid Url");
 		}
     	
-		parsedUrl.setErrors(errors);
-		errors.forEach((k,v)->{
-			DLOG.log(Level.ERROR, k + " - " + v);
-		});
+		if ( ! urlPattern.contains("$slug") && ! parsedUrl.getSlug().isEmpty() ) {
+    		DLOG.log(Level.DEBUG, "Invalid url - slug is not empty and doesn't match with action");
+			throw new UrlException("Invalid Url");
+		}
+    	
 		// if ( ! DaoProxy.getInstance().getMachinDao().getById(id, Map<> clausesWhere) ) errors.put("","");
-		return parsedUrl;
+
     }
 		    	
-
-	
 }

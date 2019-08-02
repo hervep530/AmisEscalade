@@ -74,13 +74,12 @@ public class ServiceChecker {
      * @param context			String - as found in servlet request
      * @param serviceName		String - identify a service (serviceName = servletName)
      * @param uri				String - as found in servlet request
-     * @return					String array up to 4 values : serviceAlias (if not defaut) / action / id / slug
-     * @throws ServiceException	Exception if checking fails
+     * 
+     * @throws UrlException		Exception if checking fails
      */
-    public static String[] validateGlobalPatternUrl(String context, String serviceName, String uri)
-    	throws ServiceException {
+    public static void validateGlobalPatternUrl(String context, String serviceName, String uri)
+    	throws UrlException {
     	String message = "";
-    	String[] arrayUrl = null;
     	String url = uri.replaceAll("^[^/]{1,}:[^/]*/{1,}[^/]{1,}:?[^/]*/?", "");
     	String globalPattern = "^(/[0-9a-zA-Z-.]{1,})?/?(\\w{1,})?(/\\w{1,})?(/\\d{1,8}|/\\d{1,8}/\\w{1,})?(#\\w*)?$";
     	if ( serviceName.contentEquals("Default") )
@@ -91,10 +90,11 @@ public class ServiceChecker {
             throw new UrlException(message);
     	}
 
+/*
     	if ( ! context.isEmpty() ) url = url.replaceAll(".*" + context + "/", "");
     	url = url.replaceAll("^/", "");
-    	url.replaceAll(";(JSESSIONID|jsessionid)=\\w*", "");
-    	url.replaceAll("#\\w*", "");
+    	url = url.replaceAll(";(JSESSIONID|jsessionid)=\\w*", "");
+    	url = url.replaceAll("#\\w*", "");
 
     	DLOG.log(Level.DEBUG, "url : " + url);
     	arrayUrl = url.split("/");    	
@@ -104,7 +104,8 @@ public class ServiceChecker {
     	}
     	DLOG.log(Level.DEBUG, "arrayUrl : " + message.trim().replaceAll("/$",""));
     	
-		return arrayUrl;    	
+		return arrayUrl;
+*/    	
     }
     
 }

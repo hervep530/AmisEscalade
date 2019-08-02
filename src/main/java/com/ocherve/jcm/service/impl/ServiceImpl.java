@@ -141,29 +141,32 @@ public abstract class ServiceImpl implements Service {
 		Parameters parameters = new Parameters();
 		String context = request.getContextPath();
 		String uri = (String) request.getAttribute("uri");
-		String[] arrayUrl = null;
-		ParsedUrl parsedUrl = null;
 		
+		// Global uri validation before using it with String tools 
 		try {
-			arrayUrl = ServiceChecker.validateGlobalPatternUrl(context, serviceName, uri);
-		} catch (ServiceException e) {
+			ServiceChecker.validateGlobalPatternUrl(context, this.serviceName, uri);
+		} catch (UrlException e) {
 			DLOG.log(Level.ERROR, serviceName + "- " + e.getMessage());
-			arrayUrl = new String[] {""};
 			parameters.appendError(serviceName + "ServiceParameters", e.getMessage());
 		}
-		try {
-			parsedUrl = UrlChecker.validateServicePatternUrl(this.serviceName, arrayUrl, this.actions);
-		} catch (UrlException e) {
-			// TODO : bricolage pour recuperer une action en cas d'erreur - pas fiable... 
-			DLOG.log(Level.ERROR, serviceName + "- " + e.getMessage());
-			parsedUrl = new ParsedUrl(this.serviceName, e.getMessage().split(":")[0]);
-			parameters.appendError(serviceName + "ServiceParameters", e.getMessage().split(":")[1]);			
-		}
+
+		// keeping only service / action / id / slug in uri
+		uri = uri.replaceAll("^.*" + context , "").replaceAll("^/", "");
+    	uri = uri.replaceAll(";(JSESSIONID|jsessionid)=\\w*", "").replaceAll("#\\w*", "");
+    	ParsedUrl parsedUrl = UrlChecker.parseUrl(context, uri);
+    	
+    	try {
+    		UrlChecker.validateAction(serviceName, actions, parsedUrl);
+    	} catch (UrlException e) {
+			parameters.appendError(serviceName + "ServiceParameters", e.getMessage());			    		
+    	}
+
 		parameters.setParsedUrl(parsedUrl);
 		parameters.appendAllError(parsedUrl.getErrors());
 		
 		String info = "Service " + this.serviceName + " set parameters";
 		DLOG.log(Level.INFO , info);
+
 		return parameters;
 	}
 
