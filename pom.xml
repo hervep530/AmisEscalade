@@ -12,38 +12,55 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<javaee-web-api-version>7.0</javaee-web-api-version>
+		<hibernate-core-version>5.4.4.Final</hibernate-core-version>
+		<hibernate-annotations-version>3.5.6-Final</hibernate-annotations-version>
+		<log4j-core-version>2.11.2</log4j-core-version>
+		<log4j-api-version>2.11.2</log4j-api-version>
+		<postgresql-version>42.2.5</postgresql-version>
+		<jstl-version>1.2</jstl-version>
     </properties>
     
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
-            <version>7.0</version>
+            <version>${javaee-web-api-version}</version>
             <scope>provided</scope>
         </dependency>
-        
-
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.11.2</version>
+            <version>${log4j-api-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.11.2</version>
+            <version>${log4j-core-version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+		<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-core</artifactId>
+    		<version>${hibernate-core-version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-annotations -->
+		<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-annotations</artifactId>
+    		<version>${hibernate-annotations-version}</version>
+		</dependency>
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.5</version>
+            <version>${postgresql-version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.2</version>
+            <version>${jstl-version}</version>
         </dependency>
     </dependencies>
     
