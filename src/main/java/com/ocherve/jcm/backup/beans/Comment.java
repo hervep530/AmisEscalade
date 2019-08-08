@@ -1,14 +1,20 @@
-package com.ocherve.jcm.beans;
+package com.ocherve.jcm.backup.beans;
 
 import java.util.Date;
+
+import javax.persistence.*;
 
 /**
  * @author herve_dev
  *
  * Comment - discussion about a document
  */
+@Entity
+@Table( name = "jcm_comment")
 public class Comment {
 	
+	@Id
+	@GeneratedValue( strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String author;
 	private Document document;

@@ -1,12 +1,16 @@
-package com.ocherve.jcm.beans;
+package com.ocherve.jcm.backup.beans;
+
+import javax.persistence.*;
 
 /**
  * @author herve_dev
  * 
  * Document Content - in opposition of metadata
  */
+@Table( name = "jcm_content" )
 public class Content {
 
+	private Document document ;
 	private ContentType contentType;
 	private String data;
 		
@@ -58,6 +62,22 @@ public class Content {
 	 */
 	public void setData(String data) {
 		this.data = data;
+	}
+
+
+	/**
+	 * @return document
+	 */
+	public Document getDocument() {
+		return document;
+	}
+
+
+	/**
+	 * @param document
+	 */
+	public void setDocument(Document document) {
+		this.document = document;
 	}
 	
 }

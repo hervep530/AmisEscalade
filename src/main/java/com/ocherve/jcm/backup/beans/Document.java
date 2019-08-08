@@ -1,4 +1,4 @@
-package com.ocherve.jcm.beans;
+package com.ocherve.jcm.backup.beans;
 
 import java.util.Date;
 import java.util.List;

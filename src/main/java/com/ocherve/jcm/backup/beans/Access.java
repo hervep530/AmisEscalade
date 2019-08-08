@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ocherve.jcm.beans;
+package com.ocherve.jcm.backup.beans;
 
 /**
  * @author herve_dev
