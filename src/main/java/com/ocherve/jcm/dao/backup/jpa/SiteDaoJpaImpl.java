@@ -1,4 +1,4 @@
-package com.ocherve.jcm.dao.impl.jpa;
+package com.ocherve.jcm.dao.backup.jpa;
 
 import com.ocherve.jcm.dao.contract.SiteDao;
 

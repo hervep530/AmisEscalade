@@ -1,4 +1,4 @@
-package com.ocherve.jcm.dao.impl.postgresql;
+package com.ocherve.jcm.dao.backup.jpa;
 
 import com.ocherve.jcm.dao.DaoException;
 import com.ocherve.jcm.dao.contract.Dao;
@@ -8,8 +8,8 @@ import com.ocherve.jcm.dao.contract.Dao;
  *
  * Sub Factory for DaoFactory - specific to Jpa implementations
  */
-public class DaoPgFactory {
-
+public class DaoJpaFactory {
+	
 	/**
 	 * Getter 
 	 * 
@@ -19,13 +19,13 @@ public class DaoPgFactory {
 	public static Dao getDao(Class<?> daoClass) {
 		switch (daoClass.getSimpleName()) {
 			case "SessionDao" :
-				return new SessionDaoPgImpl();
+				return new SessionDaoJpaImpl();
 			case "SiteDao" :
-				return new SiteDaoPgImpl();
+				return new SiteDaoJpaImpl();
 			case "TopoDao" : 
-				return new TopoDaoPgImpl();
+				return new TopoDaoJpaImpl();
 			case "MessageDao" :
-				return new MessageDaoPgImpl();
+				return new MessageDaoJpaImpl();
 			default :
 				throw new DaoException("this dao \"" + daoClass.getSimpleName() + "\" doesn't exist");
 		}

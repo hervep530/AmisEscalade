@@ -1,4 +1,4 @@
-package com.ocherve.jcm.dao.impl.postgresql;
+package com.ocherve.jcm.dao.backup.postgresql;
 
 import com.ocherve.jcm.dao.contract.SessionDao;
 
