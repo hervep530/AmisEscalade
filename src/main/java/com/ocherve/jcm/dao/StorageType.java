@@ -7,11 +7,15 @@ package com.ocherve.jcm.dao;
 public enum StorageType {
 	
 	/**
-	 * Postgresql storage type
+	 * Postgresql storage implementation
 	 */
 	POSTGRESQL,
 	/**
-	 * Jpa storage type
+	 * Hibernate storage implementation
+	 */
+	HIBERNATE,
+	/**
+	 * Jpa storage implementation
 	 */
 	JPA;
 
