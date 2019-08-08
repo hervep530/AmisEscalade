@@ -1,4 +1,4 @@
-package com.ocherve.jcm.dao.backup.jpa;
+package com.ocherve.jcm.backup.dao.jpa;
 
 import com.ocherve.jcm.dao.contract.SessionDao;
 
