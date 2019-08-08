@@ -1,9 +1,8 @@
 package com.ocherve.jcm.dao.impl;
 
+import com.ocherve.jcm.dao.DaoException;
 import com.ocherve.jcm.dao.StorageType;
 import com.ocherve.jcm.dao.contract.Dao;
-import com.ocherve.jcm.dao.impl.jpa.DaoJpaFactory;
-import com.ocherve.jcm.dao.impl.postgresql.DaoPgFactory;
 
 /**
  * @author herve_dev
@@ -20,16 +19,22 @@ public class DaoFactory {
 	 * @return				Dao : generic DAO
 	 */
 	public static Dao getDao(StorageType storageType, Class<?> daoClass) {
-		Dao dao = null;
 		switch (storageType) {
-		case POSTGRESQL:
-			DaoPgFactory.getDao(daoClass);
-			break;
-		case JPA:
-			DaoJpaFactory.getDao(daoClass);
-			break;
+			case HIBERNATE:
+			default:
+				switch (daoClass.getSimpleName()) {
+					case "SessionDao" :
+						return new SessionDaoHibImpl();
+					case "SiteDao" :
+						return new SiteDaoHibImpl();
+					case "TopoDao" : 
+						return new TopoDaoHibImpl();
+					case "MessageDao" :
+						return new MessageDaoHibImpl();
+					default :
+						throw new DaoException("this dao \"" + daoClass.getSimpleName() + "\" doesn't exist");
+				}
 		}
-		return dao;
 	}
 
 }
