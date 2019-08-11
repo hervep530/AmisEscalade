@@ -21,16 +21,20 @@ public class DaoFactory {
 	public static Dao getDao(StorageType storageType, Class<?> daoClass) {
 		switch (storageType) {
 			case HIBERNATE:
+			case POSTGRESQL:
+			case JPA:
 			default:
 				switch (daoClass.getSimpleName()) {
-					case "SessionDao" :
-						return new SessionDaoHibImpl();
 					case "SiteDao" :
-						return new SiteDaoHibImpl();
+						return new SiteDaoJpaImpl();
 					case "TopoDao" : 
-						return new TopoDaoHibImpl();
+						return new TopoDaoJpaImpl();
 					case "MessageDao" :
-						return new MessageDaoHibImpl();
+						return new MessageDaoJpaImpl();
+					case "UserDao" :
+						return new UserDaoJpaImpl();
+					case "CommentDao" :
+						return new CommentDaoJpaImpl();
 					default :
 						throw new DaoException("this dao \"" + daoClass.getSimpleName() + "\" doesn't exist");
 				}
