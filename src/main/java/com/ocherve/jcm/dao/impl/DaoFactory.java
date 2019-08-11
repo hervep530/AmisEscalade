@@ -26,15 +26,15 @@ public class DaoFactory {
 			default:
 				switch (daoClass.getSimpleName()) {
 					case "SiteDao" :
-						return new SiteDaoJpaImpl();
+						return new SiteDaoImpl();
 					case "TopoDao" : 
-						return new TopoDaoJpaImpl();
+						return new TopoDaoImpl();
 					case "MessageDao" :
-						return new MessageDaoJpaImpl();
+						return new MessageDaoImpl();
 					case "UserDao" :
-						return new UserDaoJpaImpl();
+						return new UserDaoImpl();
 					case "CommentDao" :
-						return new CommentDaoJpaImpl();
+						return new CommentDaoImpl();
 					default :
 						throw new DaoException("this dao \"" + daoClass.getSimpleName() + "\" doesn't exist");
 				}
