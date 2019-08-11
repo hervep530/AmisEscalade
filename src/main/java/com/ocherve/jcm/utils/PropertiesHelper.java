@@ -22,7 +22,7 @@ public class PropertiesHelper {
 		if ( initialized ) return true;
 		properties = new HashMap<>();
 		// storeless ou postgresql
-		properties.put("daoType", "postgresql");
+		properties.put("daoType", "jpa");
 		return true;
 	}
 	
