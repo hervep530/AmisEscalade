@@ -1,10 +1,13 @@
 package com.ocherve.jcm.dao.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
 
 import org.apache.logging.log4j.Level;
@@ -12,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import com.ocherve.jcm.dao.DaoException;
 import com.ocherve.jcm.dao.contract.Dao;
 
 /**
@@ -24,9 +28,9 @@ public class DaoImpl implements Dao {
 	private static final Logger DLOG = LogManager.getLogger("development_file");
 
 	protected static void init() {
+		Configurator.setLevel(DLOG.getName(), Level.TRACE);
 		if (em == null) {
-			Configurator.setLevel(DLOG.getName(), Level.TRACE);
-			em = Persistence.createEntityManagerFactory("JcmPersistentUnit").createEntityManager();
+			em = Persistence.createEntityManagerFactory("JcmPersistenceUnit").createEntityManager();
 		}
 	}
 
@@ -65,19 +69,56 @@ public class DaoImpl implements Dao {
 		return obj;
 	}
 
-	/**
-	 * Recherche d'un utilisateur à partir de son id
-	 * 
-	 * @param entityClass
-	 * 
-	 * @param id
-	 * @return a user
-	 */
-	protected Object getFromClause(Class<?> entityClass, String[] attributes , Map<String,String> clauses) {
+	@Override
+	public List<?> getEntityFromFilteredQuery(Class<?> entityClass, Map<String,String> clauses) {
 		init();
-		Long id = null;
-		Object obj = em.find(entityClass, id);
-		return obj;
+		List<?> objects = null;
+		Query query = null;
+		String className = entityClass.getSimpleName().replaceAll(".*\\.", "");
+		String alias = entityClass.getSimpleName().substring(0, 1).toLowerCase();
+		// begin of building query String
+		String queryString = "select " + alias + " from " + className + " " + alias;
+		String clauseName = "";
+		String clauseValue = "";
+		// Inserting where clauses
+		if ( ! clauses.isEmpty() ) {
+			queryString += " where ";
+			int count = 0;
+			for ( String clause : clauses.keySet() ) {
+				clauseName = clause.replaceAll("\\.", "_");
+				if ( count > 0 ) queryString += " AND ";
+				queryString += alias + "." + clause + " " + clauses.get(clause).replaceAll(":.*", ":" + clauseName);
+				count ++;
+			};
+			DLOG.log(Level.DEBUG, "Clause where : " + queryString);
+		}
+		//queryString += ";";
+		query = em.createQuery(queryString);
+		if ( ! clauses.isEmpty() ) {
+			for ( String clause : clauses.keySet() ) {
+				clauseName = clause.replaceAll("\\.", "_");
+				clauseValue = clauses.get(clause).replaceAll(".*:'?", "").replaceAll("'$", "");
+				DLOG.log(Level.DEBUG, "Clause : \nkey is " + clause + "\nname is " + clauseName + "\n"
+						+ "value is " + clauses.get(clause) + "\nClause value is " + clauseValue);
+				if (clauses.get(clause).contains(":")) {
+					if ( clauseValue.contains("(int)") ) {
+						query.setParameter(clauseName, Integer.valueOf(clauseValue.replaceAll("(int)", "")));
+					} else {
+						query.setParameter(clauseName, clauseValue);
+					}
+					DLOG.log(Level.DEBUG, "Set parameter : " + clauseName + " -> " + clauseValue);
+				}
+			};
+		}
+		try {
+			objects = query.getResultList();
+		} catch (NoResultException e) {
+			DLOG.log(Level.ERROR, "Aucun resultat pour la requête :\n" + queryString + "\n" + e.getMessage());
+		} catch (Exception e1) {
+			DLOG.log(Level.ERROR, "Erreur inattendue :\n" + queryString + "\n" + e1.getMessage());
+			throw new DaoException(e1.getMessage());
+		}
+		return objects;
 	}
 
 	@Override

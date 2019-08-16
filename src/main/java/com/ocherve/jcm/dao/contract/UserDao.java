@@ -1,6 +1,7 @@
 package com.ocherve.jcm.dao.contract;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ocherve.jcm.model.Role;
 import com.ocherve.jcm.model.User;
@@ -24,6 +25,13 @@ public interface UserDao extends Dao {
 	 * @return user requested
 	 */
 	User get(Integer id );
+	
+	/**
+	 * @param attributes
+	 * @param clauses
+	 * @return list of user
+	 */
+	List<User> getFromFilteredQuery(Map<String,String> clauses);
 	
 	/**
 	 * @return user list

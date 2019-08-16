@@ -1,5 +1,8 @@
 package com.ocherve.jcm.dao.contract;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author herve_dev
  * 
@@ -20,6 +23,14 @@ public interface Dao {
 	 * @return entity manager by dao
 	 */
 	Object get(Class<?> entityClass, Integer id);
+	
+	/**
+	 * @param entityClass 
+	 * @param attributes
+	 * @param clauses
+	 * @return List of object
+	 */
+	List<?> getEntityFromFilteredQuery(Class<?> entityClass, Map<String,String> clauses);
 	
 	/**
 	 * @param entityClass

@@ -1,6 +1,7 @@
 package com.ocherve.jcm.dao.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ocherve.jcm.dao.contract.UserDao;
 import com.ocherve.jcm.model.Role;
@@ -27,6 +28,18 @@ public class UserDaoImpl extends DaoImpl implements UserDao {
 	public List<User> getList() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getFromFilteredQuery(Map<String, String> clauses) {
+		List<User> users = null;
+		try {
+			users = (List<User>) super.getEntityFromFilteredQuery(User.class, clauses);
+		} catch (Exception e) {
+			return null;
+		}
+		return users;
 	}
 
 	@Override
