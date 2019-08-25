@@ -28,7 +28,7 @@ public class DaoProxy {
 	
 	private DaoProxy() {
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
-		DLOG.log(Level.DEBUG,"Instanciate Service Proxy");
+		DLOG.log(Level.DEBUG,"Instanciate Dao Proxy");
 		String daoConfig = PropertiesHelper.getConfigValue("daoType");
 		if ( daoConfig == null ) throw new RuntimeException();
 		daoType = StorageType.valueOf(daoConfig.toUpperCase());
