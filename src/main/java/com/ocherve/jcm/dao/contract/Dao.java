@@ -3,6 +3,7 @@ package com.ocherve.jcm.dao.contract;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * @author herve_dev
  * 
@@ -11,13 +12,34 @@ import java.util.Map;
 public interface Dao {
 
 	/**
+	 * @param em 
 	 * @param entityClass
 	 * @param object
 	 * @return entity manager by dao
 	 */
 	Object create(Class<?> entityClass, Object object);
+
+	/**
+	 * @param em 
+	 * @param entityClass
+	 * @param id
+	 * @param fields 
+	 * @return entity manager by dao
+	 */
+	Object update(Class<?> entityClass, Integer id, Map<String,Object> fields);
+
+	/**
+	 * @param em 
+	 * @param entityClass
+	 * @param id
+	 * @param newObject
+	 * 
+	 * @return object updated
+	 */
+	Object update(Class<?> entityClass, Integer id, Object newObject);
 	
 	/**
+	 * @param em 
 	 * @param entityClass
 	 * @param id
 	 * @return entity manager by dao
@@ -25,18 +47,20 @@ public interface Dao {
 	Object get(Class<?> entityClass, Integer id);
 	
 	/**
-	 * @param entityClass 
-	 * @param attributes
-	 * @param clauses
-	 * @return List of object
+	 * @param entityClass
+	 * @param namedQuery
+	 * @param Parameters
+	 * @return list of requested objects
 	 */
-	List<?> getEntityFromFilteredQuery(Class<?> entityClass, Map<String,String> clauses);
+	List<?> getListFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> Parameters);
 	
 	/**
+	 * @param em 
 	 * @param entityClass
 	 * @param id
 	 * @return true if deleted, false if not deleted
 	 */
 	boolean delete(Class<?> entityClass, Integer id);
+
 	
 }

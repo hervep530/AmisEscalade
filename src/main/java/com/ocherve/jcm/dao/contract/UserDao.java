@@ -18,25 +18,38 @@ public interface UserDao extends Dao {
 	 * @return user created
 	 */
 	User create( User user );
+
+	/**
+	 * @param id
+	 * @param updatedUser
+	 * @return user
+	 */
+	User update(User updatedUser);
 	
+	/**
+	 * @param id
+	 * @param fields
+	 * @return user
+	 */
+	User update(Integer id, Map<String, Object> fields);
 	
 	/**
 	 * @param id
 	 * @return user requested
 	 */
 	User get(Integer id );
-	
-	/**
-	 * @param attributes
-	 * @param clauses
-	 * @return list of user
-	 */
-	List<User> getFromFilteredQuery(Map<String,String> clauses);
-	
+		
 	/**
 	 * @return user list
 	 */
 	List<User> getList();
+
+	/**
+	 * @param queryName 
+	 * @param parameters 
+	 * @return user list
+	 */
+	List<User> getListFromNamedQuery(String queryName, Map<String,Object> parameters);
 	
 	/**
 	 * @param id
@@ -49,5 +62,6 @@ public interface UserDao extends Dao {
 	 * @return role
 	 */
 	Role getRole(Integer id);
-	
+
+
 }
