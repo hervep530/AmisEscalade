@@ -2,7 +2,9 @@ package com.ocherve.jcm;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +15,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ocherve.jcm.model.Cotation;
+import com.ocherve.jcm.model.Role;
 import com.ocherve.jcm.model.Site;
+import com.ocherve.jcm.model.User;
 
 /**
  * @author herve_dev
@@ -38,6 +42,7 @@ public class SiteDaoTest {
 			/* Call SiteManager to create all sites */ 
 			assertNull(id);
 			SiteManager.create();
+			UserManager.create();
 			siteControl = SiteManager.getSiteDao().get(SiteManager.getIds()[3]);
 			SiteManager.logSite(siteControl);
 		}
@@ -50,6 +55,7 @@ public class SiteDaoTest {
 			Integer[] siteIds = SiteManager.getIds();
 			/* deleting sites */
 			SiteManager.delete();
+			UserManager.delete();
 			/* Test if users deleted */
 			for (int u = 0 ; u < siteIds.length ; u++) {			
 				assertNull(SiteManager.getSiteDao().get(siteIds[u]));
@@ -101,23 +107,48 @@ public class SiteDaoTest {
 		 
 
 		/**
-		 * Add, Display and Delete User
-		@Test
+		 * Test update author with update(site)
 		 */
-		public void testUpdateSite4() {
-
-			//createFirst();
-			//debugSiteControl();
+		@Test
+		public void testUpdate4thSiteReplaceUserAnonymousBy2ndUserCreated() {
+			/* get id from SiteManager and idAuthor from UserManager */
+			id = SiteManager.getIds()[3];
+			Integer idAuthor = UserManager.getIds()[1];
+			/* Get site and new author , modify author in site and update it with siteDao */
+			Site site = SiteManager.getSiteDao().get(id); 
+			User newAuthor = SiteManager.getUserDao().get(idAuthor);
+			site.setAuthor(newAuthor);
+			SiteManager.getSiteDao().update(site);
+			/* Get user again from dao and log it for debug */
+			siteControl = SiteManager.getSiteDao().get(id);
+			SiteManager.logSite(siteControl);
 
 			/* Test userControl after creating user*/
-			assertNotNull(id);
 			assertNotNull(siteControl);
-			//assertTrue(siteControl.getAuthor().getId() ==  3);
-			//assertEquals(siteControl.getSlug(), "captaine");
+			assertEquals(siteControl.getName(),  "Les Gorges du Loup");		
+			assertEquals(siteControl.getAuthor().getUsername(), "alavant");			
+		}
+
+		/**
+		 * Test update cotationMax with update(id, parameters)
+		 */
+		@Test
+		public void testUpdate2ndSiteReplaceCotationMaxby8c() {
+			Map<String,Object> parameters = new HashMap<>();
+			/* get id from SiteManager, get cotation, set parameter cotationMax, and update */
+			id = SiteManager.getIds()[1];
+			Cotation newCotation = Cotation.valueOf("8c");
+			parameters.put("cotationMax", newCotation);
+			SiteManager.getSiteDao().update(id,parameters);
 			
-			/* Test user when deleting */
-			assertTrue(SiteManager.getSiteDao().delete(id));
-			assertNull(SiteManager.getSiteDao().get(id));
+			/* Get user again from dao and log it for debug */
+			siteControl = SiteManager.getSiteDao().get(id);
+			SiteManager.logSite(siteControl);
+
+			/* Test userControl after creating user*/
+			assertNotNull(siteControl);
+			assertEquals(siteControl.getName(),  "Cantobre");		
+			assertEquals(siteControl.getCotationMax().getLabel(), "8c");			
 		}
 
 				

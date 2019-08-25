@@ -20,11 +20,6 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 	}
 
 	@Override
-	public Site update(Integer id, Map<String, Object> fields) {
-		return (Site) super.update(Site.class, id, fields);
-	}
-
-	@Override
 	public Site get(Integer id) {
 		Site site = (Site) super.get(Site.class, id);
 		return site;
@@ -70,6 +65,15 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 		return sites;
 	}
 
+	@Override
+	public Site update(Integer id, Map<String, Object> fields) {
+		return (Site) super.update(Site.class, id, fields);
+	}
+
+	@Override
+	public Site update(Site site) {
+		return (Site) super.update(Site.class,site.getId(), site);
+	}
 
 	@Override
 	public Cotation getCotationByLabel(String cotationName) {

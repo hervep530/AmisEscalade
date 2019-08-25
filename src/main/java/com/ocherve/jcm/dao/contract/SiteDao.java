@@ -26,7 +26,13 @@ public interface SiteDao extends Dao {
 	 * @return site
 	 */
 	Site update(Integer id, Map<String, Object> fields);
-	
+
+	/**
+	 * @param site
+	 * @return site updated
+	 */
+	Site update(Site site);
+
 	/**
 	 * @param id
 	 * @return site requested
@@ -56,7 +62,12 @@ public interface SiteDao extends Dao {
 	 */
 	boolean delete (Integer id);
 	
+	/**
+	 * @param cotationName
+	 * @return cotation
+	 */
 	Cotation getCotationByLabel(String cotationName);
+
 	
 	
 }
