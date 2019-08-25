@@ -68,11 +68,9 @@ public class User implements Serializable {
 	private List<Message> receivedMessages;
 */
 
-/*	
 	//bi-directional many-to-one association to JcmDocument
 	@OneToMany(mappedBy="author")
 	private List<Document> documents;
-*/
 	
 	//bi-directional many-to-one association to JcmRole
 	@ManyToOne
@@ -217,39 +215,39 @@ public class User implements Serializable {
 	
 	/**
 	 * @return list of documents where user is author
+	 */
 	public List<Document> getDocuments() {
 		return this.documents;
 	}
-	 */
 
 	/**
 	 * @param documents
+	 */
 	public void setDocuments(List<Document> documents) {
 		this.documents = documents;
 	}
-	 */
 
 	/**
 	 * @param document
 	 * @return document added to list
+	 */
 	public Document addDocument(Document document) {
 		getDocuments().add(document);
 		document.setAuthor(this);
 
 		return document;
 	}
-	 */
 
 	/**
 	 * @param document
 	 * @return document removed from list
+	 */
 	public Document removeDocument(Document document) {
 		getDocuments().remove(document);
 		document.setAuthor(null);
 
 		return document;
 	}
-	 */
 
 
 

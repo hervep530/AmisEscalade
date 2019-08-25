@@ -1,7 +1,9 @@
 package com.ocherve.jcm.dao.contract;
 
 import java.util.List;
+import java.util.Map;
 
+import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Site;
 
 /**
@@ -11,14 +13,50 @@ import com.ocherve.jcm.model.Site;
  */
 public interface SiteDao extends Dao {
 
-	Site create(Site site);
+
+	/**
+	 * @param site
+	 * @return site created
+	 */
+	Site create( Site site );
+
+	/**
+	 * @param id
+	 * @param fields
+	 * @return site
+	 */
+	Site update(Integer id, Map<String, Object> fields);
 	
-	Site get(Integer id);
-	
+	/**
+	 * @param id
+	 * @return site requested
+	 */
+	Site get(Integer id );
+		
+	/**
+	 * @return site list
+	 */
 	List<Site> getList();
 	
-	boolean delete(Integer id);
+	/**
+	 * @param cotationMax
+	 * @return sites list
+	 */
+	List<Site> getSitesWhereCotationMaxGreaterThan(Cotation cotationMax);
+
+	/**
+	 * @param cotationMin
+	 * @return sites list
+	 */
+	List<Site> getSitesWhereCotationMinLessThan(Cotation cotationMin);
+
+	/**
+	 * @param id
+	 * @return true if delete , false if not
+	 */
+	boolean delete (Integer id);
 	
+	Cotation getCotationByLabel(String cotationName);
 	
 	
 }
