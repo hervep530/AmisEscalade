@@ -31,7 +31,8 @@ public abstract class DaoImpl implements Dao {
 		object = null;
 		objects = null;
 		if (em == null) {
-			em = Persistence.createEntityManagerFactory("HibernateHikariPersistenceUnit").createEntityManager();
+			//em = Persistence.createEntityManagerFactory("HibernateHikariPersistenceUnit").createEntityManager();
+			em = Persistence.createEntityManagerFactory("JpaPersistenceUnit").createEntityManager();			
 			em.setFlushMode(FlushModeType.COMMIT);
 		}
 	}

@@ -1,0 +1,30 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+	<persistence-unit name="JpaPersistenceUnit"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>com.ocherve.jcm.model.User</class>
+		<class>com.ocherve.jcm.model.Role</class>
+		<class>com.ocherve.jcm.model.AccessType</class>
+		<properties>
+			<!-- partie JPA générique -->
+			<property name="javax.persistence.jdbc.driver"
+				value="org.postgresql.Driver" />
+			<property name="javax.persistence.jdbc.url"
+				value="jdbc:postgresql://localhost:10432/jcm_amiesca?characterEncoding=utf8" />
+			<property name="javax.persistence.jdbc.user" value="amiesca" />
+			<property name="javax.persistence.jdbc.password"
+				value="amiesca" />
+
+			<!-- partie spécifique Hibernate -->
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.dialect"
+				value="org.hibernate.dialect.PostgreSQL10Dialect" />
+			<!-- property name="hibernate.hbm2ddl.auto" value="create-drop" / -->
+		</properties>
+	</persistence-unit>
+
+</persistence>
