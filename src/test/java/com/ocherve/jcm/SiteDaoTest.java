@@ -15,7 +15,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ocherve.jcm.model.Cotation;
-import com.ocherve.jcm.model.Role;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.model.User;
 
@@ -43,7 +42,7 @@ public class SiteDaoTest {
 			assertNull(id);
 			SiteManager.create();
 			UserManager.create();
-			siteControl = SiteManager.getSiteDao().get(SiteManager.getIds()[3]);
+			siteControl = SiteManager.getDao().get(SiteManager.getIds()[3]);
 			SiteManager.logSite(siteControl);
 		}
 
@@ -58,9 +57,9 @@ public class SiteDaoTest {
 			UserManager.delete();
 			/* Test if users deleted */
 			for (int u = 0 ; u < siteIds.length ; u++) {			
-				assertNull(SiteManager.getSiteDao().get(siteIds[u]));
+				assertNull(SiteManager.getDao().get(siteIds[u]));
 			}
-			SiteManager.LogSiteList(SiteManager.getSiteDao().getList(), "all sites created");
+			SiteManager.LogSiteList(SiteManager.getDao().getList(), "all sites created");
 			DLOG.log(Level.DEBUG, String.format("%nFIN DU TEST%n=============%n%n"));
 		}
 		
@@ -69,7 +68,7 @@ public class SiteDaoTest {
 		 */
 		@Test
 		public void testDaoNotNull() {
-			assertNotNull(SiteManager.getSiteDao());
+			assertNotNull(SiteManager.getDao());
 		}
 
 		/**
@@ -78,7 +77,7 @@ public class SiteDaoTest {
 		@Test
 		public void Given5SitesInserted_When_CheckCountOfAllSite_Then_ResultIs5() {
 			/* Log list of all sites for debug */
-			List<Site> sites = SiteManager.getSiteDao().getList();
+			List<Site> sites = SiteManager.getDao().getList();
 			SiteManager.LogSiteList(sites, "all sites created");
 			assertEquals(sites.size(), SiteManager.getIds().length);
 		}
@@ -89,7 +88,7 @@ public class SiteDaoTest {
 		@Test
 		public void Given5SitesInserted_When_CheckHowManyAsCotationMaxGreaterThan_Then_ResultIs3() {
 			Cotation cotationMax = Cotation.valueOf("8a"); 
-			List<Site> sites = (List<Site>) SiteManager.getSiteDao().getSitesWhereCotationMaxGreaterThan(cotationMax);
+			List<Site> sites = (List<Site>) SiteManager.getDao().getSitesWhereCotationMaxGreaterThan(cotationMax);
 			SiteManager.LogSiteList(sites, "sites with min cotation > 8a");
 			assertEquals(sites.size(), 3);
 		}
@@ -100,7 +99,7 @@ public class SiteDaoTest {
 		@Test
 		public void Given5SitesInserted_When_CheckHowManyAsCotationMinLessThan_Then_ResultIs2() {
 			Cotation cotationMin = Cotation.valueOf("4"); 
-			List<Site> sites = (List<Site>) SiteManager.getSiteDao().getSitesWhereCotationMinLessThan(cotationMin);
+			List<Site> sites = (List<Site>) SiteManager.getDao().getSitesWhereCotationMinLessThan(cotationMin);
 			SiteManager.LogSiteList(sites, "sites with min cotation <=4");
 			assertEquals(sites.size(), 2);
 		}
@@ -115,12 +114,12 @@ public class SiteDaoTest {
 			id = SiteManager.getIds()[3];
 			Integer idAuthor = UserManager.getIds()[1];
 			/* Get site and new author , modify author in site and update it with siteDao */
-			Site site = SiteManager.getSiteDao().get(id); 
-			User newAuthor = SiteManager.getUserDao().get(idAuthor);
+			Site site = SiteManager.getDao().get(id); 
+			User newAuthor = UserManager.getDao().get(idAuthor);
 			site.setAuthor(newAuthor);
-			SiteManager.getSiteDao().update(site);
+			SiteManager.getDao().update(site);
 			/* Get user again from dao and log it for debug */
-			siteControl = SiteManager.getSiteDao().get(id);
+			siteControl = SiteManager.getDao().get(id);
 			SiteManager.logSite(siteControl);
 
 			/* Test userControl after creating user*/
@@ -139,10 +138,10 @@ public class SiteDaoTest {
 			id = SiteManager.getIds()[1];
 			Cotation newCotation = Cotation.valueOf("8c");
 			parameters.put("cotationMax", newCotation);
-			SiteManager.getSiteDao().update(id,parameters);
+			SiteManager.getDao().update(id,parameters);
 			
 			/* Get user again from dao and log it for debug */
-			siteControl = SiteManager.getSiteDao().get(id);
+			siteControl = SiteManager.getDao().get(id);
 			SiteManager.logSite(siteControl);
 
 			/* Test userControl after creating user*/

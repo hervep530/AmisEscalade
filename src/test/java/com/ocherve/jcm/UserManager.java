@@ -34,7 +34,7 @@ public class UserManager {
 	private static void initialization() {
 		if ( dao != null ) return;
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
-		DLOG.log(Level.DEBUG, "Initialization of service Site Test");
+		DLOG.log(Level.DEBUG, "Initialization of User Manager");
 		dao = (UserDao) DaoProxy.getInstance().getUserDao();
 	}
 
@@ -44,12 +44,12 @@ public class UserManager {
 	public static void create() {
 		initialization();
 		ids = new Integer[USERS_DE_TEST.length];
-		UserDao userDao = (UserDao) DaoProxy.getInstance().getUserDao();
+		UserDao dao = (UserDao) DaoProxy.getInstance().getUserDao();
 		
 		for (int u = 0 ; u < USERS_DE_TEST.length ; u++) {
 			User user = new User(USERS_DE_TEST[u][0], USERS_DE_TEST[u][1], USERS_DE_TEST[u][2],
 					USERS_DE_TEST[u][3], USERS_DE_TEST[u][4]);		
-			Role role = userDao.getRole(Integer.valueOf(USERS_DE_TEST[u][5]));
+			Role role = dao.getRole(Integer.valueOf(USERS_DE_TEST[u][5]));
 			user.setRole(role);
 			
 			dao.create(user);
@@ -62,6 +62,7 @@ public class UserManager {
 	 * Delete site dedicated for test
 	 */
 	public static void delete() {
+		initialization();
 		for (int u = 0 ; u < ids.length ; u++) {			
 			dao.delete(ids[u]);
 		}
@@ -73,12 +74,21 @@ public class UserManager {
 	public static Integer[] getIds() {
 		return ids;
 	}
+	
+	/**
+	 * @return UserDao
+	 */
+	public static UserDao getDao() {
+		initialization();
+		return dao;
+	}
 
 	/**
 	 * @param users List of site
 	 * @param userExpected string to describe kind of list expected (where clause)
 	 */
 	public static void LogUserList(List<User> users, String userExpected) {
+		initialization();
 		String message = "%n Display list of " + userExpected + " in database%n";
 		message += "Id / Username / Mail Address / Password / Salt / Token / Role%n";
 		
@@ -98,6 +108,7 @@ public class UserManager {
 	 * @param id 
 	 */
 	public static void logUser (Integer id) {
+		initialization();
 		User user = dao.get(id);
 		logUser(user);
 	}
@@ -106,6 +117,7 @@ public class UserManager {
 	 * @param user
 	 */
 	public static void logUser (User user) {
+		initialization();
 		String message = "%n";
 		message += "User id : " + user.getId() + "%n";
 		message += "Username : " + user.getUsername() + "%n";

@@ -9,7 +9,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.SiteDao;
-import com.ocherve.jcm.dao.contract.UserDao;
 import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Site;
 
@@ -32,18 +31,16 @@ public class SiteManager {
 		{"Les Gorges du Loup", "France", "Alpes Maritimes", "Les Gorges du loup sont un port des Alpes Maritimes", "true", "false","true","false",
 						"0", "45", "Ouest", "70", "6a", "9a", "1", "false"},
 		{"Medonnet", "France", "Haute-Savoie", "Medonnet est un spot de Haute-Savoie", "false", "true","false","false",
-							"0", "5", "Toutes", "250", "4", "8a", "1", "false"},
+							"0", "5", "Toutes", "250", "4", "8a", "1", "false"}
 	};
 	private static Integer[] ids;
-	private static SiteDao siteDao;
-	private static UserDao userDao;
+	private static SiteDao dao;
 	
 	private static void initialization() {
-		if ( siteDao != null ) return;
+		if ( dao != null ) return;
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
-		DLOG.log(Level.DEBUG, "Initialization of service Site Test");
-		siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
-		userDao = (UserDao) DaoProxy.getInstance().getUserDao();
+		DLOG.log(Level.DEBUG, "Initialization of Site Manager");
+		dao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 	}
 
 	/**
@@ -52,16 +49,18 @@ public class SiteManager {
 	public static void create() {
 		initialization();
 		ids = new Integer[SITES_DE_TEST.length];
+		UserManager.logUser(1);
 		
 		for (int u = 0 ; u < SITES_DE_TEST.length ; u++) {
 			Site site = new Site(SITES_DE_TEST[u][0], SITES_DE_TEST[u][1], SITES_DE_TEST[u][2],
 				SITES_DE_TEST[u][3], Boolean.valueOf(SITES_DE_TEST[u][4]), Boolean.valueOf(SITES_DE_TEST[u][5]),
 				Boolean.valueOf(SITES_DE_TEST[u][6]), Boolean.valueOf(SITES_DE_TEST[u][7]), Integer.valueOf(SITES_DE_TEST[u][8]),
 				Integer.valueOf(SITES_DE_TEST[u][9]), SITES_DE_TEST[u][10], Integer.valueOf(SITES_DE_TEST[u][11]),
-				Cotation.valueOf(SITES_DE_TEST[u][12]), Cotation.valueOf(SITES_DE_TEST[u][13]), userDao.get(Integer.valueOf(SITES_DE_TEST[u][14])),
-				Boolean.valueOf(SITES_DE_TEST[u][7]));
+				Cotation.valueOf(SITES_DE_TEST[u][12]), Cotation.valueOf(SITES_DE_TEST[u][13]), 
+				UserManager.getDao().get(1), Boolean.valueOf(SITES_DE_TEST[u][7]));
+			//Integer.valueOf(SITES_DE_TEST[u][14])
 			
-			siteDao.create(site);
+			dao.create(site);
 			ids[u] = site.getId();
 		}
 		
@@ -71,8 +70,9 @@ public class SiteManager {
 	 * Delete site dedicated for test
 	 */
 	public static void delete() {
+		initialization();
 		for (int u = 0 ; u < ids.length ; u++) {			
-			siteDao.delete(ids[u]);
+			dao.delete(ids[u]);
 		}
 	}
 	
@@ -83,19 +83,17 @@ public class SiteManager {
 		return ids;
 	}
 	
-	protected static SiteDao getSiteDao() {
-		return siteDao;
+	protected static SiteDao getDao() {
+		initialization();
+		return dao;
 	}	
-	
-	protected static UserDao getUserDao() {
-		return userDao;
-	}
 	
 	/**
 	 * @param sites List of site
 	 * @param siteExpected string to describe kind of list expected (where clause)
 	 */
 	public static void LogSiteList(List<Site> sites, String siteExpected) {
+		initialization();
 		String message = "%n Display list of " + siteExpected + " in database%n";
 		message += "Id / Site name / Departement / Cotation Min / Cotation max / Auteur / Date creation%n";
 		
@@ -116,7 +114,8 @@ public class SiteManager {
 	 * @param id valid index of Integer array ids
 	 */
 	public static void logSite (Integer id) {
-		Site site = siteDao.get(id);
+		initialization();
+		Site site = dao.get(id);
 		logSite(site);
 	}
 
@@ -124,6 +123,7 @@ public class SiteManager {
 	 * @param site
 	 */
 	public static void logSite (Site site) {
+		initialization();
 		String message = "%n";
 		message += "Site id : " + site.getId() + "%n";
 		message += "Site name : " + site.getName() + "%n";

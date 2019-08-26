@@ -3,6 +3,7 @@ package com.ocherve.jcm.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -68,11 +69,9 @@ public class Site extends Document implements Serializable {
 	@JoinColumn(name="fk_max_site_cotation")
 	private Cotation cotationMax;
 
-	/*
 	//bi-directional many-to-one association to JcmTopo
 	@OneToMany(mappedBy="site")
 	private List<Topo> topos;
-	*/
 		
 	/**
 	 * Constructor without argument
@@ -98,15 +97,6 @@ public class Site extends Document implements Serializable {
 	public Site(String name, String country, String departement, String summary, boolean published,
 			boolean block, boolean cliff, boolean wall, int minHeight, int maxHeight,
 			String orientation, int pathsNumber,boolean friendTag) {
-		/*
-		Document document = new Document();
-		document.setName(name);
-		document.setSummary(summary);
-		document.setPublished(published);
-		document.setTsCreated(Timestamp.from(Instant.now()));
-		document.setTsModified(Timestamp.from(Instant.now()));
-		this.document = document;
-		*/
 		this.setName(name);
 		this.setSummary(summary);
 		this.setPublished(published);
@@ -349,15 +339,24 @@ public class Site extends Document implements Serializable {
 		this.cotationMax = cotationMax;
 	}
 
-	/*
+	/**
+	 * @return topo list
+	 */
 	public List<Topo> getTopos() {
 		return this.topos;
 	}
 
+	/**
+	 * @param topos
+	 */
 	public void setTopos(List<Topo> topos) {
 		this.topos = topos;
 	}
 
+	/**
+	 * @param topo
+	 * @return topo added to topos list associated to this site
+	 */
 	public Topo addTopo(Topo topo) {
 		getTopos().add(topo);
 		topo.setSite(this);
@@ -365,13 +364,15 @@ public class Site extends Document implements Serializable {
 		return topo;
 	}
 
+	/**
+	 * @param topo
+	 * @return topo removed from list
+	 */
 	public Topo removeTopo(Topo topo) {
 		getTopos().remove(topo);
 		topo.setSite(null);
 
 		return topo;
 	}
-	*/
-
 	
 }
