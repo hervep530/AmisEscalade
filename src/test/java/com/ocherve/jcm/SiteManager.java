@@ -100,7 +100,7 @@ public class SiteManager {
 		for (Site site : sites) {
 			message += site.getId() + " / ";
 			message += site.getName() + " / ";
-			message += site.getDepartement() + " / ";
+			message += site.getDepartment() + " / ";
 			message += site.getCotationMin().getLabel() + " / ";
 			message += site.getCotationMax().getLabel() + " / ";
 			message += site.getAuthor().getUsername() + " / ";
@@ -127,7 +127,8 @@ public class SiteManager {
 		String message = "%n";
 		message += "Site id : " + site.getId() + "%n";
 		message += "Site name : " + site.getName() + "%n";
-		message += "Departement : " + site.getDepartement() + "%n";
+		message += "Site slug : " + site.getSlug() + "%n";
+		message += "Departement : " + site.getDepartment() + "%n";
 		message += "Pays : " + site.getCountry() + "%n";
 		message += "Bloc : " + site.isBlock().toString() + "%n";
 		message += "Falaise : " + site.isCliff().toString() + "%n";

@@ -2,6 +2,7 @@ package com.ocherve.jcm.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.Normalizer;
 import java.time.Instant;
 
 import javax.persistence.Column;
@@ -19,10 +20,9 @@ import javax.persistence.Table;
  */
 @Entity(name = "Topo")
 @Table(name="jcm_topo")
-@PrimaryKeyJoinColumn(name = "pfk_topo_document")
+@PrimaryKeyJoinColumn(name = "pfk_topo_reference")
 @NamedQueries({
 	@NamedQuery(name="Topo.findAll", query="SELECT t FROM Topo t"),
-	@NamedQuery(name="Topo.findByAvailability", query="SELECT t FROM Topo t WHERE t.available = :available"),
 	@NamedQuery(name="Topo.findByPublishingStatus", query="SELECT t FROM Topo t WHERE t.published = :published"),
 	@NamedQuery(name="Topo.findByAuthor", 
 		query="SELECT t FROM Topo t WHERE t.author.id = :authorId"),
@@ -30,16 +30,14 @@ import javax.persistence.Table;
 		query="SELECT t FROM Topo t WHERE t.site.id = :siteId"),
 	@NamedQuery(name="Topo.countAll", query="SELECT count(0) FROM Topo t")
 })
-public class Topo extends Document implements Serializable {
+public class Topo extends Reference implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	private Boolean available;
-
 	private String title;
 
-	@Column(name="ts_writed")
-	private Timestamp tsWrited;
+	@Column(name="writed_at")
+	private String writedAt;
 
 	private String writer;
 
@@ -66,39 +64,25 @@ public class Topo extends Document implements Serializable {
 	 * @param title 
 	 * @param summary 
 	 * @param writer 
-	 * @param tsWrited 
+	 * @param writedAt 
 	 * @param published 
-	 * @param available 
 	 * @param author 
 	 * @param site 
 	 */
-	public Topo(String name, String title, String summary, String writer, Timestamp tsWrited,
-			boolean published, boolean available, User author, Site site) {
+	public Topo(String name, String title, String summary, String writer, String writedAt,
+			boolean published, User author, Site site) {
 		this.title = title;
 		this.setName(name);
+		String slug = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
+		this.setSlug(slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase());
 		this.setSummary(summary);
 		this.writer = writer;
-		this.tsWrited = tsWrited;
+		this.writedAt = writedAt;
 		this.setPublished(published);
-		this.available = available;
 		this.setAuthor(author);
 		this.site = site;
 		this.setTsCreated(Timestamp.from(Instant.now()));
 		this.setTsModified(Timestamp.from(Instant.now()));
-	}
-
-	/**
-	 * @return true if not reserved at this moment
-	 */
-	public Boolean isAvailable() {
-		return this.available;
-	}
-
-	/**
-	 * @param available
-	 */
-	public void setAvailable(Boolean available) {
-		this.available = available;
 	}
 
 	/**
@@ -118,15 +102,15 @@ public class Topo extends Document implements Serializable {
 	/**
 	 * @return date when topo was written
 	 */
-	public Timestamp getTsWrited() {
-		return this.tsWrited;
+	public String getWritedAt() {
+		return this.writedAt;
 	}
 
 	/**
-	 * @param tsWrited
+	 * @param writedAt
 	 */
-	public void setTsWrited(Timestamp tsWrited) {
-		this.tsWrited = tsWrited;
+	public void setWritedAt(String writedAt) {
+		this.writedAt = writedAt;
 	}
 
 	/**

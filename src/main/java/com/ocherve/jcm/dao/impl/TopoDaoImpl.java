@@ -50,20 +50,6 @@ class TopoDaoImpl extends DaoImpl implements TopoDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Topo> getToposByAvailability(Boolean available) {
-		List<Topo> topos = null;
-		Map<String,Object> parameters = new HashMap<>();
-		parameters.put("available", available);
-		try {
-			topos = (List<Topo>) getListFromNamedQuery(Topo.class, "Topo.findByAvailability", parameters);
-		} catch (Exception e) {
-			return null;
-		}
-		return topos;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
 	public List<Topo> getToposByPublishingStatus(Boolean published) {
 		List<Topo> topos = null;
 		Map<String,Object> parameters = new HashMap<>();
@@ -126,8 +112,8 @@ class TopoDaoImpl extends DaoImpl implements TopoDao {
 				case "writer":
 					((Topo) object).setWriter((String)fields.get(field));
 					break;
-				case "tsWrited":
-					((Topo) object).setTsWrited((Timestamp)fields.get(field));
+				case "writedAt":
+					((Topo) object).setWritedAt((String)fields.get(field));
 					break;
 				case "author":
 					((Topo) object).setAuthor((User)fields.get(field));
@@ -142,6 +128,12 @@ class TopoDaoImpl extends DaoImpl implements TopoDao {
 			}
 		}
 		((Topo) object).setTsModified(Timestamp.from(Instant.now()));
+	}
+
+	@Override
+	public List<Topo> getToposByAvailability(Boolean available) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

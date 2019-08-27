@@ -70,7 +70,7 @@ public class User implements Serializable {
 
 	//bi-directional many-to-one association to JcmDocument
 	@OneToMany(mappedBy="author")
-	private List<Document> documents;
+	private List<Reference> documents;
 	
 	//bi-directional many-to-one association to JcmRole
 	@ManyToOne
@@ -216,14 +216,14 @@ public class User implements Serializable {
 	/**
 	 * @return list of documents where user is author
 	 */
-	public List<Document> getDocuments() {
+	public List<Reference> getDocuments() {
 		return this.documents;
 	}
 
 	/**
 	 * @param documents
 	 */
-	public void setDocuments(List<Document> documents) {
+	public void setDocuments(List<Reference> documents) {
 		this.documents = documents;
 	}
 
@@ -231,7 +231,7 @@ public class User implements Serializable {
 	 * @param document
 	 * @return document added to list
 	 */
-	public Document addDocument(Document document) {
+	public Reference addDocument(Reference document) {
 		getDocuments().add(document);
 		document.setAuthor(this);
 
@@ -242,7 +242,7 @@ public class User implements Serializable {
 	 * @param document
 	 * @return document removed from list
 	 */
-	public Document removeDocument(Document document) {
+	public Reference removeDocument(Reference document) {
 		getDocuments().remove(document);
 		document.setAuthor(null);
 

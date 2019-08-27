@@ -82,14 +82,6 @@ public class TopoDaoTest {
 	 * 
 	 */
 	@Test
-	public void Given3ToposInserted_When_CheckHowManyTopoAreAvailable_Then_ResultIs2() {
-		assertEquals(TopoManager.getDao().getToposByAvailability(true).size(), 2);		
-	}
-
-	/**
-	 * 
-	 */
-	@Test
 	public void Given2ndTopo_When_ChangingAuthorToAnonyous_Then_AuthorUsernameEqualsAnonymous() {
 		/* Get 2nd topo, user Anonymous, keep oldAuthor and update author as anonymous */
 		Topo topo = TopoManager.getDao().get(TopoManager.getIds()[1]);
@@ -130,7 +122,7 @@ public class TopoDaoTest {
 		assertEquals(topoControl.isPublished(), false);
 		/* after 60s Modified published status again... come back to true*/
 		try {
-			Thread.sleep(60000);
+			Thread.sleep(6000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

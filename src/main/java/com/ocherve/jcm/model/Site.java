@@ -2,6 +2,7 @@ package com.ocherve.jcm.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.Normalizer;
 import java.time.Instant;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import javax.persistence.*;
  */
 @Entity(name = "Site")
 @Table(name = "jcm_site")
-@PrimaryKeyJoinColumn(name = "pfk_site_document")
+@PrimaryKeyJoinColumn(name = "pfk_site_reference")
 @NamedQueries({
 	@NamedQuery(name="Site.findAll", query="SELECT s FROM Site s"),
 	@NamedQuery(name="Site.findCotationMaxGreaterThan", 
@@ -22,7 +23,7 @@ import javax.persistence.*;
 		query="SELECT s FROM Site s WHERE s.cotationMin.id <= :cotationMin"),
 	@NamedQuery(name="Site.countAll", query="SELECT count(0) FROM Site s")
 })
-public class Site extends Document implements Serializable {
+public class Site extends Reference implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,9 +37,10 @@ public class Site extends Document implements Serializable {
 	
 	private String country;
 
-	private String departement;
+	@Column(name="department")
+	private String department;
 
-	@Column(name="bloc")
+	@Column(name="block")
 	private Boolean block;
 
 	private Boolean cliff;
@@ -82,7 +84,7 @@ public class Site extends Document implements Serializable {
 	/**
 	 * @param name
 	 * @param country 
-	 * @param departement 
+	 * @param department 
 	 * @param summary 
 	 * @param published 
 	 * @param block 
@@ -94,16 +96,18 @@ public class Site extends Document implements Serializable {
 	 * @param pathsNumber 
 	 * @param friendTag 
 	 */
-	public Site(String name, String country, String departement, String summary, boolean published,
+	public Site(String name, String country, String department, String summary, boolean published,
 			boolean block, boolean cliff, boolean wall, int minHeight, int maxHeight,
 			String orientation, int pathsNumber,boolean friendTag) {
 		this.setName(name);
+		String slug = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
+		this.setSlug(slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase());
 		this.setSummary(summary);
 		this.setPublished(published);
 		this.setTsCreated(Timestamp.from(Instant.now()));
 		this.setTsModified(Timestamp.from(Instant.now()));
 		this.country = country;
-		this.departement = departement;
+		this.department = department;
 		this.block = block;
 		this.cliff = cliff;
 		this.wall = wall;
@@ -117,7 +121,7 @@ public class Site extends Document implements Serializable {
 	/**
 	 * @param name
 	 * @param country 
-	 * @param departement 
+	 * @param department 
 	 * @param summary 
 	 * @param published 
 	 * @param block 
@@ -132,14 +136,16 @@ public class Site extends Document implements Serializable {
 	 * @param author 
 	 * @param friendTag 
 	 */
-	public Site(String name, String country, String departement, String summary, boolean published,
+	public Site(String name, String country, String department, String summary, boolean published,
 			boolean block, boolean cliff, boolean wall, int minHeight, int maxHeight,
 			String orientation, int pathsNumber, Cotation cotationMin, Cotation cotationMax, User author,
 			boolean friendTag) {
 
 		this.setName(name);
+		String slug = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
+		this.setSlug(slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase());
 		this.country = country;
-		this.departement = departement;
+		this.department = department;
 		this.setSummary(summary);
 		this.setAuthor(author);
 		this.setPublished(published);
@@ -216,15 +222,15 @@ public class Site extends Document implements Serializable {
 	/**
 	 * @return department
 	 */
-	public String getDepartement() {
-		return this.departement;
+	public String getDepartment() {
+		return this.department;
 	}
 
 	/**
-	 * @param departement
+	 * @param department
 	 */
-	public void setDepartement(String departement) {
-		this.departement = departement;
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 
 	/**

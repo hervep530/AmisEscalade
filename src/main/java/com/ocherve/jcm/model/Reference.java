@@ -21,9 +21,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="jcm_document")
-@NamedQuery(name="document.findAll", query="SELECT j FROM Document j")
-public class Document implements Serializable {
+@Table(name="jcm_reference")
+@NamedQuery(name="reference.findAll", query="SELECT j FROM Reference j")
+public class Reference implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -32,6 +32,8 @@ public class Document implements Serializable {
 	private Integer id;
 
 	private String name;
+
+	private String slug;
 
 	private Boolean published;
 
@@ -51,7 +53,7 @@ public class Document implements Serializable {
 	/**
 	 * 
 	 */
-	public Document() {
+	public Reference() {
 	}
 
 	/**
@@ -81,6 +83,22 @@ public class Document implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	/**
+	 * @return the slug
+	 */
+	public String getSlug() {
+		return slug;
+	}
+	
+
+	/**
+	 * @param slug the slug to set
+	 */
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+	
 
 	/**
 	 * @return published status

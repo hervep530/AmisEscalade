@@ -103,8 +103,8 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 				case "country":
 					((Site) object).setCountry((String)fields.get(field));
 					break;
-				case "departement" :
-					((Site) object).setDepartement((String)fields.get(field));
+				case "department" :
+					((Site) object).setDepartment((String)fields.get(field));
 					break;
 				case "block":
 					((Site) object).setBlock((Boolean)fields.get(field));

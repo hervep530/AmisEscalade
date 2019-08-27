@@ -1,6 +1,5 @@
 package com.ocherve.jcm;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
@@ -25,11 +24,11 @@ public class TopoManager {
 	private static final Logger DLOG = LogManager.getLogger("development_file");
 	private static final String[][] TOPOS_DE_TEST = new String[][] {
 		{"Danse avec les loups", "Topos sur les Gorges du loup dans les Alpes Maritimes", "true",
-			"Manouel Desurvi", "2008-08-30 10:00:00", "null", "true","3"},
+			"Manouel Desurvi", "30/08/2008", "null", "3"},
 		{"Ni dans le Cantal ni en octobre", "Topos sur le site de Cantobre dans l'Aveyron", "true",
-				"Nicolas Cantalou", "2013-10-12 10:00:00", "3", "false","1"},
+				"Nicolas Cantalou", "12/10/2013", "3", "1"},
 		{"Medonnet", "Topos sur Medonnet en Haute-Savoie", "true",
-					"Marcel Reblochon", "2018-03-05 10:00:00", "0", "true","4"}
+					"Marcel Reblochon", "05/03/2018", "0", "4"}
 	};
 	private static Integer[] ids;
 	private static TopoDao dao;
@@ -62,16 +61,15 @@ public class TopoManager {
 			author = UserManager.getDao().get(authorId);
 			// site by default is null
 			site = null;
-			// If TOPOS_DE_TEST[u][7] matches with ids produced by SiteManager get site from it
-			if  ( TOPOS_DE_TEST[u][7].matches("^[0-9]{1,6}$") ) { 
-				if ( Integer.valueOf(TOPOS_DE_TEST[u][7]) < SiteManager.getIds().length )
-					site = SiteManager.getDao().get(SiteManager.getIds()[Integer.valueOf(TOPOS_DE_TEST[u][7])]);
+			// If TOPOS_DE_TEST[u][6] matches with ids produced by SiteManager get site from it
+			if  ( TOPOS_DE_TEST[u][6].matches("^[0-9]{1,6}$") ) { 
+				if ( Integer.valueOf(TOPOS_DE_TEST[u][6]) < SiteManager.getIds().length )
+					site = SiteManager.getDao().get(SiteManager.getIds()[Integer.valueOf(TOPOS_DE_TEST[u][6])]);
 			}
 			// Instanciate topo with all attributes
 			Topo topo = new Topo(TOPOS_DE_TEST[u][0], TOPOS_DE_TEST[u][0], TOPOS_DE_TEST[u][1],
-					TOPOS_DE_TEST[u][3], Timestamp.valueOf(TOPOS_DE_TEST[u][4]),
-					Boolean.valueOf(TOPOS_DE_TEST[u][2]), Boolean.valueOf(TOPOS_DE_TEST[u][6]),
-						author, site);
+					TOPOS_DE_TEST[u][3], TOPOS_DE_TEST[u][4],
+					Boolean.valueOf(TOPOS_DE_TEST[u][2]), author, site);
 			// Create topo and store id
 			dao.create(topo);
 			ids[u] = topo.getId();
@@ -116,7 +114,6 @@ public class TopoManager {
 				message += topo.getName() + " / ";
 				message += topo.getSummary() + " / ";
 				message += topo.getWriter() + " / ";
-				message += topo.isAvailable().toString() + " / ";
 				message += topo.getAuthor().getUsername() + " / ";
 				message += topo.getTsCreated().toString() + "%n";
 			}			
@@ -146,8 +143,7 @@ public class TopoManager {
 		message += "Orientation : " + topo.getTitle() + "%n";
 		message += "Summary : " + topo.getSummary() + "%n";
 		message += "Writer : " + topo.getWriter() + "%n";
-		message += "Date de publication : " + topo.getTsWrited().toString() + "%n";
-		message += "Available : " + topo.isAvailable().toString() + "%n";
+		message += "Date de publication : " + topo.getWritedAt().toString() + "%n";
 		message += "Auteur : " + topo.getAuthor().getUsername() + "%n";
 		message += "Créé le : " + topo.getTsCreated().toString() + "%n";
 		message += "Modifié le : " + topo.getTsModified().toString() + "%n";
