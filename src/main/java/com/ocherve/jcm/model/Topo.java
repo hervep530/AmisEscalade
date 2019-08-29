@@ -56,6 +56,7 @@ public class Topo extends Reference implements Serializable {
 	 * Constructor
 	 */
 	public Topo() {
+		super.setType(ReferenceType.TOPO.toString());
 	}
 
 	/**
@@ -71,6 +72,7 @@ public class Topo extends Reference implements Serializable {
 	 */
 	public Topo(String name, String title, String summary, String writer, String writedAt,
 			boolean published, User author, Site site) {
+		super.setType(ReferenceType.TOPO.toString());
 		this.title = title;
 		this.setName(name);
 		String slug = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
@@ -84,6 +86,14 @@ public class Topo extends Reference implements Serializable {
 		this.setTsCreated(Timestamp.from(Instant.now()));
 		this.setTsModified(Timestamp.from(Instant.now()));
 	}
+
+	/**
+	 * set type : transient in Reference, not get from database
+	 */
+	public void setType(String type) {
+		super.setType(ReferenceType.TOPO.toString());
+	}
+	
 
 	/**
 	 * @return title

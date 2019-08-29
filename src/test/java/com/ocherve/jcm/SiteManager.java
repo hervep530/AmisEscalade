@@ -49,21 +49,23 @@ public class SiteManager {
 	public static void create() {
 		initialization();
 		ids = new Integer[SITES_DE_TEST.length];
-		UserManager.logUser(1);
-		
-		for (int u = 0 ; u < SITES_DE_TEST.length ; u++) {
-			Site site = new Site(SITES_DE_TEST[u][0], SITES_DE_TEST[u][1], SITES_DE_TEST[u][2],
-				SITES_DE_TEST[u][3], Boolean.valueOf(SITES_DE_TEST[u][4]), Boolean.valueOf(SITES_DE_TEST[u][5]),
-				Boolean.valueOf(SITES_DE_TEST[u][6]), Boolean.valueOf(SITES_DE_TEST[u][7]), Integer.valueOf(SITES_DE_TEST[u][8]),
-				Integer.valueOf(SITES_DE_TEST[u][9]), SITES_DE_TEST[u][10], Integer.valueOf(SITES_DE_TEST[u][11]),
-				Cotation.valueOf(SITES_DE_TEST[u][12]), Cotation.valueOf(SITES_DE_TEST[u][13]), 
-				UserManager.getDao().get(1), Boolean.valueOf(SITES_DE_TEST[u][7]));
-			//Integer.valueOf(SITES_DE_TEST[u][14])
-			
-			dao.create(site);
-			ids[u] = site.getId();
-		}
-		
+		try {
+			for (int u = 0 ; u < SITES_DE_TEST.length ; u++) {
+				Site site = new Site(SITES_DE_TEST[u][0], SITES_DE_TEST[u][1], SITES_DE_TEST[u][2],
+					SITES_DE_TEST[u][3], Boolean.valueOf(SITES_DE_TEST[u][4]), Boolean.valueOf(SITES_DE_TEST[u][5]),
+					Boolean.valueOf(SITES_DE_TEST[u][6]), Boolean.valueOf(SITES_DE_TEST[u][7]), Integer.valueOf(SITES_DE_TEST[u][8]),
+					Integer.valueOf(SITES_DE_TEST[u][9]), SITES_DE_TEST[u][10], Integer.valueOf(SITES_DE_TEST[u][11]),
+					Cotation.valueOf(SITES_DE_TEST[u][12]), Cotation.valueOf(SITES_DE_TEST[u][13]), 
+					UserManager.getDao().get(1), Boolean.valueOf(SITES_DE_TEST[u][7]));
+				//Integer.valueOf(SITES_DE_TEST[u][14])
+				
+				dao.create(site);
+				ids[u] = site.getId();
+			}			
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on creating sites"));
+			DLOG.log(Level.DEBUG, String.format(e.getMessage()));
+		}		
 	}
 	
 	/**
@@ -71,8 +73,13 @@ public class SiteManager {
 	 */
 	public static void delete() {
 		initialization();
-		for (int u = 0 ; u < ids.length ; u++) {			
-			dao.delete(ids[u]);
+		try {
+			for (int u = 0 ; u < ids.length ; u++) {			
+				dao.delete(ids[u]);
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on deleting site"));
+			DLOG.log(Level.DEBUG, String.format(e.getMessage()));
 		}
 	}
 	
@@ -98,7 +105,7 @@ public class SiteManager {
 		message += "Id / Site name / Departement / Cotation Min / Cotation max / Auteur / Date creation%n";
 		
 		for (Site site : sites) {
-			message += site.getId() + " / ";
+			message += site.getType().toString() + " " + site.getId() + " / ";
 			message += site.getName() + " / ";
 			message += site.getDepartment() + " / ";
 			message += site.getCotationMin().getLabel() + " / ";
@@ -125,7 +132,7 @@ public class SiteManager {
 	public static void logSite (Site site) {
 		initialization();
 		String message = "%n";
-		message += "Site id : " + site.getId() + "%n";
+		message += "Site id : " + site.getType().toString() + " " + site.getId() + "%n";
 		message += "Site name : " + site.getName() + "%n";
 		message += "Site slug : " + site.getSlug() + "%n";
 		message += "Departement : " + site.getDepartment() + "%n";

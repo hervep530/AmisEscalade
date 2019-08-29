@@ -2,6 +2,7 @@ package com.ocherve.jcm.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -22,13 +24,12 @@ import javax.persistence.Table;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name="jcm_reference")
-@NamedQuery(name="reference.findAll", query="SELECT j FROM Reference j")
+@NamedQuery(name="Reference.findAll", query="SELECT r FROM Reference r")
 public class Reference implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id", updatable = false, nullable = false)
 	private Integer id;
 
 	private String name;
@@ -38,6 +39,8 @@ public class Reference implements Serializable {
 	private Boolean published;
 
 	private String summary;
+	
+	private String type;
 
 	@Column(name="ts_created")
 	private Timestamp tsCreated;
@@ -45,10 +48,14 @@ public class Reference implements Serializable {
 	@Column(name="ts_modified")
 	private Timestamp tsModified;
 	
-	//bi-directional many-to-one association to JcmUser
+	//bi-directional many-to-one association to User
 	@ManyToOne
 	@JoinColumn(name="fk_document_user")
 	private User author;
+
+	//bi-directional one-to-many association to Comment
+	@OneToMany(mappedBy="reference")
+	private List<Comment> comments;
 
 	/**
 	 * 
@@ -129,6 +136,22 @@ public class Reference implements Serializable {
 	}
 
 	/**
+	 * @return type
+	 */
+	public String getType() {
+		return this.type;
+	}
+
+	/**
+	 * @param type
+	 */
+	public void setType(String type) {
+		if (ReferenceType.valueOf(type) == null) return;
+		this.type = type;
+	}
+
+
+	/**
 	 * @return creation time
 	 */
 	public Timestamp getTsCreated() {
@@ -168,6 +191,42 @@ public class Reference implements Serializable {
 	 */
 	public void setAuthor(User author) {
 		this.author = author;
+	}
+
+	/**
+	 * @return the comments
+	 */
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	/**
+	 * @param comments the comments to set
+	 */
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+	
+	/**
+	 * @param comment
+	 * @return comment added
+	 */
+	public Comment addComment(Comment comment) {
+		this.getComments().add(comment);
+		comment.setReference(this);
+
+		return comment;
+	}
+
+	/**
+	 * @param comment
+	 * @return comment removed
+	 */
+	public Comment removeComment(Comment comment) {
+		this.getComments().remove(comment);
+		comment.setReference(null);
+
+		return comment;
 	}
 
 }

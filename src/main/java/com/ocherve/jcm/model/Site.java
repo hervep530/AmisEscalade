@@ -79,6 +79,7 @@ public class Site extends Reference implements Serializable {
 	 * Constructor without argument
 	 */
 	public Site() {
+		setType(ReferenceType.SITE.toString());
 	}
 
 	/**
@@ -99,6 +100,7 @@ public class Site extends Reference implements Serializable {
 	public Site(String name, String country, String department, String summary, boolean published,
 			boolean block, boolean cliff, boolean wall, int minHeight, int maxHeight,
 			String orientation, int pathsNumber,boolean friendTag) {
+		super.setType(ReferenceType.SITE.toString());
 		this.setName(name);
 		String slug = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
 		this.setSlug(slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase());
@@ -140,7 +142,7 @@ public class Site extends Reference implements Serializable {
 			boolean block, boolean cliff, boolean wall, int minHeight, int maxHeight,
 			String orientation, int pathsNumber, Cotation cotationMin, Cotation cotationMax, User author,
 			boolean friendTag) {
-
+		super.setType(ReferenceType.SITE.toString());
 		this.setName(name);
 		String slug = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
 		this.setSlug(slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase());
@@ -164,19 +166,12 @@ public class Site extends Reference implements Serializable {
 	}
 	
 	/**
-	 * @return pfkDocument
-	public Integer getPfkDocument() {
-		return this.pfkDocument;
-	}
+	 * set type : transient in Reference, not get from database
 	 */
-
-	/**
-	 * @param pfkDocument
-	public void setId(Integer pfkDocument) {
-		this.pfkDocument = pfkDocument;
+	public void setType(String type) {
+		super.setType(ReferenceType.SITE.toString());
 	}
-	 */
-
+	
 	/**
 	 * @return true if is block
 	 */

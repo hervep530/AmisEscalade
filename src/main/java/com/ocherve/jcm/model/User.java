@@ -55,24 +55,28 @@ public class User implements Serializable {
 	@OneToMany(mappedBy="owner")
 	private List<Booking> bookings;
 
-	//bi-directional many-to-one association to JcmComment
-	@OneToMany(mappedBy="author")
-	private List<Comment> comments;
-
 	//bi-directional many-to-one association to JcmMessage
 	@OneToMany(mappedBy="sender")
 	private List<Message> sentMessages;
+*/
+	
+	//bi-directional many-to-one association to Comment
+	@OneToMany(mappedBy="author")
+	private List<Comment> comments;
 
-	//bi-directional many-to-one association to JcmMessage
+	//bi-directional many-to-one association to Message
+	@OneToMany(mappedBy="sender")
+	private List<Message> sentMessages;
+
+	//bi-directional many-to-one association to Message
 	@OneToMany(mappedBy="receiver")
 	private List<Message> receivedMessages;
-*/
 
-	//bi-directional many-to-one association to JcmDocument
+	//bi-directional many-to-one association to Reference
 	@OneToMany(mappedBy="author")
-	private List<Reference> documents;
+	private List<Reference> references;
 	
-	//bi-directional many-to-one association to JcmRole
+	//bi-directional many-to-one association to Role
 	@ManyToOne
 	@JoinColumn(name="fk_user_role")
 	private Role role;
@@ -212,41 +216,149 @@ public class User implements Serializable {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-	
+
 	/**
-	 * @return list of documents where user is author
+	 * @return list of comments owned by user
 	 */
-	public List<Reference> getDocuments() {
-		return this.documents;
+	public List<Comment> getComments() {
+		return this.comments;
 	}
 
 	/**
-	 * @param documents
+	 * @param comments
 	 */
-	public void setDocuments(List<Reference> documents) {
-		this.documents = documents;
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	/**
-	 * @param document
-	 * @return document added to list
+	 * @param comment
+	 * @return comment added to list
 	 */
-	public Reference addDocument(Reference document) {
-		getDocuments().add(document);
-		document.setAuthor(this);
+	public Comment addComment(Comment comment) {
+		getComments().add(comment);
+		comment.setAuthor(this);
 
-		return document;
+		return comment;
 	}
 
 	/**
-	 * @param document
-	 * @return document removed from list
+	 * @param comment
+	 * @return comment removed from list
 	 */
-	public Reference removeDocument(Reference document) {
-		getDocuments().remove(document);
-		document.setAuthor(null);
+	public Comment removeComment(Comment comment) {
+		getComments().remove(comment);
+		comment.setAuthor(null);
 
-		return document;
+		return comment;
+	}
+
+	/**
+	 * @return list of references where user is author
+	 */
+	public List<Reference> getReferences() {
+		return this.references;
+	}
+
+	/**
+	 * @param references
+	 */
+	public void setReferences(List<Reference> references) {
+		this.references = references;
+	}
+
+	/**
+	 * @param reference
+	 * @return reference added to list
+	 */
+	public Reference addReference(Reference reference) {
+		getReferences().add(reference);
+		reference.setAuthor(this);
+
+		return reference;
+	}
+
+	/**
+	 * @param reference
+	 * @return reference removed from list
+	 */
+	public Reference removeReference(Reference reference) {
+		getReferences().remove(reference);
+		reference.setAuthor(null);
+
+		return reference;
+	}
+
+	/**
+	 * @return the sentMessages
+	 */
+	public List<Message> getSentMessages() {
+		return sentMessages;
+	}
+
+	/**
+	 * @param sentMessages the sentMessages to set
+	 */
+	public void setSentMessages(List<Message> sentMessages) {
+		this.sentMessages = sentMessages;
+	}
+
+	/**
+	 * @param message
+	 * @return message added to list
+	 */
+	public Message addSentMessage(Message message) {
+		getSentMessages().add(message);
+		message.setSender(this);
+
+		return message;
+	}
+
+	/**
+	 * @param message
+	 * @return message removed from list
+	 */
+	public Message removeSentMessage(Message message) {
+		getSentMessages().remove(message);
+		message.setSender(null);
+
+		return message;
+	}
+
+	/**
+	 * @return the receivedMessages
+	 */
+	public List<Message> getReceivedMessages() {
+		return receivedMessages;
+	}
+
+	/**
+	 * @param receivedMessages the receivedMessages to set
+	 */
+	public void setReceivedMessages(List<Message> receivedMessages) {
+		this.receivedMessages = receivedMessages;
+	}
+
+	/**
+	 * @param message
+	 * @return message added to list
+	 */
+	public Message addReceivedMessage(Message message) {
+		getReceivedMessages().add(message);
+		message.setReceiver(this);
+
+		return message;
+	}
+
+	/**
+	 * @param message
+	 * @return message removed from list
+	 */
+	public Message removeReceivedMessage(Message message) {
+		getReceivedMessages().remove(message);
+		message.setReceiver(null);
+
+		return message;
 	}
 
 
