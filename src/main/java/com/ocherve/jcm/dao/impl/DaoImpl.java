@@ -133,6 +133,19 @@ public abstract class DaoImpl implements Dao {
 		return objects;
 	}
 
+	@Override
+	public List<?> getListFromNamedQueryAndIdParameter(Class<?> entityClass, String queryName, Integer id) {
+		daoInit();
+		try {
+			Query query = em.createNamedQuery(queryName, entityClass);
+			if ( id != null ) query.setParameter("filteredId", id);
+			objects = query.getResultList();
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, entityClass.getSimpleName() + " can not get list of objects.");
+			DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
+		} 
+		return objects;
+	}
 
 	@Override
 	public boolean delete(Class<?> entityClass, Integer id) {
@@ -170,6 +183,7 @@ public abstract class DaoImpl implements Dao {
 		}
 		return trace;
 	}
+
 
 
 }

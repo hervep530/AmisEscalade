@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 
+
 /**
  * @author herve_dev
  * 
@@ -53,6 +54,14 @@ public interface Dao {
 	 * @return list of requested objects
 	 */
 	List<?> getListFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> Parameters);
+	
+	/**
+	 * @param entityClass
+	 * @param namedQuery
+	 * @param id
+	 * @return List of Objects
+	 */
+	List<?> getListFromNamedQueryAndIdParameter(Class<?> entityClass, String namedQuery, Integer id);
 	
 	/**
 	 * @param em 
