@@ -27,29 +27,32 @@ import javax.persistence.Table;
 	@NamedQuery(name="Comment.findByAuthor", query="SELECT c FROM Comment c")
 })
 public class Comment implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 
-	//bi-directional many-to-one association to User
-	@ManyToOne
-	@JoinColumn(name="fk_comment_user")
-	private User author;
+	@Column(name = "content")
+	private String content = "";
 
 	//bi-directional many-to-one association to Document
 	@ManyToOne
 	@JoinColumn(name="fk_comment_reference")
 	private Reference reference;
 
-	@Column(name="ts_created")
-	private Timestamp tsCreated;
+	//bi-directional many-to-one association to User
+	@ManyToOne
+	@JoinColumn(name="fk_comment_user")
+	private User author;
 
-	@Column(name="ts_modified")
-	private Timestamp tsModified;
+	@Column(name="ts_created", columnDefinition = "TIMESTAMP DEFAULT NOW()", nullable = false)
+	private Timestamp tsCreated = Timestamp.from(Instant.now());
 
-	private String text;
+	@Column(name="ts_modified", columnDefinition = "TIMESTAMP DEFAULT NOW()", nullable = false)
+	private Timestamp tsModified  = Timestamp.from(Instant.now());
+
 
 	/**
 	 * Constructor
@@ -70,10 +73,8 @@ public class Comment implements Serializable {
 		} catch (Exception e) {
 			return;
 		}
-		this.text = text;
+		this.content = text;
 		this.author = author;
-		this.tsCreated = Timestamp.from(Instant.now());
-		this.tsModified = Timestamp.from(Instant.now());
 	}
 
 	/**
@@ -91,17 +92,17 @@ public class Comment implements Serializable {
 	}
 
 	/**
-	 * @return text
+	 * @return content
 	 */
-	public String getText() {
-		return this.text;
+	public String getContent() {
+		return this.content;
 	}
 
 	/**
-	 * @param text
+	 * @param content
 	 */
-	public void setText(String text) {
-		this.text = text;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	/**

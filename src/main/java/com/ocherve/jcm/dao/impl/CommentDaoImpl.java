@@ -86,7 +86,7 @@ class CommentDaoImpl extends DaoImpl implements CommentDao {
 
 	@Override
 	public boolean delete(Integer id) {
-		return super.delete(Comment.class, id);
+		return delete(Comment.class, id);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ class CommentDaoImpl extends DaoImpl implements CommentDao {
 		for (String field : fields.keySet()) {
 			switch (field) {
 				case "content":
-					((Comment) object).setText((String)fields.get(field));
+					((Comment) object).setContent((String)fields.get(field));
 					break;
 				case "user" :
 					((Comment) object).setAuthor((User)fields.get(field));

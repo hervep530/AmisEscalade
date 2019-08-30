@@ -28,11 +28,10 @@ public class CommentManager {
 		{"0", "Et il y a des photos", "3", "TOPO"},
 		{"0", "Ah oui vraiment magnifique", "6", "TOPO"},
 		{"0", "En général c'est plus pour montrer le paysage ou le contexte technique", "6", "TOPO"},
-		{"0", "C'est varié un peu des 2 je dirais", "6", "TOPO"},
+		{"0", "C est varié un peu des 2 je dirais", "6", "TOPO"},
 	};
 	private static Integer[] ids;
 	private static CommentDao dao;
-	private static Integer id;
 	
 	private static void initialization() {
 		if ( dao != null ) return;
@@ -63,15 +62,17 @@ public class CommentManager {
 		User author = UserManager.getDao().get(1);
 		Integer referenceId = TopoManager.getIds()[1];
 		Reference reference = TopoManager.getDao().get(referenceId);
+		ids = new Integer[1];
 		try {
 			Comment comment = new Comment();
 			comment.setReference(reference);
-			comment.setText("Hello World");
+			comment.setContent("Hello World");
 			comment.setAuthor(author);
 			comment.setTsCreated(Timestamp.from(Instant.now()));
 			comment.setTsModified(Timestamp.from(Instant.now()));
 			logComment(comment);
 			dao.create(comment);
+			ids[0] = comment.getId();
 		} catch (Exception e) {
 			DLOG.log(Level.DEBUG, String.format("Error on creating comments"));
 			//DLOG.log(Level.DEBUG, String.format(e.getMessage()));
@@ -84,24 +85,7 @@ public class CommentManager {
 
 
 	}
-	
-	/**
-	 * 
-	 */
-	public static void deleteOneComment() {
-		try {
-			dao.delete(id);
-		} catch (Exception e) {
-			DLOG.log(Level.DEBUG, String.format("Error on deleting comments"));
-			//DLOG.log(Level.DEBUG, String.format(e.getMessage()));
-			String trace = "";
-			for (int t = 0; t < e.getStackTrace().length; t++) {
-				trace += "%n" + e.getStackTrace()[t].toString();
-			}
-			DLOG.log(Level.DEBUG, String.format(trace));
-		}
-	}
-	
+		
 	/**
 	 * Create several comments on existent topo and site
 	 */
@@ -140,7 +124,6 @@ public class CommentManager {
 				}
 				// CREATING COMMENT - create comment and store id
 				comment = new Comment(targetReference, COMMENTS_DE_TEST[c][1], author);
-				logComment(comment);
 				dao.create(comment);
 				ids[c] = comment.getId();			
 			}
@@ -161,12 +144,14 @@ public class CommentManager {
 	 */
 	public static void delete() {
 		initialization();
+		int currentId = 0;
 		try {
-			for (int c = 0 ; c < ids.length ; c++) {			
-				dao.delete(ids[c]);
+			for (int c = 0 ; c < ids.length ; c++) {	
+				currentId = ids[c];
+				if (! dao.delete(ids[c])) DLOG.log(Level.DEBUG, String.format("Error on deleting comment " + currentId));
 			}
 		} catch (Exception e) {
-			DLOG.log(Level.DEBUG, String.format("Error on deleting comments"));
+			DLOG.log(Level.DEBUG, String.format("Error on deleting comments (Id : " + currentId + ")"));
 			DLOG.log(Level.DEBUG, String.format(e.getMessage()));
 		}
 	}
@@ -180,7 +165,7 @@ public class CommentManager {
 		if (comment.getId() != null) message += "Id : " + comment.getId() + "%n";
 		message += "Referenced to " + comment.getReference().getType().toString() + " " +
 				comment.getReference().getId() + "%n";
-		message += "Content : " + comment.getText() + "%n";
+		message += "Content : " + comment.getContent() + "%n";
 		message += "Author : " + comment.getAuthor().getUsername() + "%n";
 		message += "Created At : " + comment.getTsCreated().toString() + "%n";
 		message += "Modified At : " + comment.getTsModified().toString() + "%n";
@@ -191,22 +176,26 @@ public class CommentManager {
 	 * @param comments List of comments
 	 * @param commentsExpected string to describe kind of list expected (where clause)
 	 */
-	public static void logList(List<Comment> comments, String commentsExpected) {
+	public static void logCommentsList(List<Comment> comments, String commentsExpected) {
 		initialization();
 		String message = "%n Display list of " + commentsExpected + " in database%n";
 		message += "Id / Topo name / Departement / Cotation Min / Cotation max / Auteur / Date creation%n";
-		if ( comments != null ) {
-			for (Comment comment : comments) {
-				message += comment.getId() + " / ";
-				message += comment.getReference().getType().toString() + " " +
-						comment.getReference().getId() + " / ";
-				message += comment.getText() + " / ";
-				message += comment.getAuthor().getUsername() + " / ";
-				message += comment.getTsCreated().toString() + "%n";
-				message += comment.getTsModified().toString() + "%n";
-			}			
+		try {
+			if ( comments != null ) {
+				for (Comment comment : comments) {
+					message += comment.getId() + " / ";
+					message += comment.getReference().getType().toString() + " " +
+							comment.getReference().getId() + " / ";
+					message += comment.getContent() + " / ";
+					message += comment.getAuthor().getUsername() + " / ";
+					message += comment.getTsCreated().toString() + "%n";
+					message += comment.getTsModified().toString() + "%n";
+				}			
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on writing comments list in log"));
+			DLOG.log(Level.DEBUG, String.format(formatException(e)));
 		}
-
 		DLOG.log(Level.DEBUG, String.format(message));
 	}
 
@@ -216,13 +205,18 @@ public class CommentManager {
 	public static void LogReferenceComments(Reference reference) {
 		initialization();
 		String message = "%n";
-		message += reference.getType().toString() + " id : " + reference.getId() + "%n";
-		message += "Site name : " + reference.getName() + "%n";
-		message += "Summary : " + reference.getSummary() + "%n";
-		message += "Modifié le : " + reference.getTsModified().toString() + "%n";
-		message += "Published : " + reference.isPublished().toString() + "%n";
-		message += getComments(reference);
-		DLOG.log(Level.DEBUG, String.format(message));
+		try {
+			message += reference.getType().toString() + " id : " + reference.getId() + "%n";
+			message += "Site name : " + reference.getName() + "%n";
+			message += "Summary : " + reference.getSummary() + "%n";
+			message += "Modifié le : " + reference.getTsModified().toString() + "%n";
+			message += "Published : " + reference.isPublished().toString() + "%n";
+			message += getComments(reference);
+			DLOG.log(Level.DEBUG, String.format(message));
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on writing reference and comments in log"));
+			DLOG.log(Level.DEBUG, String.format(formatException(e)));
+		}
 	}
 
 	/**
@@ -232,17 +226,30 @@ public class CommentManager {
 	public static String getComments (Reference reference) {
 		String message = "" ;
 		message += "Id / Comment Summary / Author name / Reference name / Ts Created%n";
-		List<Comment> comments = reference.getComments();
-		if ( comments != null ) {
-			for (Comment comment : comments) {
-				message += comment.getId() + " / ";
-				message += comment.getText() + " / ";
-				message += comment.getAuthor().getUsername() + " / ";
-				message += reference.getName() + " / ";
-				message += comment.getTsCreated().toString() + "%n";
+		try {
+			List<Comment> comments = reference.getComments();
+			if ( comments != null ) {
+				for (Comment comment : comments) {
+					message += comment.getId() + " / ";
+					message += comment.getContent() + " / ";
+					message += comment.getAuthor().getUsername() + " / ";
+					message += reference.getName() + " / ";
+					message += comment.getTsCreated().toString() + "%n";
+				}			
 			}			
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on getting reference's comments"));
+			DLOG.log(Level.DEBUG, String.format(formatException(e)));			
 		}
 		return message;
+	}
+
+	private static String formatException (Exception e) {
+		String trace = "";
+		for (int t = 0; t < e.getStackTrace().length; t++) {
+			trace += "%n" + e.getStackTrace()[t].toString();
+		}
+		return trace;
 	}
 
 }

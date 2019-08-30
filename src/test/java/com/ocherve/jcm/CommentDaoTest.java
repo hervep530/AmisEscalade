@@ -38,7 +38,8 @@ public class CommentDaoTest {
 		UserManager.create();
 		SiteManager.create();
 		TopoManager.create();
-		CommentManager.createOneComment();;
+		CommentManager.create();;
+		CommentManager.logCommentsList(CommentManager.getDao().getList(), "all comments after deleting");
 	}
 
 	/**
@@ -47,12 +48,12 @@ public class CommentDaoTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		/* deleting topos */
-		CommentManager.deleteOneComment();
+		CommentManager.delete();
 		TopoManager.delete();
 		SiteManager.delete();
 		UserManager.delete();
 		/* log for debug */
-		CommentManager.logList(CommentManager.getDao().getList(), "all comments after deleting");
+		CommentManager.logCommentsList(CommentManager.getDao().getList(), "all comments after deleting");
 		DLOG.log(Level.DEBUG, String.format("%nFIN DU TEST%n=============%n%n"));
 	}
 
@@ -61,7 +62,7 @@ public class CommentDaoTest {
 	 */
 	@Test
 	public void test() {
-		assertEquals(CommentManager.getDao().getList().size(), 1);
+		assertTrue(CommentManager.getDao().getList().size() > 1);
 	}
 
 }
