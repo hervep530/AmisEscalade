@@ -51,7 +51,7 @@ public class Message implements Serializable{
 	@Column(name = "content")
 	private String content = "";
 	
-	@Column(name = "dt_created", columnDefinition = "BIGINT DEFAULT NOW()")
+	@Column(name = "dt_created", columnDefinition = "TIMESTAMP DEFAULT NOW()")
 	private Timestamp tsSent = Timestamp.from(Instant.now());
 	
 	@Column(name = "dt_read", nullable = true)
