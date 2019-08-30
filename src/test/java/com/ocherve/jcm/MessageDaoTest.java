@@ -33,7 +33,10 @@ public class MessageDaoTest {
 		messageControl = null;
 		/* Call UserManager to create users and MessageManager to create messages */ 
 		UserManager.create();
-		MessageManager.createOne();
+		MessageManager.create();
+		MessageManager.LogMessageList(
+				MessageManager.getDao().getListFromNamedQuery("Message.findAllOrderByIdAsc"),
+				"all messages created");
 	}
 
 	/**
@@ -42,9 +45,11 @@ public class MessageDaoTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		/* deleting messages and users created */
-		MessageManager.deleteOne();
+		MessageManager.delete();
 		UserManager.delete();
-		SiteManager.LogSiteList(SiteManager.getDao().getList(), "all messages deleted");
+		MessageManager.LogMessageList(
+				MessageManager.getDao().getListFromNamedQuery("Message.findAllOrderByIdAsc"),
+				"all messages deleted");
 		DLOG.log(Level.DEBUG, String.format("%nFIN DU TEST%n=============%n%n"));
 	}
 
@@ -53,7 +58,7 @@ public class MessageDaoTest {
 	 */
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		assertTrue(MessageManager.getDao().getList().size() > 0);
 	}
 
 }

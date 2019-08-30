@@ -2,6 +2,7 @@ package com.ocherve.jcm;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +22,16 @@ public class MessageManager {
 
 	private static final Logger DLOG = LogManager.getLogger("development_file");
 	private static final String[][] MESSAGES_DE_TEST = new String[][] {
-		{""}
+		{"0", "1", "Test", "Hello", null},
+		{"1", "0", "Test", "Oui Hello c est pour quoi", "0"},
+		{"0", "1", "Test", "Juste pour savoir s il y a quelqu un", "1"},
+		{"1", "0", "Test", "Ok bon bien au revoir", "2"},
+		{"0", "1", "Test", "Au revoir", "3"},
+		{"3", "0", "Tendu", "Alors il t a repondu quoi", null},
+		{"0", "3", "Tendu", "...au revoir", "5"},
+		{"3", "0", "Tendu", "ah c'est pas cool ça", "6"},
+		{"0", "3", "Tendu", "et si le message est long est ce qu on coupe a 70 caractere comme prevu ou est ce que ça affiche tout une tartine", "7"},
+		{"3", "0", "Tendu", "on va voir...", "8"}
 	};
 	private static Integer[] ids;
 	private static MessageDao dao;
@@ -32,6 +42,51 @@ public class MessageManager {
 		DLOG.log(Level.DEBUG, "Initialization of Message Manager");
 		dao = (MessageDao) DaoProxy.getInstance().getMessageDao();		
 	}
+	
+	/**
+	 * @return the ids
+	 */
+	public static Integer[] getIds() {
+		return ids;
+	}
+
+	/**
+	 * @return the dao
+	 */
+	public static MessageDao getDao() {
+		return dao;
+	}
+
+	/**
+	 * 
+	 */
+	public static void create() {
+		initialization();
+		User sender = null;
+		User receiver = null;
+		Message parent = null;
+		Message message = null;
+		ids = new Integer[MESSAGES_DE_TEST.length];
+		try {
+			for (int u = 0 ; u < MESSAGES_DE_TEST.length ; u++) {
+				sender = UserManager.getDao().get(UserManager.getIds()[Integer.valueOf(MESSAGES_DE_TEST[u][0])]);
+				receiver = UserManager.getDao().get(UserManager.getIds()[Integer.valueOf(MESSAGES_DE_TEST[u][1])]);
+				parent = null;
+				if ( MESSAGES_DE_TEST[u][4] != null ) {
+					if ( Integer.valueOf(MESSAGES_DE_TEST[u][4]) < u) 
+						parent = dao.get(ids[Integer.valueOf(MESSAGES_DE_TEST[u][4])]);
+				}
+				message = new Message(sender, receiver, MESSAGES_DE_TEST[u][2], MESSAGES_DE_TEST[u][3], parent);
+				dao.create(message);
+				ids[u] = message.getId();
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on creating messages"));
+			DLOG.log(Level.DEBUG, String.format(formatException(e)));
+		}
+		DLOG.log(Level.DEBUG, String.format("End of create Message"));
+	}
+
 	
 	/**
 	 * 
@@ -47,8 +102,8 @@ public class MessageManager {
 			message.setReceiver(receiver);
 			message.setTitle("Test de messagerie");
 			message.setContent("Envoi d'un message privé");
-			message.setTsSent(Timestamp.from(Instant.now()));
-			ids[0] = dao.create(message).getId();
+			dao.create(message);
+			ids[0] = message.getId();
 		} catch (Exception e) {
 			DLOG.log(Level.DEBUG, String.format("Error on creating messages"));
 			DLOG.log(Level.DEBUG, String.format(e.getMessage()));
@@ -68,5 +123,64 @@ public class MessageManager {
 			DLOG.log(Level.DEBUG, String.format(e.getMessage()));
 		}
 	}
+
+	/**
+	 * Delete all messages created by MessageManager
+	 */
+	public static void delete() {
+		initialization();
+		Integer currentId = 0;
+		boolean deleted = false;
+		try {
+			for (int u = ids.length -1 ; u >= 0 ; u--) {
+				currentId = Integer.valueOf(ids[u]);
+				deleted = dao.delete(Integer.valueOf(ids[u]));
+				if (! deleted) DLOG.log(Level.DEBUG, String.format("Error on deleting message " + currentId ));
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on deleting messages (Id : " + currentId + ")"));
+			DLOG.log(Level.DEBUG, String.format(formatException(e)));
+		}		
+		DLOG.log(Level.DEBUG, String.format("End of MessageManager.delete()"));
+	}
+	
+	/**
+	 * @param messages List of message
+	 * @param messageExpected string to describe kind of list expected (where clause)
+	 */
+	public static void LogMessageList(List<Message> messages, String messageExpected) {
+		initialization();
+		String logMessage = "%n Display list of " + messageExpected + " in database%n";
+		logMessage += "(discussionId/parentId - id) sender -> receiver : title - content%n";
+		try {
+			if ( messages != null ) {
+				for (Message message : messages) {
+					logMessage += "(" + String.valueOf(message.getDiscussionId()) + "/";
+					String parentId = "null";
+					if ( message.getParent() != null ) parentId = String.valueOf(message.getParent().getId());
+					logMessage += parentId + " - ";
+					logMessage += message.getId() + ") ";
+					logMessage += message.getSender().getUsername() + " -> ";
+					logMessage += message.getReceiver().getUsername() + " : ";
+					logMessage += message.getTitle() + " - ";
+					String text = message.getContent();
+					if (text.length() > 70) text = message.getContent().substring(0,70);
+					logMessage += text + "%n";
+				}			
+			}						
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format(formatException(e)));
+		}
+		DLOG.log(Level.DEBUG, String.format(logMessage));
+	}
+
+	private static String formatException (Exception e) {
+		String trace = "";
+		for (int t = 0; t < e.getStackTrace().length; t++) {
+			trace += "%n" + e.getStackTrace()[t].toString();
+		}
+		return trace;
+	}
+	
 
 }

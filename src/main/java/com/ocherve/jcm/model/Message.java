@@ -2,6 +2,7 @@ package com.ocherve.jcm.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -11,8 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 
 /**
  * The persistent class for the jcm_message database table.
@@ -20,6 +24,11 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "jcm_message")
+@NamedQueries({
+	@NamedQuery(name="Message.findAll", query="SELECT m FROM Message m"),
+	@NamedQuery(name="Message.findAllOrderByIdAsc", query="SELECT m FROM Message m ORDER BY m.id ASC"),
+	@NamedQuery(name="Message.findAllOrderByIdDesc", query="SELECT m FROM Message m ORDER BY m.id DESC")
+})
 public class Message implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -29,27 +38,31 @@ public class Message implements Serializable{
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name = "fk_sender_user")
+	@JoinColumn(name = "fk_sender_user", nullable = false)
 	private User sender;
 	
 	@ManyToOne
-	@JoinColumn(name = "fk_receiver_user")
+	@JoinColumn(name = "fk_receiver_user", nullable = false)
 	private User receiver;
 	
-	private String title;
+	@Column(nullable = false)
+	private String title = "";
 	
-	@Column(name = "text")
-	private String content;
+	@Column(name = "content")
+	private String content = "";
 	
-	@Column(name = "dt_created")
-	private Timestamp tsSent;
+	@Column(name = "dt_created", columnDefinition = "BIGINT DEFAULT NOW()")
+	private Timestamp tsSent = Timestamp.from(Instant.now());
 	
-	@Column(name = "dt_read")
+	@Column(name = "dt_read", nullable = true)
 	private Timestamp tsRead;
 	
 	@ManyToOne()
-	@JoinColumn(name = "id", insertable = false,  updatable = false)
+	@JoinColumn(name = "parent_id", nullable = true)
 	private Message parent;
+	
+	@Column(name = "discussion_id", columnDefinition = "BIGINT DEFAULT  0")
+	private Integer discussionId = 0;
 	
 	@OneToMany(mappedBy = "parent")
 	private List<Message> responses;
@@ -60,6 +73,25 @@ public class Message implements Serializable{
 	public Message() {
 		super();
 	}
+	
+	/**
+	 * @param sender
+	 * @param receiver
+	 * @param title 
+	 * @param content
+	 * @param parent
+	 */
+	public Message(User sender, User receiver, String title, String content, Message parent) {
+		super();
+		this.sender = sender;
+		this.receiver = receiver;
+		this.title = title;
+		this.content = content;
+		this.parent = parent;
+		this.discussionId = 0;
+		synchronizeDiscussionIdFromParent(parent);
+	}
+
 
 	/**
 	 * @return the id
@@ -171,6 +203,7 @@ public class Message implements Serializable{
 	 */
 	public void setParent(Message parent) {
 		this.parent = parent;
+		synchronizeDiscussionIdFromParent(parent);
 	}
 
 	/**
@@ -209,6 +242,30 @@ public class Message implements Serializable{
 		return response;
 	}
 
+	/**
+	 * @return the discussionId
+	 */
+	public Integer getDiscussionId() {
+		return discussionId;
+	}
+
+	/**
+	 * @param discussionId the discussionId to set
+	 */
+	public void setDiscussionId(Integer discussionId) {
+		this.discussionId = discussionId;
+	}
+
+	private void synchronizeDiscussionIdFromParent(Message parent) {
+		if (parent != null) {
+			if (parent.getDiscussionId() == 0) {
+				this.discussionId = parent.id;
+				this.parent.discussionId = parent.id;
+			} else {
+				this.discussionId = parent.discussionId;
+			}
+		}
+	}
 
 	
 	

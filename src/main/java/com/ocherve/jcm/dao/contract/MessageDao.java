@@ -56,5 +56,11 @@ public interface MessageDao extends Dao{
 	 * @return true if delete , false if not
 	 */
 	boolean delete (Integer id);
+
+	/**
+	 * @param queryName
+	 * @return list of Messages
+	 */
+	List<Message> getListFromNamedQuery(String queryName);
 	
 }

@@ -44,6 +44,16 @@ class MessageDaoImpl extends DaoImpl implements MessageDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	public List<Message> getListFromNamedQuery(String queryName) {
+		try {
+			return (List<Message>) getListFromNamedQuery(Message.class, queryName, null);			
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<Message> getListFromNamedQueryAndIdParameter(String namedQuery, Integer id) {
 		try {
 			return (List<Message>) getListFromNamedQueryAndIdParameter(Message.class, namedQuery, id);			
@@ -54,8 +64,7 @@ class MessageDaoImpl extends DaoImpl implements MessageDao {
 
 	@Override
 	public boolean delete(Integer id) {
-		// TODO Auto-generated method stub
-		return false;
+		return delete(Message.class, id);
 	}
 
 }
