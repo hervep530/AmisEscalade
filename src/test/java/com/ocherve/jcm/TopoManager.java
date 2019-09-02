@@ -48,10 +48,9 @@ public class TopoManager {
 		ids = new Integer[TOPOS_DE_TEST.length];
 		Integer authorId;
 		User author;
-		Site site;
 		try {
 			for (int u = 0 ; u < TOPOS_DE_TEST.length ; u++) {
-				// author id by default is anonymous
+				// AUTHOR : id by default is anonymous
 				authorId= 1;
 				// If TOPOS_DE_TEST[u][5] matches with ids produced by UserManager set authorId with it
 				if  ( TOPOS_DE_TEST[u][5].matches("^[0-9]{1,}$") ) { 
@@ -60,17 +59,19 @@ public class TopoManager {
 				}
 				// Get author
 				author = UserManager.getDao().get(authorId);
-				// site by default is null
-				site = null;
-				// If TOPOS_DE_TEST[u][6] matches with ids produced by SiteManager get site from it
-				if  ( TOPOS_DE_TEST[u][6].matches("^[0-9]{1,6}$") ) { 
-					if ( Integer.valueOf(TOPOS_DE_TEST[u][6]) < SiteManager.getIds().length )
-						site = SiteManager.getDao().get(SiteManager.getIds()[Integer.valueOf(TOPOS_DE_TEST[u][6])]);
+				// SITE : create Integer array of ids 
+				Integer[] siteIds = null;
+				if ( TOPOS_DE_TEST[u][6].matches("^[0-9]{1,}(:[0-9]{1,})*$") ) {
+					String[] split = TOPOS_DE_TEST[u][6].split(":");
+					siteIds = new Integer[split.length];
+					for ( int s = 0; s < split.length; s++ ) {
+						siteIds[s] = SiteManager.getIds()[Integer.valueOf(split[s])]; 
+					}
 				}
 				// Instanciate topo with all attributes
 				Topo topo = new Topo(TOPOS_DE_TEST[u][0], TOPOS_DE_TEST[u][0], TOPOS_DE_TEST[u][1],
 						TOPOS_DE_TEST[u][3], TOPOS_DE_TEST[u][4],
-						Boolean.valueOf(TOPOS_DE_TEST[u][2]), author, site);
+						Boolean.valueOf(TOPOS_DE_TEST[u][2]), author, siteIds);
 				// Create topo and store id
 				dao.create(topo);
 				ids[u] = topo.getId();
@@ -116,19 +117,23 @@ public class TopoManager {
 	public static void LogTopoList(List<Topo> topos, String topoExpected) {
 		initialization();
 		String message = "%n Display list of " + topoExpected + " in database%n";
-		message += "Id / Topo name / Departement / Cotation Min / Cotation max / Auteur / Date creation%n";
-		if ( topos != null ) {
-			for (Topo topo : topos) {
-				// message += topo.getType().toString() + " " + topo.getId() + " / ";
-				message += topo.getType().toString() + " " + topo.getId() + " / ";
-				message += topo.getName() + " / ";
-				message += topo.getSummary() + " / ";
-				message += topo.getWriter() + " / ";
-				message += topo.getAuthor().getUsername() + " / ";
-				message += topo.getTsCreated().toString() + "%n";
+		message += "Id / Topo name / Summary / Writer / Auteur / Date creation%n";
+		try {
+			if ( topos != null ) {
+				for (Topo topo : topos) {
+					// message += topo.getType().toString() + " " + topo.getId() + " / ";
+					message += topo.getType().toString() + " " + topo.getId() + " / ";
+					message += topo.getName() + " / ";
+					message += topo.getSummary() + " / ";
+					message += topo.getWriter() + " / ";
+					message += topo.getAuthor().getUsername() + " / ";
+					message += topo.getTsCreated().toString() + "%n";
+				}			
 			}			
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on creating list topos log"));
+			//DLOG.log(Level.DEBUG, String.format(e.getMessage()));			
 		}
-
 		DLOG.log(Level.DEBUG, String.format(message));
 	}
 
@@ -138,8 +143,13 @@ public class TopoManager {
 	 */
 	public static void logTopo (Integer id) {
 		initialization();
-		Topo topo = dao.get(id);
-		logTopo(topo);
+		try {
+			Topo topo = dao.get(id);
+			logTopo(topo);			
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error before log generation, on getting topo from id " + id ));
+			//DLOG.log(Level.DEBUG, String.format(e.getMessage()));			
+		}
 	}
 
 	/**
@@ -148,17 +158,22 @@ public class TopoManager {
 	public static void logTopo (Topo topo) {
 		initialization();
 		String message = "%n";
-		message += "Topo id : " + topo.getType().toString() + " " + topo.getId() + "%n";
-		message += "Topo name : " + topo.getName() + "%n";
-		message += "Orientation : " + topo.getTitle() + "%n";
-		message += "Summary : " + topo.getSummary() + "%n";
-		message += "Writer : " + topo.getWriter() + "%n";
-		message += "Date de publication : " + topo.getWritedAt().toString() + "%n";
-		message += "Auteur : " + topo.getAuthor().getUsername() + "%n";
-		message += "Créé le : " + topo.getTsCreated().toString() + "%n";
-		message += "Modifié le : " + topo.getTsModified().toString() + "%n";
-		message += "Published : " + topo.isPublished().toString() + "%n";
-		DLOG.log(Level.DEBUG, String.format(message));
+		try {
+			message += "Topo id : " + topo.getType().toString() + " " + topo.getId() + "%n";
+			message += "Topo name : " + topo.getName() + "%n";
+			message += "Orientation : " + topo.getTitle() + "%n";
+			message += "Summary : " + topo.getSummary() + "%n";
+			message += "Writer : " + topo.getWriter() + "%n";
+			message += "Date de publication : " + topo.getWritedAt().toString() + "%n";
+			message += "Auteur : " + topo.getAuthor().getUsername() + "%n";
+			message += "Créé le : " + topo.getTsCreated().toString() + "%n";
+			message += "Modifié le : " + topo.getTsModified().toString() + "%n";
+			message += "Published : " + topo.isPublished().toString() + "%n";
+			DLOG.log(Level.DEBUG, String.format(message));			
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on creating topo entity log message"));
+			//DLOG.log(Level.DEBUG, String.format(e.getMessage()));
+		}
 	}
 
 }

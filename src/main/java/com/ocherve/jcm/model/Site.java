@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -72,8 +73,8 @@ public class Site extends Reference implements Serializable {
 	private Cotation cotationMax;
 
 	//bi-directional many-to-one association to JcmTopo
-	@OneToMany(mappedBy="site")
-	private List<Topo> topos;
+	@ManyToMany(mappedBy="sites", cascade = {CascadeType.MERGE })
+	private List<Topo> topos = new ArrayList<>();
 		
 	/**
 	 * Constructor without argument
@@ -359,9 +360,12 @@ public class Site extends Reference implements Serializable {
 	 * @return topo added to topos list associated to this site
 	 */
 	public Topo addTopo(Topo topo) {
-		getTopos().add(topo);
-		topo.setSite(this);
-
+		if (this.topos == null) this.topos = new ArrayList<Topo>();
+		this.topos.add(topo);
+		List<Site> topoSites = topo.getSites();
+		if ( topoSites == null) topoSites = new ArrayList<Site>();
+		topoSites.add(this);
+		topo.setSites(topoSites);
 		return topo;
 	}
 
@@ -370,9 +374,14 @@ public class Site extends Reference implements Serializable {
 	 * @return topo removed from list
 	 */
 	public Topo removeTopo(Topo topo) {
-		getTopos().remove(topo);
-		topo.setSite(null);
-
+		if (this.topos == null) return null;
+		if (this.topos.contains(topo)) this.topos.remove(topo);
+		List<Site> topoSites = topo.getSites();
+		if ( topoSites == null) return topo;
+		if ( topoSites.contains(this) ) {
+			topoSites.remove(this);
+			topo.setSites(topoSites);
+		}
 		return topo;
 	}
 	

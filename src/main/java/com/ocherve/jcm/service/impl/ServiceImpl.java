@@ -153,7 +153,8 @@ public abstract class ServiceImpl implements Service {
 		// keeping only service / action / id / slug in uri
 		uri = uri.replaceAll("^.*" + context , "").replaceAll("^/", "");
     	uri = uri.replaceAll(";(JSESSIONID|jsessionid)=\\w*", "").replaceAll("#\\w*", "");
-    	ParsedUrl parsedUrl = UrlChecker.parseUrl(context, uri);
+    	// CORRECTION BUG 190902 //     ParsedUrl parsedUrl = UrlChecker.parseUrl(context, uri);
+    	ParsedUrl parsedUrl = UrlChecker.parseUrl(serviceName, uri);
     	
     	try {
     		UrlChecker.validateAction(serviceName, actions, parsedUrl);

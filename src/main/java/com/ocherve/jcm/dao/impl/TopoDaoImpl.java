@@ -118,8 +118,19 @@ class TopoDaoImpl extends DaoImpl implements TopoDao {
 				case "author":
 					((Topo) object).setAuthor((User)fields.get(field));
 					break;
-				case "site":
-					((Topo) object).setSite((Site)fields.get(field));
+				case "addingSite":
+					((Topo) object).addSite((Site)fields.get(field));
+					break;
+				case "removingSite":
+					((Topo) object).removeSite((Site)fields.get(field));
+					break;
+				case "addingSites":
+					// Site ids must be given under string form "number1:number2:..."
+					((Topo) object).addSites((List<Site>)fields.get(field));
+					break;
+				case "addingSitesGivenIds":
+					// Site ids must be given under string form "number1:number2:..."
+					((Topo) object).addSites((String)fields.get(field));
 					break;
 				case "published":
 					((Topo) object).setPublished((Boolean)fields.get(field));

@@ -4,21 +4,28 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import com.ocherve.jcm.dao.DaoProxy;
+import com.ocherve.jcm.dao.contract.SiteDao;
+
 /**
  * @author herve_dev
  *
  */
-@Entity(name = "Topo")
+@Entity()
 @Table(name="jcm_topo")
 @PrimaryKeyJoinColumn(name = "pfk_topo_reference")
 @NamedQueries({
@@ -27,7 +34,7 @@ import javax.persistence.Table;
 	@NamedQuery(name="Topo.findByAuthor", 
 		query="SELECT t FROM Topo t WHERE t.author.id = :authorId"),
 	@NamedQuery(name="Topo.findBySite", 
-		query="SELECT t FROM Topo t WHERE t.site.id = :siteId"),
+		query="SELECT t FROM Topo t JOIN t.sites s WHERE s.id = :siteId"),
 	@NamedQuery(name="Topo.countAll", query="SELECT count(0) FROM Topo t")
 })
 public class Topo extends Reference implements Serializable {
@@ -48,9 +55,13 @@ public class Topo extends Reference implements Serializable {
 */
 
 	//bi-directional many-to-one association to JcmSite
-	@ManyToOne
-	@JoinColumn(name="fk_topo_site")
-	private Site site;
+	@ManyToMany(cascade = {CascadeType.MERGE})
+	@JoinTable(
+			name = "jcm_topo_site",
+			joinColumns = @JoinColumn(name="pfk_topo"),
+			inverseJoinColumns = @JoinColumn(name="pfk_site")
+	)
+	private List<Site> sites = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -68,10 +79,10 @@ public class Topo extends Reference implements Serializable {
 	 * @param writedAt 
 	 * @param published 
 	 * @param author 
-	 * @param site 
+	 * @param siteIds 
 	 */
 	public Topo(String name, String title, String summary, String writer, String writedAt,
-			boolean published, User author, Site site) {
+			boolean published, User author, Integer[] siteIds) {
 		super.setType(ReferenceType.TOPO.toString());
 		this.title = title;
 		this.setName(name);
@@ -82,7 +93,7 @@ public class Topo extends Reference implements Serializable {
 		this.writedAt = writedAt;
 		this.setPublished(published);
 		this.setAuthor(author);
-		this.site = site;
+		this.addSites(siteIds);
 		this.setTsCreated(Timestamp.from(Instant.now()));
 		this.setTsModified(Timestamp.from(Instant.now()));
 	}
@@ -162,17 +173,90 @@ public class Topo extends Reference implements Serializable {
 */
 
 	/**
-	 * @return site linked to this topo
+	 * @return sites List linked to this topo
 	 */
-	public Site getSite() {
-		return this.site;
+	public List<Site> getSites() {
+		return this.sites;
 	}
 
 	/**
-	 * @param site
+	 * @param sites list of sites related to this topo
 	 */
-	public void setSite(Site site) {
-		this.site = site;
+	public void setSites(List<Site> sites) {
+		this.sites = sites;
+	}
+	
+	/**
+	 * @param site
+	 * @return site added to sites list
+	 */
+	public Site addSite(Site site) {
+		if (this.sites == null) this.sites = new ArrayList<Site>();
+		this.sites.add(site);
+		List<Topo> siteTopos = site.getTopos();
+		if ( siteTopos == null) siteTopos = new ArrayList<Topo>();
+		siteTopos.add(this);
+		site.setTopos(siteTopos);
+		return site;
+	}
+	
+	/**
+	 * @param site
+	 * @return site removed to sites list
+	 */
+	public Site removeSite(Site site) {
+		if ( this.sites == null ) return null;
+		if (this.sites.contains(site)) this.sites.remove(site);
+		List<Topo> siteTopos = site.getTopos();
+		if ( siteTopos == null) return site;
+		if ( siteTopos.contains(this) ) {
+			siteTopos.remove(this);
+			site.setTopos(siteTopos);
+		}
+		return site;
+	}
+	
+ 	/**
+ 	 * Add sites from integer array of ids given as argument
+	 * @param siteIds
+	 */
+	public void addSites(Integer[] siteIds) {
+		if ( siteIds == null ) return;
+		for ( int i = 0; i < siteIds.length; i++ ) {
+			Site site = null;
+			if ( siteIds[i] > 0 )
+					site = ((SiteDao) DaoProxy.getInstance().getSiteDao()).get(Integer.valueOf(siteIds[i]));
+			if ( site != null ) this.addSite(site);
+		}
 	}
 
+ 	/**
+ 	 * Add sites from string lis of ids with ":" separator, given as argument
+	 * @param siteIds
+	 */
+	public void addSites(String siteIds) {
+		// siteIds must be provided under form "number1[:number2][:number3][:...]"
+		Integer[] ids = null;
+		// Parsing string given as argument and build integer array
+		if ( siteIds.matches("^[0-9]{1,9}(:[0-9]{1,9})*$") ) {
+			String[] split = siteIds.split(":");
+			ids = new Integer[split.length];
+			for ( int s = 0; s < split.length; s++ ) {
+				ids[s] = Integer.valueOf(split[s]); 
+			}
+		}
+		// And now... Calling method with Integer array argument
+		this.addSites(ids);
+	}
+
+	/**
+	 * Another variant of add multiple sites under object form
+	 * @param sites
+	 */
+	public void addSites(List<Site> sites) {
+		for (Site site : sites) {
+			this.addSite(site);
+		}
+	}
+	
 }

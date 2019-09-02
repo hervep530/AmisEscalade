@@ -21,7 +21,7 @@ public class Default extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	private static final String VUE = "/WEB-INF/DefaultLayout.jsp";
-	private static final String PAGE_ERROR = "/WEB-INF/Error.jsp";
+	private static final String PAGE_ERROR = "/WEB-INF/ErrorLayout.jsp";
 
 	/**
      * @see HttpServlet#HttpServlet()

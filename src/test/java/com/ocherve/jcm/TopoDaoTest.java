@@ -49,6 +49,7 @@ public class TopoDaoTest {
 		TopoManager.LogTopoList(TopoManager.getDao().getList(), "all topos created");
 		topoControl = TopoManager.getDao().get(TopoManager.getIds()[2]);
 		TopoManager.logTopo(topoControl);
+		//Thread.sleep(120000);
 	}
 
 	/**
@@ -76,6 +77,22 @@ public class TopoDaoTest {
 	public void testDaoNotNull() {
 		assertEquals(TopoManager.getIds().length,3);
 		assertNotNull(TopoManager.getDao());
+	}
+
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void TestTopoSites() {
+		for (Integer id : TopoManager.getIds() ) {
+			Topo topo =  TopoManager.getDao().get(id);
+			Integer sitesCount = 0;
+			// assertNotNull(topo.getSites());
+			if ( topo.getSites() != null ) sitesCount = topo.getSites().size();
+			DLOG.log(Level.DEBUG, String.format("Nb sites (" + topo.getType() + " " + topo.getName() + ") : " + sitesCount));
+			// assertTrue( sitesCount > 0);
+		}
 	}
 	
 	/**
@@ -149,12 +166,17 @@ public class TopoDaoTest {
 		topo.setTitle("Lot en spot");
 		topo.setName("Lot en spot");
 		topo.setSummary("Topo sur le site d'Autoire dans le lot");
-		topo.setSite(autoire);
+		topo.addSite(autoire);
+		assertNotNull(autoire);
+		assertNotNull(topo);
+		assertNotNull(topo.getSites());
+		assertNotNull(autoire.getTopos());		
 		TopoManager.getDao().update(topo);
 		/* get topo again with topoControl and test author.username */
 		topoControl = TopoManager.getDao().get(TopoManager.getIds()[1]);
 		TopoManager.logTopo(topoControl);
-		assertEquals(topoControl.getSite().getName(), "Autoire");
+		assertTrue(topoControl.getSites().contains(autoire));
+		assertTrue(autoire.getTopos().contains(topoControl));
 		assertEquals(topoControl.getTitle(), "Lot en spot");
 		assertTrue( topoControl.getTsModified().after(lastModified));
 	}

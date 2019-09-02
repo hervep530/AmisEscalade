@@ -9,6 +9,6 @@
 <body>
 <h1>Inscription</h1>
 <p>Pour l'instant dans session on ne fait qu'une inscription.</p>
-<%@ include file="DebugDelivry.jsp" %>
+<%@ include file="debug/DebugDelivry.jsp" %>
 </body>
 </html>

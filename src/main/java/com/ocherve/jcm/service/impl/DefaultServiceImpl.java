@@ -13,7 +13,11 @@ public class DefaultServiceImpl extends ServiceImpl implements DefaultService {
 
 	private final static String SVC_DEFAULT_URL = "";
 	private final static String[][] SVC_ACTIONS = {
-			{"empty","/"}	
+			{"empty","/"},
+			{"accueil","/accueil"},
+			{"welcome","/welcome"},
+			{"about","/about"},
+			{"help","/help/$id/$slug"}
 	};
 
 	/**

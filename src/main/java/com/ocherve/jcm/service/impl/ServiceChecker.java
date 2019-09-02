@@ -38,7 +38,7 @@ public class ServiceChecker {
     public static void validatePathFromServlet(String servicePattern, String servicePath, String[] servletPaths) 
             throws ServiceException {
         // Validate global service pattern
-        String globalPattern = "/(\\w{3,})?(/$id|/$id/$slug)?";
+        String globalPattern = "/(\\w{3,})?(/\\$id|/\\$id/\\$slug)?";         // CORRECTION BUG 190902
         if ( ! servicePattern.contentEquals("default") ) {
             globalPattern = "/" + servicePattern + "/\\w{3,}(/\\$id|/\\$id/\\$slug)?";
         }
