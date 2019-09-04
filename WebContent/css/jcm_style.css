@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+.test {
+	color: red;
+}
+
+.jumbotron {
+	background: none;
+}
+
+#proposal p {
+	font-size: 0.8em;
+}

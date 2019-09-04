@@ -2,24 +2,31 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>Accueil</title>
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8">
+<%@ include file="jspCommon/meta/Style.jsp" %>
+		<title>Accueil</title>
+	</head>
+	<body>
 
-<div id="full_page">
-	<div id="wrapper">
+		<div id="container">
+			<div class="row">
+				<section id="main" class="col-xl-9">
 <%@ include file="jspCommon/Header.jsp" %>
 <%@ include file="jspCommon/NavBar.jsp" %>
 <%@ include file="jspCommon/Notification.jsp" %>
 <%@ include file="jspDefault/Content.jsp" %>
 <%@ include file="jspDebug/DebugDelivry.jsp" %>
 <%@ include file="jspCommon/Footer.jsp" %>
-	</div>
-	<section id="proposal">
-		<h1>Proposal</h1>
-	</section>
-</div>
-</body>
+				</section>
+				<section id="proposal" class="col-xl-3">
+<%@ include file="jspCommon/SocialLinks.jsp" %>
+<%@ include file="jspCommon/Identity.jsp" %>
+<%@ include file="jspCommon/SiteThread.jsp" %>
+<%@ include file="jspCommon/Legals.jsp" %>
+				</section>
+			</div>
+		</div>
+<%@ include file="jspCommon/meta/Script.jsp" %>
+	</body>
 </html>

@@ -1,16 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 		<article id="acceuil">
-			<div id="summary">
-				<h1>ACCEUIL</h1>
+			<div id="summary" class="mx-4">
+				<h1 class="h2 text-center">ACCEUIL</h1>
 				<p id="description">Les amis de l'escalade vous propose de découvrir des spots aussi nombreux que variés . Vous trouverez aussi bien des informations générales, que des données techniques ou pratiques.</p>
 			</div>
-			<div id="detail">
-				<section id="teaser">
-					<div id="medias">
+			<div id="detail" class="container mx-4">
+				<section id="teaser" class="row">
+					<div id="medias" class="col-xl-8">
 						<img alt="" src="">
 					</div>
-					<div id="technicalSheet">
+					<div id="technicalSheet" class="col-xl-4">
 						<p>Vous trouverez :</p>
 						<ul>
 							<li>Photos</li>

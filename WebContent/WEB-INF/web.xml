@@ -30,11 +30,19 @@
   </welcome-file-list>
   <servlet-mapping>
     <servlet-name>default</servlet-name>
-    <url-pattern>/css/*</url-pattern>
+    <url-pattern>/tinymce/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>default</servlet-name>
-    <url-pattern>/js/tinymce/*</url-pattern>
+    <url-pattern>/jquery/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/bootstrap/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/css/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>default</servlet-name>
