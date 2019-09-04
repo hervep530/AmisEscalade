@@ -127,9 +127,11 @@ public class ServletChecker {
 		ServletCheckerInit();
 
 		// Pattern are not the same for Default Servlet and others
-		String pathPattern = "/(\\w{3,})?" ;
+		// String pathPattern = "/(\\w{3,})?" ;					// ALLOW action with 1 char 190904
+		String pathPattern = "/(\\w{1,})?" ;
 		String servletAlias = servletName.toLowerCase();
-		if ( ! servletName.contentEquals("Default") ) pathPattern = "/" + servletAlias + "/(\\w{3,}|\\*)/?";
+		// if ( ! servletName.contentEquals("Default") ) pathPattern = "/" + servletAlias + "/(\\w{3,}|\\*)/?";			// ALLOW action with 1 char 190904
+		if ( ! servletName.contentEquals("Default") ) pathPattern = "/" + servletAlias + "/(\\w{1,}|\\*)/?";
 		
 		String message = servletName + " servlet paths must match with pattern \"" + pathPattern + "\"";
 		

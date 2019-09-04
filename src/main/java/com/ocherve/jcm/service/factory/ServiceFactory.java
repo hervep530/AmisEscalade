@@ -2,6 +2,7 @@ package com.ocherve.jcm.service.factory;
 
 import com.ocherve.jcm.service.impl.DefaultServiceImpl;
 import com.ocherve.jcm.service.impl.SessionServiceImpl;
+import com.ocherve.jcm.service.impl.SiteServiceImpl;
 
 /**
  * @author herve_dev
@@ -23,6 +24,9 @@ public interface ServiceFactory {
 			break;
 		case "SessionService" :
 			service = new SessionServiceImpl();
+			break;
+		case "SiteService" :
+			service = new SiteServiceImpl();
 			break;
 		}
 		return service;

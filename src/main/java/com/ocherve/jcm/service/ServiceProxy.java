@@ -9,6 +9,7 @@ import com.ocherve.jcm.service.factory.DefaultService;
 import com.ocherve.jcm.service.factory.Service;
 import com.ocherve.jcm.service.factory.ServiceFactory;
 import com.ocherve.jcm.service.factory.SessionService;
+import com.ocherve.jcm.service.factory.SiteService;
 
 /**
  * @author herve_dev
@@ -20,6 +21,7 @@ public class ServiceProxy {
     protected static final Logger dev = LogManager.getLogger("development_file");
 	private Service defaultService;
 	private Service sessionService;
+	private Service siteService;
 	private static ServiceProxy instance = new ServiceProxy();
 	
 	
@@ -28,6 +30,7 @@ public class ServiceProxy {
 		dev.log(Level.DEBUG,"Instanciate Service Proxy");
 		this.defaultService = ServiceFactory.getService(DefaultService.class);
 		this.sessionService = ServiceFactory.getService(SessionService.class);
+		this.siteService = ServiceFactory.getService(SiteService.class);
 	}
 
 	/**
@@ -53,6 +56,13 @@ public class ServiceProxy {
 	 */
 	public Service getSessionService() {
 		return sessionService;
+	}
+
+	/**
+	 * @return the siteService
+	 */
+	public Service getSiteService() {
+		return siteService;
 	}
 
 }

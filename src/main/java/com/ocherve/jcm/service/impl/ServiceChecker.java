@@ -37,10 +37,12 @@ public class ServiceChecker {
      */
     public static void validatePathFromServlet(String servicePattern, String servicePath, String[] servletPaths) 
             throws ServiceException {
-        // Validate global service pattern
-        String globalPattern = "/(\\w{3,})?(/\\$id|/\\$id/\\$slug)?";         // CORRECTION BUG 190902
+        // Validate global service pattern       
+        //String globalPattern = "/(\\w{3,})?(/\\$id|/\\$id/\\$slug)?";         // CORRECTION BUG 190902 // ALLOW action with 1 char 190904
+        String globalPattern = "/(\\w{1,})?(/\\$id|/\\$id/\\$slug)?";         // CORRECTION BUG 190902
         if ( ! servicePattern.contentEquals("default") ) {
-            globalPattern = "/" + servicePattern + "/\\w{3,}(/\\$id|/\\$id/\\$slug)?";
+            // globalPattern = "/" + servicePattern + "/\\w{3,}(/\\$id|/\\$id/\\$slug)?"; // ALLOW action with 1 char 190904
+            globalPattern = "/" + servicePattern + "/\\w{1,}(/\\$id|/\\$id/\\$slug)?";
         }
         String actionMessage = "Action path " + servicePath + " doesn't match with global service pattern \""
         		+ globalPattern + "\".";
@@ -84,7 +86,8 @@ public class ServiceChecker {
     	String globalPattern = "^(/[0-9a-zA-Z-.]{1,})?/?(\\w{1,})?(/\\w{1,})?(/\\d{1,8}|/\\d{1,8}/\\w{1,})?(#\\w*)?$";
     	// Specific case of Default service
     	if ( serviceName.contentEquals("Default") )
-    		globalPattern = "^(/[0-9a-zA-Z-.]{1,})?/?(/\\w{3,})?(/\\d{1,8}|/\\d{1,8}/\\w{1,})?(#\\w*)?$";
+    		globalPattern = "^(/[0-9a-zA-Z-.]{1,})?/?(/\\w{1,})?(/\\d{1,8}|/\\d{1,8}/\\w{1,})?(#\\w*)?$";
+    		// globalPattern = "^(/[0-9a-zA-Z-.]{1,})?/?(/\\w{3,})?(/\\d{1,8}|/\\d{1,8}/\\w{1,})?(#\\w*)?$";     // ALLOW action with 1 char 190904
     	
     	// Check Action
     	if ( ! url.matches(globalPattern) ) {
