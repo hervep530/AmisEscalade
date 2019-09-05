@@ -40,6 +40,8 @@ public class Reference implements Serializable {
 
 	private String summary;
 	
+	private String content;
+	
 	private String type;
 
 	@Column(name="ts_created")
@@ -133,6 +135,21 @@ public class Reference implements Serializable {
 	 */
 	public void setSummary(String summary) {
 		this.summary = summary;
+	}
+
+	/**
+	 * @return the content
+	 */
+	public String getContent() {
+		return content;
+	}
+	
+
+	/**
+	 * @param content the content to set
+	 */
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	/**

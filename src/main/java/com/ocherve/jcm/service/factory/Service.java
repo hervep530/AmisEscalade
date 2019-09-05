@@ -2,6 +2,7 @@ package com.ocherve.jcm.service.factory;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocherve.jcm.service.AccessLevel;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
 
@@ -21,6 +22,12 @@ public interface Service {
 	 * 											and process it
 	 */
 	Parameters setParameters(HttpServletRequest request);
+	
+	/**
+	 * @param parameters
+	 * @return accessLevel
+	 */
+	AccessLevel checkSecurity(Parameters parameters);
 	
 	/**
 	 * Processing action matching with doGet call in HttpServlet

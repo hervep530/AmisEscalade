@@ -13,9 +13,18 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	private final static String SVC_DEFAULT_URL = "";
 	private final static String[][] SVC_ACTIONS = {
 			{"l","/site/l/$id"},
-			{"v","/site/v/$id/$slug"},
+			{"f","/site/f"},
+			{"r","/site/r/$id/$slug"},
 			{"c","/site/c"},
-			{"m","/site/m/$id/$slug"},
+			{"u","/site/u/$id"},
+			{"uac","/site/uac"},
+			{"umc","/site/umc"},
+			{"ut","/site/ut"},
+			{"utt","/site/utt/$id"},
+			{"utf","/site/utf/$id"},
+			{"upt","/site/upt/$id"},
+			{"upf","/site/upf/$id"},
+			{"d","/site/d"}
 	};
 
 	/**

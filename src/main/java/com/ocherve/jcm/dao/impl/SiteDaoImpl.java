@@ -25,6 +25,12 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 		return site;
 	}
 
+	@Override
+	public String getSlug(Integer id) {
+		Site site = (Site) super.get(Site.class, id);
+		return site.getSlug();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Site> getList() {

@@ -5,11 +5,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import com.ocherve.jcm.service.factory.CommentService;
 import com.ocherve.jcm.service.factory.DefaultService;
+import com.ocherve.jcm.service.factory.MessageService;
 import com.ocherve.jcm.service.factory.Service;
 import com.ocherve.jcm.service.factory.ServiceFactory;
 import com.ocherve.jcm.service.factory.SessionService;
 import com.ocherve.jcm.service.factory.SiteService;
+import com.ocherve.jcm.service.factory.TopoService;
+import com.ocherve.jcm.service.factory.UserService;
 
 /**
  * @author herve_dev
@@ -22,6 +26,10 @@ public class ServiceProxy {
 	private Service defaultService;
 	private Service sessionService;
 	private Service siteService;
+	private Service topoService;
+	private Service commentService;
+	private Service messageService;
+	private Service userService;
 	private static ServiceProxy instance = new ServiceProxy();
 	
 	
@@ -31,6 +39,10 @@ public class ServiceProxy {
 		this.defaultService = ServiceFactory.getService(DefaultService.class);
 		this.sessionService = ServiceFactory.getService(SessionService.class);
 		this.siteService = ServiceFactory.getService(SiteService.class);
+		this.topoService = ServiceFactory.getService(TopoService.class);
+		this.commentService = ServiceFactory.getService(CommentService.class);
+		this.messageService = ServiceFactory.getService(MessageService.class);
+		this.userService = ServiceFactory.getService(UserService.class);
 	}
 
 	/**
@@ -64,5 +76,35 @@ public class ServiceProxy {
 	public Service getSiteService() {
 		return siteService;
 	}
+
+	/**
+	 * @return the topoService
+	 */
+	public Service getTopoService() {
+		return topoService;
+	}
+
+	/**
+	 * @return the commentService
+	 */
+	public Service getCommentService() {
+		return commentService;
+	}
+
+	/**
+	 * @return the messageService
+	 */
+	public Service getMessageService() {
+		return messageService;
+	}
+
+	/**
+	 * @return the userService
+	 */
+	public Service getUserService() {
+		return userService;
+	}
+	
+	
 
 }

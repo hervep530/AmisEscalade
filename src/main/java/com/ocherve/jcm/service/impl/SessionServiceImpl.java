@@ -15,7 +15,8 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 			{"connexion","/session/connexion"},	
 			{"deconnexion","/session/deconnexion"},	
 			{"inscription","/session/inscription"},	
-			{"moncompte","/session/moncompte"},	
+			{"moncompte","/session/pass"},	
+			{"moncompte","/session/d/$id"}
 	};
 
 	/**

@@ -23,6 +23,12 @@ class TopoDaoImpl extends DaoImpl implements TopoDao {
 		Topo topo = (Topo) super.get(Topo.class, id);
 		return topo;
 	}
+	
+	@Override
+	public String getSlug(Integer id) {
+		Topo topo = (Topo) super.get(Topo.class, id);
+		return topo.getSlug();
+	}	
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -96,6 +102,7 @@ class TopoDaoImpl extends DaoImpl implements TopoDao {
 		return super.delete(Topo.class, id);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void setUpdateAttributes(Map<String,Object> fields) {
 		for (String field : fields.keySet()) {

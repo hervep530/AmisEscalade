@@ -38,7 +38,13 @@ public interface SiteDao extends Dao {
 	 * @return site requested
 	 */
 	Site get(Integer id );
-		
+	
+	/**
+	 * @param id
+	 * @return site slug
+	 */
+	String getSlug(Integer id);
+	
 	/**
 	 * @return site list
 	 */

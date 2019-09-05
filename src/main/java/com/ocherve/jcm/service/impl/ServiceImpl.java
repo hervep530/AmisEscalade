@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import com.ocherve.jcm.service.AccessLevel;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.ServiceException;
@@ -195,6 +196,11 @@ public abstract class ServiceImpl implements Service {
 		String info = "Service " + this.serviceName + " aborted.";
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
+	}
+	
+	@Override
+	public AccessLevel checkSecurity(Parameters parameters) {
+		return AccessLevel.DEFAULT;
 	}
 
 }

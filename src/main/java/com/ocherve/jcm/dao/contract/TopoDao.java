@@ -37,6 +37,12 @@ public interface TopoDao extends Dao {
 	 * @return topo requested
 	 */
 	Topo get(Integer id );
+	
+	/**
+	 * @param id
+	 * @return slug
+	 */
+	String getSlug(Integer id);
 		
 	/**
 	 * @return topo list
