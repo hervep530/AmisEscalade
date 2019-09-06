@@ -157,6 +157,24 @@ public class CommentManager {
 	}
 
 	/**
+	 * Delete all comments
+	 */
+	public static void deleteAll() {
+		initialization();
+		Integer currentId = 0;
+		List<Comment> comments = dao.getList();
+		try {
+			for (Comment comment : comments) {	
+				currentId = comment.getId();
+				if (! dao.delete(currentId)) DLOG.log(Level.DEBUG, String.format("Error on deleting comment " + currentId));
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on deleting comments (Id : " + currentId + ")"));
+			DLOG.log(Level.DEBUG, String.format(e.getMessage()));
+		}
+	}
+
+	/**
 	 * @param comment
 	 */
 	public static void logComment(Comment comment) {

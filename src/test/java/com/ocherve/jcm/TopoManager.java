@@ -98,6 +98,24 @@ public class TopoManager {
 	}
 	
 	/**
+	 * Delete all topo in database
+	 */
+	public static void deleteAll() {
+		initialization();
+		List<Topo> topos = dao.getList();
+		try {
+			for (Topo topo : topos) {			
+				dao.delete(topo.getId());
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on deleting topos"));
+			DLOG.log(Level.DEBUG, String.format(e.getMessage()));
+		}
+	}
+	
+	
+	
+	/**
 	 * @return ids of topo created as Integer array
 	 */
 	protected static Integer[] getIds() {

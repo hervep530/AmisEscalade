@@ -25,6 +25,7 @@ import javax.persistence.Table;
 @Table(name="jcm_user")
 @NamedQueries({
 	@NamedQuery(name="User.findAll", query="SELECT u FROM User u"),
+	@NamedQuery(name="User.FindUserIdGreaterThan", query="SELECT u FROM User u WHERE u.id >= :idMin"),
 	@NamedQuery(name="User.findUserAtLeastGrantedTo", query="SELECT u FROM User u WHERE u.role.id > :roleIdMini")
 })
 public class User implements Serializable {

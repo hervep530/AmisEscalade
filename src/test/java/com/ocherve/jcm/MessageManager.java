@@ -1,7 +1,5 @@
 package com.ocherve.jcm;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
@@ -27,10 +25,10 @@ public class MessageManager {
 		{"0", "1", "Test", "Juste pour savoir s il y a quelqu un", "1"},
 		{"1", "0", "Test", "Ok bon bien au revoir", "2"},
 		{"0", "1", "Test", "Au revoir", "3"},
-		{"3", "0", "Tendu", "Alors il t a repondu quoi", null},
+		{"3", "0", "Tendu", "Alors elle t a repondu quoi", null},
 		{"0", "3", "Tendu", "...au revoir", "5"},
-		{"3", "0", "Tendu", "ah c'est pas cool ça", "6"},
-		{"0", "3", "Tendu", "et si le message est long est ce qu on coupe a 70 caractere comme prevu ou est ce que ça affiche tout une tartine", "7"},
+		{"3", "0", "Tendu", "ah c'est pas cool ça... pas d'humour", "6"},
+		{"0", "3", "Tendu", "et si le message est trop long pour la log, est ce qu on coupe a 70 caractere comme prevu ou est ce que ça affiche tout une tartine", "7"},
 		{"3", "0", "Tendu", "on va voir...", "8"}
 	};
 	private static Integer[] ids;
@@ -143,6 +141,26 @@ public class MessageManager {
 		}		
 		DLOG.log(Level.DEBUG, String.format("End of MessageManager.delete()"));
 	}
+	
+	/**
+	 * Delete all messages in database
+	 */
+	public static void deleteAll() {
+		initialization();
+		List<Message> messages = dao.getListFromNamedQuery("Message.findAllOrderByIdDesc");
+		Integer currentId = 0;
+		try {
+			for (Message message : messages) {
+				currentId = message.getId();
+				boolean deleted = dao.delete(currentId);
+				if (! deleted) DLOG.log(Level.DEBUG, String.format("Error on deleting message " + currentId ));
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on deleting messages (Id : " + currentId + ")"));
+			DLOG.log(Level.DEBUG, String.format(formatException(e)));
+		}		
+		DLOG.log(Level.DEBUG, String.format("End of MessageManager.deleteAll()"));
+	}	
 	
 	/**
 	 * @param messages List of message

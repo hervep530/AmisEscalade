@@ -1,6 +1,8 @@
 package com.ocherve.jcm;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -65,6 +67,24 @@ public class UserManager {
 		initialization();
 		for (int u = 0 ; u < ids.length ; u++) {			
 			dao.delete(ids[u]);
+		}
+	}
+	
+	/**
+	 * Delete all users but keep anonymous with id 1
+	 */
+	public static void deleteAllNotAnonymous() {
+		initialization();
+		Map <String,Object> parameters = new HashMap<>();
+		parameters.put("idMin", 2);
+		try {
+			List<User> users = dao.getListFromNamedQuery("User.FindUserIdGreaterThan", parameters);
+			for (User user : users) {			
+				dao.delete(user.getId());
+			}		
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on deleting topos"));
+			DLOG.log(Level.DEBUG, String.format(e.getMessage()));			
 		}
 	}
 	

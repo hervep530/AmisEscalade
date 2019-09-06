@@ -101,7 +101,23 @@ public class SiteManager {
 			DLOG.log(Level.DEBUG, String.format(e.getMessage()));
 		}
 	}
-	
+
+	/**
+	 * Delete sites
+	 */
+	public static void deleteAll() {
+		initialization();
+		List<Site> sites= dao.getList();
+		try {
+			for (Site site : sites) {			
+				dao.delete(site.getId());
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, String.format("Error on deleting site"));
+			DLOG.log(Level.DEBUG, String.format(e.getMessage()));
+		}
+	}
+
 	/**
 	 * @return ids of site created as Integer array
 	 */
