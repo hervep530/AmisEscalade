@@ -11,6 +11,7 @@ import java.util.Map;
 public class Delivry {
 	
 	private Map<String,String> errors;
+	private Map<String,Object> attributes;
 	private Parameters parameters;
 
 	/**
@@ -19,6 +20,7 @@ public class Delivry {
 	public Delivry() {
 		errors = new HashMap<>();
 		parameters = new Parameters();
+		attributes = new HashMap<>();
 	}
 
 	/**
@@ -66,6 +68,39 @@ public class Delivry {
 	public void setParameters(Parameters parameters) {
 		this.parameters = parameters;
 	}
+
+	/**
+	 * @return the attributes
+	 */
+	public Map<String, Object> getAttributes() {
+		return attributes;
+	}
+
+	/**
+	 * @param attributes the attributes to set
+	 */
+	public void setAttributes(Map<String, Object> attributes) {
+		this.attributes = attributes;
+	}
+
+	/**
+	 * Appender for errors - easier to use than setter
+	 * @param name 
+	 * @param value 
+	 * 
+	 */
+	public void appendattribute(String name, Object value) {
+		this.attributes.put(name, value);
+	}
 	
+	/**
+	 * @param name
+	 * @return Object
+	 */
+	public Object getAttribute(String name) {
+		return this.attributes.get(name);
+	}
+
+
 
 }

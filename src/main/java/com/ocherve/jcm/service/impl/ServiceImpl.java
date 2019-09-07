@@ -33,13 +33,13 @@ public abstract class ServiceImpl implements Service {
     private static final Level DLOGLEVEL = Level.TRACE;
     
 	// Persistent variable because each service are initialized once and keep as cache in proxy
-    private String serviceName;
-	private String servicePattern;
+    protected String serviceName;
+    protected String servicePattern;
 	@SuppressWarnings("unused")
-	private String defaultUrl;
+	protected String defaultUrl;
 	private Map<String,String> actions;
 	// Not persistent : set to null for garbage collector after init
-    private Map<String, String> errors;
+    protected Map<String, String> errors;
     private String[] servletPaths;
 
 	/**

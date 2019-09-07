@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    	<c:set var="site" value="${ delivry.attributes.site}" scope="page" />
 		<article id="acceuil">
 			<div id="summary" class="mx-4">
-				<h1 class="h2 text-center">delivry.site.name</h1>
-				<p id="description">delivry.site.summary</p>
+				<h1 class="h2 text-center"><c:out value="${ delivry.attributes.site.name }" /></h1>
+				<p id="description"><c:out value="${ delivry.attributes.site.summary }" /></p>
 			</div>
 			<div id="detail" class="container mx-4">
 				<section id="teaser" class="row">
@@ -12,17 +13,34 @@
 							width="96%" height="96%" />
 					</div>
 					<div id="technicalSheet" class="col-xl-4">
-						<p>$pays - $dpt</p>
+						<p><strong>$<c:out value="${ delivry.attributes.site.country }" /> - 
+							<c:out value="${ delivry.attributes.site.department }" /></strong></p>
 						<ul>
-							<li>Bloc / Falaise / Mur</li>
-							<li>Hauteur : min / max</li>
-							<li>cotations : min / max</li>
-							<li>orientation : Nord / Nord-Est</li>
+							<li>
+								<c:out value="${ site.block ? 'Bloc' : ''}"/>
+								<c:out value="${ site.block && ( site.cliff || site.wall ) ? ' / ' : ''}"/>
+								<c:out value="${ site.cliff ? 'Falaise' : ''}"/>
+								<c:out value="${ ( site.block || site.cliff ) && site.wall ? ' / ' : ''}"/>
+								<c:out value="${ site.wall ? 'Mur' : ''}"/>
+							</li>
+							<li>Hauteur
+								<ul>
+									<li>Min :<c:out value="${ site.minHeight }" /></li>
+									<li>Max :<c:out value="${ site.maxHeight }" /></li>
+								</ul>
+							</li>
+							<li>Cotation
+								<ul>
+									<li>Min :<c:out value="${ site.cotationMin.label }" /></li>
+									<li>Max :<c:out value="${ site.cotationMax.label }" /></li>
+								</ul>
+							</li>
+							<li>orientation : <c:out value="${ site.orientation }" /></li>
 						</ul>
 					</div>
 				</section>
 				<section id="content">
-					<p>delivry.site.content</p>					
+					<p><c:out value="${ site.content }" /></p>					
 				</section>
 			</div>
 		</article>

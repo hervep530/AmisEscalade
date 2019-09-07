@@ -16,7 +16,7 @@
 <%@ include file="jspCommon/Notification.jsp" %>
 <%@ include file="jspSite/Content.jsp" %>
 <%@ include file="jspDebug/DebugDelivry.jsp" %>
-<%@ include file="jspCommon/Footer.jsp" %>
+<%@ include file="jspSite/Footer.jsp" %>
 				</section>
 				<section id="proposal" class="col-xl-3">
 <%@ include file="jspCommon/SocialLinks.jsp" %>
