@@ -172,9 +172,9 @@ public class SiteManager {
 		message += "Site slug : " + site.getSlug() + "%n";
 		message += "Departement : " + site.getDepartment() + "%n";
 		message += "Pays : " + site.getCountry() + "%n";
-		message += "Bloc : " + site.isBlock().toString() + "%n";
-		message += "Falaise : " + site.isCliff().toString() + "%n";
-		message += "Mur : " + site.isWall().toString() + "%n";
+		message += "Bloc : " + String.valueOf(site.isBlock()) + "%n";
+		message += "Falaise : " + String.valueOf(site.isCliff()) + "%n";
+		message += "Mur : " + String.valueOf(site.isWall()) + "%n";
 		message += "Orientation : " + site.getOrientation() + "%n";
 		message += "Hauteur mini : " + site.getMinHeight() + "%n";
 		message += "Hauteur maxi : " + site.getMaxHeight() + "%n";
@@ -187,8 +187,8 @@ public class SiteManager {
 		message += "Auteur : " + site.getAuthor().getUsername() + "%n";
 		message += "Créé le : " + site.getTsCreated().toString() + "%n";
 		message += "Modifié le : " + site.getTsModified().toString() + "%n";
-		message += "Tagué ami : " + site.isFriendTag().toString() + "%n";
-		message += "Published : " + site.isPublished().toString() + "%n";
+		message += "Tagué ami : " + String.valueOf(site.isFriendTag()) + "%n";
+		message += "Published : " + String.valueOf(site.isPublished()) + "%n";
 		DLOG.log(Level.DEBUG, String.format(message));
 	}
 

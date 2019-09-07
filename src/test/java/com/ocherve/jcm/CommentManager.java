@@ -228,7 +228,7 @@ public class CommentManager {
 			message += "Site name : " + reference.getName() + "%n";
 			message += "Summary : " + reference.getSummary() + "%n";
 			message += "Modifié le : " + reference.getTsModified().toString() + "%n";
-			message += "Published : " + reference.isPublished().toString() + "%n";
+			message += "Published : " + String.valueOf(reference.isPublished()) + "%n";
 			message += getComments(reference);
 			DLOG.log(Level.DEBUG, String.format(message));
 		} catch (Exception e) {

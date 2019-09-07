@@ -37,7 +37,7 @@ public class Reference implements Serializable {
 
 	private String slug;
 
-	private Boolean published;
+	private boolean published;
 
 	private String summary;
 	
@@ -113,14 +113,14 @@ public class Reference implements Serializable {
 	/**
 	 * @return published status
 	 */
-	public Boolean isPublished() {
+	public boolean isPublished() {
 		return this.published;
 	}
 
 	/**
 	 * @param published
 	 */
-	public void setPublished(Boolean published) {
+	public void setPublished(boolean published) {
 		this.published = published;
 	}
 

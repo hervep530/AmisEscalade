@@ -9,7 +9,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.TopoDao;
-import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.model.Topo;
 import com.ocherve.jcm.model.User;
 
@@ -186,7 +185,7 @@ public class TopoManager {
 			message += "Auteur : " + topo.getAuthor().getUsername() + "%n";
 			message += "Créé le : " + topo.getTsCreated().toString() + "%n";
 			message += "Modifié le : " + topo.getTsModified().toString() + "%n";
-			message += "Published : " + topo.isPublished().toString() + "%n";
+			message += "Published : " + String.valueOf(topo.isPublished()) + "%n";
 			DLOG.log(Level.DEBUG, String.format(message));			
 		} catch (Exception e) {
 			DLOG.log(Level.DEBUG, String.format("Error on creating topo entity log message"));

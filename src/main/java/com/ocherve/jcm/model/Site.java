@@ -42,11 +42,11 @@ public class Site extends Reference implements Serializable {
 	private String department;
 
 	@Column(name="block")
-	private Boolean block;
+	private boolean block;
 
-	private Boolean cliff;
+	private boolean cliff;
 
-	private Boolean wall;
+	private boolean wall;
 
 	@Column(name="max_height")
 	private Integer maxHeight;
@@ -60,7 +60,7 @@ public class Site extends Reference implements Serializable {
 	private String orientation;
 
 	@Column(name="friend_tag")
-	private Boolean friendTag;
+	private boolean friendTag;
 
 	//bi-directional many-to-one association to JcmCotation
 	@ManyToOne
@@ -176,28 +176,28 @@ public class Site extends Reference implements Serializable {
 	/**
 	 * @return true if is block
 	 */
-	public Boolean isBlock() {
+	public boolean isBlock() {
 		return this.block;
 	}
 
 	/**
 	 * @param block
 	 */
-	public void setBlock(Boolean block) {
+	public void setBlock(boolean block) {
 		this.block = block;
 	}
 
 	/**
 	 * @return true if is cliff
 	 */
-	public Boolean isCliff() {
+	public boolean isCliff() {
 		return this.cliff;
 	}
 
 	/**
 	 * @param cliff
 	 */
-	public void setCliff(Boolean cliff) {
+	public void setCliff(boolean cliff) {
 		this.cliff = cliff;
 	}
 
@@ -232,14 +232,14 @@ public class Site extends Reference implements Serializable {
 	/**
 	 * @return true if is tagged as friend site
 	 */
-	public Boolean isFriendTag() {
+	public boolean isFriendTag() {
 		return this.friendTag;
 	}
 
 	/**
 	 * @param friendTag
 	 */
-	public void setFriendTag(Boolean friendTag) {
+	public void setFriendTag(boolean friendTag) {
 		this.friendTag = friendTag;
 	}
 
@@ -302,14 +302,14 @@ public class Site extends Reference implements Serializable {
 	/**
 	 * @return true if is wall
 	 */
-	public Boolean isWall() {
+	public boolean isWall() {
 		return this.wall;
 	}
 
 	/**
 	 * @param wall
 	 */
-	public void setWall(Boolean wall) {
+	public void setWall(boolean wall) {
 		this.wall = wall;
 	}
 
