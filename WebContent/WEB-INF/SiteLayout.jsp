@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+<%@ include file="jspSite/PageVar.jsp" %>
 	<head>
 		<meta charset="UTF-8">
 <%@ include file="jspCommon/meta/Style.jsp" %>
@@ -14,7 +15,19 @@
 <%@ include file="jspCommon/Header.jsp" %>
 <%@ include file="jspCommon/NavBar.jsp" %>
 <%@ include file="jspCommon/Notification.jsp" %>
-<%@ include file="jspSite/Content.jsp" %>
+
+<!-- l f r c u uac umc ut utt utf upt upf d -->
+<c:set var="a" value="${delivry.parameters.parsedUrl.action}" scope="page"/>
+<c:choose>
+    <c:when test="${action == 'l' || action == 'f'}"><%@ include file="jspSite/View.jsp" %></c:when>
+    <c:when test="${action == 'r'}"><%@ include file="jspSite/Content.jsp" %></c:when>
+    <c:when test="${action == 'c'}"><%@ include file="jspSite/CreateForm.jsp" %></c:when>
+    <c:when test="${action == 'u'}"><%@ include file="jspSite/UpdateForm.jsp" %></c:when>
+    <c:otherwise><%@ include file="jspSite/Content.jsp" %></c:otherwise>
+</c:choose>
+
+
+
 <%@ include file="jspDebug/DebugDelivry.jsp" %>
 <%@ include file="jspSite/Footer.jsp" %>
 				</section>
