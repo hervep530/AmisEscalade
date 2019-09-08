@@ -10,8 +10,8 @@ import com.ocherve.jcm.service.factory.TopoService;
  */
 public class TopoServiceImpl extends ServiceImpl implements TopoService {
 
-	private final static String SVC_DEFAULT_URL = "";
-	private final static String[][] SVC_ACTIONS = {
+	protected final static String SVC_DEFAULT_URL = "";
+	protected final static String[][] SVC_ACTIONS = {
 			{"l","/topo/l/$id"},
 			{"r","/topo/r/$id/$slug"},
 			{"c","/topo/c"},
@@ -27,7 +27,7 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 	 * Constructor 
 	 */
 	public TopoServiceImpl() {
-		super(SVC_DEFAULT_URL, SVC_ACTIONS);
+		super(SVC_DEFAULT_URL);
 	}
 
 

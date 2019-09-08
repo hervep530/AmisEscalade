@@ -9,7 +9,6 @@ import com.ocherve.jcm.dao.contract.SiteDao;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
-import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.UrlException;
 import com.ocherve.jcm.service.factory.SiteService;
 
@@ -21,8 +20,8 @@ import com.ocherve.jcm.service.factory.SiteService;
  */
 public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	
-	private final static String SVC_DEFAULT_URL = "";
-	private final static String[][] SVC_ACTIONS = {
+	protected final static String SVC_DEFAULT_URL = "";
+	protected final static String[][] SVC_ACTIONS = {
 			{"l","/site/l/$id"},
 			{"f","/site/f"},
 			{"r","/site/r/$id/$slug"},
@@ -38,12 +37,12 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			{"d","/site/d"}
 	};
 	private SiteDao siteDao;
-
+	
 	/**
 	 * Constructor 
 	 */
 	public SiteServiceImpl() {
-		super(SVC_DEFAULT_URL, SVC_ACTIONS);
+		super(SVC_DEFAULT_URL);
 		siteDao = SiteDao.class.cast(DaoProxy.getInstance().getSiteDao());
 	}
 

@@ -10,8 +10,8 @@ import com.ocherve.jcm.service.factory.MessageService;
  */
 public class MessageServiceImpl extends ServiceImpl implements MessageService {
 
-	private final static String SVC_DEFAULT_URL = "";
-	private final static String[][] SVC_ACTIONS = {
+	protected final static String SVC_DEFAULT_URL = "";
+	protected final static String[][] SVC_ACTIONS = {
 			{"l","/message/l/$id"},
 			{"ls","/message/ls/$id"},
 			{"lr","/message/lr/$id"},
@@ -24,7 +24,7 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 	 * Constructor 
 	 */
 	public MessageServiceImpl() {
-		super(SVC_DEFAULT_URL, SVC_ACTIONS);
+		super(SVC_DEFAULT_URL);
 	}
 
 

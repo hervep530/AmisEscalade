@@ -1,6 +1,5 @@
 package com.ocherve.jcm.service.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,12 +34,18 @@ public abstract class ServiceImpl implements Service {
 	// Persistent variable because each service are initialized once and keep as cache in proxy
     protected String serviceName;
     protected String servicePattern;
-	@SuppressWarnings("unused")
 	protected String defaultUrl;
 	private Map<String,String> actions;
 	// Not persistent : set to null for garbage collector after init
     protected Map<String, String> errors;
-    private String[] servletPaths;
+    
+    
+    /**
+     * Constructor
+     */
+    public ServiceImpl() {
+    	super();
+    }
 
 	/**
 	 *  
@@ -55,86 +60,27 @@ public abstract class ServiceImpl implements Service {
 	 *     contains empty action path {"empty","/"}
 	 * 
 	 * @param defaultUrl  : String to define fallback url for this service (unused)
-	 * @param actions  : String[][] to define list of {actionName, actionUrlPattern}
 	 */
-	public ServiceImpl(String defaultUrl, String[][] actions) {
-		// Set all Service Properties
+	public ServiceImpl(String defaultUrl) {
 		Configurator.setLevel(SLOG.getName(), SLOGLEVEL);
 		Configurator.setLevel(DLOG.getName(), DLOGLEVEL);
-		this.serviceName = this.getClass().getSimpleName().replaceAll("ServiceImpl", "");
-		this.servicePattern = this.serviceName.toLowerCase();
-		this.defaultUrl = defaultUrl;
-		this.actions = new HashMap<>();
-		for ( int a = 0; a < actions.length; a++ ) {
-			this.actions.put(actions[a][0], actions[a][1]);
+		ServiceProperties serviceAttributes = null;
+		try {
+			serviceAttributes = ServiceHelper.getInstance(this.getClass());
+		} catch (ServiceException e) {
+			throw new ServiceException("Service " + this.serviceName + " can not be instanciated.");
 		}
-	    // Analyse Service Class definition and log errors
-        this.errors = new HashMap<>();
-        this.setServletPaths();
-        //this.validateServletPaths();
-        if ( this.errors.isEmpty() ) this.validateServicePaths();
-        if ( ! this.errors.isEmpty() ) 
-        	throw new ServiceException("Service " + this.serviceName + " can not be instanciated.");
+		// Set all Service Properties with ServiceHelper
+		this.serviceName = serviceAttributes.getServiceName();
+		this.servicePattern = serviceAttributes.getServicePattern();
+		this.defaultUrl = defaultUrl;
+		this.actions = serviceAttributes.getActions();
+        this.errors = serviceAttributes.getErrors();
+        
+        //throw new ServiceException("Service " + this.serviceName + " can not be instanciated.");
 
-        // Unused variable set to null for garbage collection
-        this.errors = null;
-        this.servletPaths = null;
  		String info = "Service " + this.serviceName + " is now instanciated.";
 		DLOG.log(Level.INFO , info);
-	}
-
-    /**
-     * Call from constructor to set servletPath
-     * uses ServletChecker which throws ServiceException
-     */
-	private void setServletPaths() {
-    	try {
-    		this.servletPaths = ServletChecker.getAnnotationPaths(this.serviceName);
-    		ServletChecker.validatePathsCount(this.serviceName, this.servletPaths);
-    	} catch (ServiceException e) {
-    		this.errors.put(this.serviceName + "Servlet", e.getMessage());
-    	}
-    	if ( ! this.errors.isEmpty() ) return;
-		for (int p=0; p < this.servletPaths.length; p++) {
-			try {
-	 			ServletChecker.validatePath(this.serviceName, this.servletPaths[p]);
-			} catch (ServiceException e) {
-				this.errors.put(this.serviceName + "ServletPath" + p, e.getMessage());
-			}
-		}
-    	if ( ! this.errors.isEmpty() ) return;
-		// Check if Default Service contains the empty action path
-		if (this.serviceName.contentEquals("Default")) {
-			try {
-				ServletChecker.hasEmptyPath(this.servletPaths);
-			} catch (ServiceException e) {
-				errors.put("DefaultService", e.getMessage());
-			}
-		}
-    }
-
-	/**
-	 * Called from constructor to validate that Service paths matches with servlet paths
-	 * uses ServiceChecker which throws ServiceException
-	 */
-	private void validateServicePaths() {
-		// Method available only if this.servletPaths has at least one element
-		if (this.servletPaths == null) {
-			return;
-		}
-		// For each action path, Check if it matches with one servlet Path (Call ServiceChecker method)
-		this.actions.forEach((actionName, actionPath) -> {
-			String message = "";
-			if ( ! this.serviceName.contentEquals("Default") && actionName.contentEquals("empty") ) {
-				message = "Only Default can contain empty action.";
-				errors.put(this.serviceName + "Service_" + actionName, message);
-			}
-			try {
-				ServiceChecker.validatePathFromServlet(this.servicePattern, actionPath, this.servletPaths);
-			} catch (ServiceException e) {
-				errors.put(this.serviceName + "Service_" + actionName, e.getMessage());
-			}
-		});
 	}
 	
 	@Override

@@ -11,8 +11,8 @@ import com.ocherve.jcm.service.factory.DefaultService;
 public class DefaultServiceImpl extends ServiceImpl implements DefaultService {
 
 
-	private final static String SVC_DEFAULT_URL = "";
-	private final static String[][] SVC_ACTIONS = {
+	protected final static String SVC_DEFAULT_URL = "";
+	protected final static String[][] SVC_ACTIONS = {
 			{"empty","/"},
 			{"accueil","/accueil"},
 			{"welcome","/welcome"},
@@ -26,7 +26,7 @@ public class DefaultServiceImpl extends ServiceImpl implements DefaultService {
 	 * customize this constructor
 	 */
 	public DefaultServiceImpl() {
-		super(SVC_DEFAULT_URL, SVC_ACTIONS);
+		super(SVC_DEFAULT_URL);
 	}
 
 }

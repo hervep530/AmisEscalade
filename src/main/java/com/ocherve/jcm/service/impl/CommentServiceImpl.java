@@ -10,8 +10,8 @@ import com.ocherve.jcm.service.factory.CommentService;
  */
 public class CommentServiceImpl extends ServiceImpl implements CommentService {
 
-	private final static String SVC_DEFAULT_URL = "";
-	private final static String[][] SVC_ACTIONS = {
+	protected final static String SVC_DEFAULT_URL = "";
+	protected final static String[][] SVC_ACTIONS = {
 			{"l","/comment/l/$id"},
 			{"u","/comment/u/$id"},
 			{"upt","/comment/upt/$id"},
@@ -23,7 +23,7 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 	 * Constructor 
 	 */
 	public CommentServiceImpl() {
-		super(SVC_DEFAULT_URL, SVC_ACTIONS);
+		super(SVC_DEFAULT_URL);
 	}
 
 

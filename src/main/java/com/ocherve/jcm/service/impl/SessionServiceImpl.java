@@ -10,8 +10,8 @@ import com.ocherve.jcm.service.factory.SessionService;
  */
 public class SessionServiceImpl extends ServiceImpl implements SessionService {
 	
-	private final static String SVC_DEFAULT_URL = "session/moncompte";
-	private final static String[][] SVC_ACTIONS = {
+	protected final static String SVC_DEFAULT_URL = "session/moncompte";
+	protected final static String[][] SVC_ACTIONS = {
 			{"connexion","/session/connexion"},	
 			{"deconnexion","/session/deconnexion"},	
 			{"inscription","/session/inscription"},	
@@ -25,7 +25,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 	 * customize this constructor
 	 */
 	public SessionServiceImpl() {
-		super(SVC_DEFAULT_URL, SVC_ACTIONS);
+		super(SVC_DEFAULT_URL);
 	}
 
 }

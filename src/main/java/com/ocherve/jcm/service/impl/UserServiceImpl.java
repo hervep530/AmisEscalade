@@ -10,8 +10,8 @@ import com.ocherve.jcm.service.factory.UserService;
  */
 public class UserServiceImpl extends ServiceImpl implements UserService{
 
-	private final static String SVC_DEFAULT_URL = "";
-	private final static String[][] SVC_ACTIONS = {
+	protected final static String SVC_DEFAULT_URL = "";
+	protected final static String[][] SVC_ACTIONS = {
 			{"l","/user/l/$id"},
 			{"f","/user/f/$id"},
 			{"c","/user/c"},
@@ -24,7 +24,7 @@ public class UserServiceImpl extends ServiceImpl implements UserService{
 	 * Constructor 
 	 */
 	public UserServiceImpl() {
-		super(SVC_DEFAULT_URL, SVC_ACTIONS);
+		super(SVC_DEFAULT_URL);
 	}
 
 
