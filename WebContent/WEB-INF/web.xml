@@ -54,11 +54,11 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>default</servlet-name>
-    <url-pattern>/media/site/*</url-pattern>
+    <url-pattern>/medias/site/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>default</servlet-name>
-    <url-pattern>/media/topo/*</url-pattern>
+    <url-pattern>/medias/topo/*</url-pattern>
   </servlet-mapping>
   <error-page>
     <error-code>404</error-code>

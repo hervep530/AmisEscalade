@@ -9,7 +9,7 @@
 			<div id="detail" class="container mx-4">
 				<section id="teaser" class="row">
 					<div id="medias" class="col-xl-8">
-						<img alt="" src="${pageContext.request.contextPath}/media/site/kerlouan.jpg"
+						<img alt="" src="${pageContext.request.contextPath}/medias/site/kerlouan.jpg"
 							width="96%" height="96%" />
 					</div>
 					<div id="technicalSheet" class="col-xl-4">
