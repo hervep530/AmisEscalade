@@ -122,9 +122,14 @@ public abstract class DaoImpl implements Dao {
 			Query query = em.createNamedQuery(queryName, entityClass);
 			if ( parameters != null ) {
 				for (String parameterName : parameters.keySet()) {
+					if ( ! parameterName.matches("^(offset|limit)$") )
 					query.setParameter(parameterName, parameters.get(parameterName));
 				}				
 			}
+			if ( parameters.containsKey("limit")) 
+				query.setMaxResults(Integer.valueOf(parameters.get("limit").toString()));
+			if ( parameters.containsKey("offset")) 
+				query.setFirstResult(Integer.valueOf(parameters.get("offset").toString()));
 			objects = query.getResultList();
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, entityClass.getSimpleName() + " can not get list of objects.");
@@ -166,6 +171,26 @@ public abstract class DaoImpl implements Dao {
 			}
 		}
 		return deleted;
+	}
+
+	@Override
+	public Long getCountFromNamedQuery(Class<?> entityClass, String queryName, Map<String, Object> parameters) {
+		daoInit();
+		long count = 0;
+		try {
+			Query query = em.createNamedQuery(queryName, Long.class);
+			if ( parameters != null ) {
+				for (String parameterName : parameters.keySet()) {
+					query.setParameter(parameterName, parameters.get(parameterName));
+				}				
+			}
+			count = (long)query.getSingleResult();
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, entityClass.getSimpleName() + " can not get count.");
+			DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
+		} 
+		DLOG.log(Level.DEBUG, String.format("result of query " + queryName + " : " + count));		
+		return count;
 	}
 
 	protected void setUpdateAttributes(Map<String,Object> fields) {

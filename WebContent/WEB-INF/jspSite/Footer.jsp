@@ -25,4 +25,29 @@
 				</ul>
 			</div>
 </c:if>
+<c:if test="${footerPagination == true}">
+			<nav aria-label="Page navigation example">
+				<ul class="pagination justify-content-end">
+<c:if test="${pageId > 1}">
+					<li class="page-item disabled">
+						<a class="page-link" href="${pageContext.request.contextPath}/site/l/${pageId - 1}">Previous</a>
+					</li>
+</c:if>
+<c:forEach begin="0" end="8" varStatus="loop">
+	<c:set var="linkId" value="${pageId - 3 + loop.index }"></c:set>
+	<c:if test="${linkId > 0 && linkId <= pageCount}">
+					<li class="page-item">
+						<a href="${pageContext.request.contextPath}/site/l/${linkId}"
+							class="page-link">${linkId}</a>
+					</li>
+	</c:if>
+</c:forEach>
+<c:if test="${pageCount > pageId}">
+					<li class="page-item">
+						<a class="page-link" href="${pageContext.request.contextPath}/site/l/${pageId + 1}">Next</a>
+					</li>
+</c:if>
+				</ul>
+			</nav>		
+</c:if>
 		</footer>

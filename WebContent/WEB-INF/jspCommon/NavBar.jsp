@@ -3,16 +3,16 @@
 		<nav id="navBar" class="navbar navbar-expand-lg navbar-dark bg-dark py-0">
 			<ul class="navbar-nav ml-3 mr-auto">
 				<li class="nav-item active">
-					<a class="nav-link px-4 py-3" href="#">Sites</a>
+					<a class="nav-link px-4 py-3" href="${pageContext.request.contextPath}/site/l/1">Sites</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link px-4 py-3" href="#">Topos</a>
+					<a class="nav-link px-4 py-3" href="${pageContext.request.contextPath}/topo/l/1">Topos</a>
 					</li>
 				<li class="nav-item">
 					<a class="nav-link px-4 py-3" href="#">A propos</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link px-4 py-3" href="#">Connexion</a>
+					<a class="nav-link px-4 py-3" href="${pageContext.request.contextPath}/session/connexion">Connexion</a>
 				</li>
 			</ul>
 			<form class="form-inline my-2 my-lg-0">

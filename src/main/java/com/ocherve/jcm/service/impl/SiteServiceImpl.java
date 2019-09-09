@@ -1,6 +1,8 @@
 package com.ocherve.jcm.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 
@@ -20,6 +22,7 @@ import com.ocherve.jcm.service.factory.SiteService;
  */
 public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	
+	
 	protected final static String SVC_DEFAULT_URL = "";
 	protected final static String[][] SVC_ACTIONS = {
 			{"l","/site/l/$id"},
@@ -36,6 +39,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			{"upf","/site/upf/$id"},
 			{"d","/site/d"}
 	};
+	protected final static long LIST_LIMIT = 3;
 	private SiteDao siteDao;
 	
 	/**
@@ -52,6 +56,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		try {
 			switch (parameters.getParsedUrl().getAction()) {
 				case "l" :
+					delivry = getList(parameters);
 					break;
 				case "f" :
 					break;
@@ -82,7 +87,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			}			
 		} catch (UrlException e ) {
 			DLOG.log(Level.ERROR , e.getMessage());
-			delivry.appendError(serviceName + "ServiceAction", e.getMessage());
+			delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), e.getMessage());
 		}
 		delivry.setParameters(parameters);
 		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
@@ -91,14 +96,52 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		return delivry;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Site> getList(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+	public Delivry getList(Parameters parameters) {
+		Delivry result = new Delivry();
+		List<Site> sites = null;
+		long sitesCount = 0;
+		long listsCount = 0;
+		// Calculating the count of sites lists in database, regarding the limit LIST_LIMIT to display a list
+		try {
+			sitesCount = siteDao.getCountFromNamedQuery(Site.class, "Site.countAll", null);
+		} catch (Exception e ) {
+			throw new UrlException("Echec de la requete Site.countAll");
+		}
+		if ( LIST_LIMIT > 0 ) {
+			listsCount = sitesCount / LIST_LIMIT ;
+			if ( sitesCount % LIST_LIMIT > 0 ) listsCount = Math.round(listsCount) + 1;
+		}
+		// Calculating offset to extract a sublist matching with id from all sites lists regarding given list id
+		long listId = 1;
+		try {
+			if ( ! parameters.getParsedUrl().getId().isEmpty() && Integer.valueOf(parameters.getParsedUrl().getId()) > 0 ) 
+				listId = Long.valueOf(parameters.getParsedUrl().getId());
+		} catch(Exception e) { /* this value is already checked with UrlChecker */ }
+		long offset = (listId -1) * LIST_LIMIT;
+		// Setting query name and parameters
+		String queryName = "Site.findAllOrderById";
+		Map<String,Object> queryParameters = new HashMap<>();
+		queryParameters.put("limit", LIST_LIMIT);
+		queryParameters.put("offset", offset);
+		// Getting query result
+		try {
+			sites = (List<Site>) siteDao.getListFromNamedQuery(Site.class, queryName, queryParameters);
+		} catch (Exception e ) {
+			throw new UrlException("Echec de la requete " + queryName);
+		}
+		if (sites == null) throw new UrlException("Aucun resultat pour la requete " + queryName);
+		// debug
+		if ( sites.isEmpty() ) throw new UrlException("Aucun resultat pour la requete " + queryName);
+		// Appending data to result and return it
+		result.appendattribute("sites", sites);
+		result.appendattribute("listsCount", listsCount);
+		return result;
 	}
 
 	@Override
-	public List<Site> postFindForm(Parameters parameters) {
+	public Delivry postFindForm(Parameters parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -122,55 +165,56 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	}
 
 	@Override
-	public void getCreateForm(Parameters parameters) {
+	public Delivry getCreateForm(Parameters parameters) {
 		// TODO Auto-generated method stub
+		return null;
 		
 	}
 
 	@Override
-	public Site postCreateForm(Parameters parameters) {
+	public Delivry postCreateForm(Parameters parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void getUpdateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Site postUpdateForm(Parameters parameters) {
+	public Delivry getUpdateForm(Parameters parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Site postAddComment(Parameters parameters) {
+	public Delivry postUpdateForm(Parameters parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Site postUpdateComment(Parameters parameters) {
+	public Delivry postAddComment(Parameters parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Site getUpdatePublishedStatus(Parameters parameters) {
+	public Delivry postUpdateComment(Parameters parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Site getUpdateTag(Parameters parameters) {
+	public Delivry getUpdatePublishedStatus(Parameters parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Site getDelete(Parameters parameters) {
+	public Delivry getUpdateTag(Parameters parameters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Delivry getDelete(Parameters parameters) {
 		// TODO Auto-generated method stub
 		return null;
 	}

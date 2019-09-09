@@ -14,7 +14,9 @@
 				<section id="main" class="col-xl-9">
 <%@ include file="jspCommon/Header.jsp" %>
 <%@ include file="jspCommon/NavBar.jsp" %>
-<%@ include file="jspCommon/Notification.jsp" %>
+<c:if test="${ not empty delivry.errors }">
+	<%@ include file="jspCommon/Notification.jsp" %>
+</c:if>
 
 <!-- l f r c u uac umc ut utt utf upt upf d -->
 <c:set var="a" value="${delivry.parameters.parsedUrl.action}" scope="page"/>

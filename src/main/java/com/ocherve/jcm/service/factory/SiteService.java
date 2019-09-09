@@ -18,13 +18,13 @@ public interface SiteService extends Service {
 	 * @param parameters 
 	 * @return Site List from dao
 	 */
-	List<Site> getList(Parameters parameters);
+	Delivry getList(Parameters parameters);
 	
 	/**
 	 * @param parameters 
 	 * @return Site List from request send to dao with form with post method
 	 */
-	List<Site> postFindForm(Parameters parameters);
+	Delivry postFindForm(Parameters parameters);
 	
 	/**
 	 * @param parameters 
@@ -36,55 +36,55 @@ public interface SiteService extends Service {
 	 *  requesting formular to create new Site
 	 * @param parameters 
 	 */
-	void getCreateForm(Parameters parameters);
+	Delivry getCreateForm(Parameters parameters);
 	
 	/**
 	 * @param parameters 
 	 * @return site created form form sent with post method
 	 */
-	Site postCreateForm(Parameters parameters);
+	Delivry postCreateForm(Parameters parameters);
 	
 	/**
 	 * requesting formular to update Site
 	 * @param parameters 
 	 */
-	void getUpdateForm(Parameters parameters);
+	Delivry getUpdateForm(Parameters parameters);
 	
 	
 	/**
 	 * @param parameters 
 	 * @return Site updated from form send with post method
 	 */
-	Site postUpdateForm(Parameters parameters);
+	Delivry postUpdateForm(Parameters parameters);
 	
 	/**
 	 * @param parameters 
 	 * @return Site updated after adding comment with post method
 	 */
-	Site postAddComment(Parameters parameters);
+	Delivry postAddComment(Parameters parameters);
 	
 	/**
 	 * @param parameters 
 	 * @return Site without modification - only comment is modified with post method
 	 */
-	Site postUpdateComment(Parameters parameters);
+	Delivry postUpdateComment(Parameters parameters);
 	
 	/**
 	 * @param parameters 
 	 * @return Site after update with get method
 	 */
-	Site getUpdatePublishedStatus(Parameters parameters);
+	Delivry getUpdatePublishedStatus(Parameters parameters);
 	
 	/**
 	 * @param parameters 
 	 * @return Site after update with get method
 	 */
-	Site getUpdateTag(Parameters parameters);
+	Delivry getUpdateTag(Parameters parameters);
 	
 	/**
 	 * @param parameters 
 	 * @return Site after delete with get method
 	 */
-	Site getDelete(Parameters parameters);
+	Delivry getDelete(Parameters parameters);
 	
 }

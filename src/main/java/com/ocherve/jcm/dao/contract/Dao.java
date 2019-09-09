@@ -54,6 +54,14 @@ public interface Dao {
 	 * @return list of requested objects
 	 */
 	List<?> getListFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> Parameters);
+
+	/**
+	 * @param entityClass
+	 * @param namedQuery
+	 * @param Parameters
+	 * @return list of requested objects
+	 */
+	Long getCountFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> Parameters);
 	
 	/**
 	 * @param entityClass

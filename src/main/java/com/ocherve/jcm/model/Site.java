@@ -18,11 +18,17 @@ import javax.persistence.*;
 @PrimaryKeyJoinColumn(name = "pfk_site_reference")
 @NamedQueries({
 	@NamedQuery(name="Site.findAll", query="SELECT s FROM Site s"),
+	@NamedQuery(name="Site.findAllOrderById", 
+		query="SELECT s FROM Site s ORDER BY s.id"),
+	@NamedQuery(name="Site.getSlug", 
+		query="SELECT s.slug FROM Site s WHERE s.id = :id "),
+	@NamedQuery(name="Site.getAuthor", 
+		query="SELECT s.author.id FROM Site s WHERE s.id = :id "),
 	@NamedQuery(name="Site.findCotationMaxGreaterThan", 
 		query="SELECT s FROM Site s WHERE s.cotationMax.id > :cotationMax"),
 	@NamedQuery(name="Site.findCotationMinLessThan",
-		query="SELECT s FROM Site s WHERE s.cotationMin.id <= :cotationMin"),
-	@NamedQuery(name="Site.countAll", query="SELECT count(0) FROM Site s")
+		query="SELECT COUNT(s) as count FROM Site s WHERE s.cotationMin.id <= :cotationMin"),
+	@NamedQuery(name="Site.countAll", query="SELECT COUNT(0) as count FROM Site")
 })
 public class Site extends Reference implements Serializable {
 
