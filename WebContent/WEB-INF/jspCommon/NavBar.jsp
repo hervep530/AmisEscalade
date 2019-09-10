@@ -9,14 +9,20 @@
 					<a class="nav-link px-4 py-3" href="${pageContext.request.contextPath}/topo/l/1">Topos</a>
 					</li>
 				<li class="nav-item">
-					<a class="nav-link px-4 py-3" href="#">A propos</a>
+					<a class="nav-link px-4 py-3" href="${pageContext.request.contextPath}/site/f">Recherche</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link px-4 py-3" href="${pageContext.request.contextPath}/session/connexion">Connexion</a>
+				<li class="nav-item dropdown">
+					<a class="nav-link px-4 py-3 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Idenfication
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/connexion">Connexion</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/deconnexion">Deconnexion</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/inscription">Inscription</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/d">Mon Compte</a>
+					</div>
 				</li>
 			</ul>
-			<form class="form-inline my-2 my-lg-0">
-				<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-			</form>
   		</nav>
+
+ 
