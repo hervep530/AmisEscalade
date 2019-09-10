@@ -29,7 +29,7 @@
 			<nav aria-label="Page navigation example">
 				<ul class="pagination justify-content-end">
 <c:if test="${pageId > 1}">
-					<li class="page-item disabled">
+					<li class="page-item">
 						<a class="page-link" href="${pageContext.request.contextPath}/site/l/${pageId - 1}">Previous</a>
 					</li>
 </c:if>
