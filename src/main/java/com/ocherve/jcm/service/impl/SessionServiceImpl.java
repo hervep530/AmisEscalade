@@ -1,5 +1,14 @@
 package com.ocherve.jcm.service.impl;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.logging.log4j.Level;
+
+import com.ocherve.jcm.model.User;
+import com.ocherve.jcm.form.ConnexionForm;
+import com.ocherve.jcm.service.Delivry;
+import com.ocherve.jcm.service.Parameters;
+import com.ocherve.jcm.service.UrlException;
 import com.ocherve.jcm.service.factory.SessionService;
 
 /**
@@ -15,8 +24,8 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 			{"connexion","/session/connexion"},	
 			{"deconnexion","/session/deconnexion"},	
 			{"inscription","/session/inscription"},	
-			{"moncompte","/session/pass"},	
-			{"moncompte","/session/d/$id"}
+			{"pass","/session/pass"},	
+			{"d","/session/d"}
 	};
 
 	/**
@@ -27,5 +36,64 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 	public SessionServiceImpl() {
 		super(SVC_DEFAULT_URL);
 	}
+	
+	public Parameters setParameters(HttpServletRequest request) {
+		Parameters parameters = super.setParameters(request);
+		ConnexionForm form = new ConnexionForm(request);
+		parameters.setForm(form);
+		
+		return parameters;
+	}
 
+	@Override
+	public Delivry doGetAction(Parameters parameters) {
+		Delivry delivry = new Delivry();
+		try {
+			switch (parameters.getParsedUrl().getAction()) {
+				case "pass" :
+					break;
+				case "d" :
+					break;
+				default :
+			}			
+		} catch (UrlException e ) {
+			DLOG.log(Level.ERROR , e.getMessage());
+			delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), e.getMessage());
+		}
+		delivry.setParameters(parameters);
+		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
+		String info = "Service " + this.serviceName + " do GetAction.";
+		DLOG.log(Level.DEBUG , info);
+		return delivry;
+	}
+
+	public Delivry doPostAction(Parameters parameters) {
+		Delivry delivry = new Delivry();
+		try {
+			switch (parameters.getParsedUrl().getAction()) {
+				case "connexion" :
+					ConnexionForm form = (ConnexionForm) parameters.getForm();
+					User user = form.connectUser();
+					if ( ! form.getErrors().isEmpty() ) {
+						delivry.appendattribute("formError", form);
+					} 
+					delivry.appendSession("sessionUser", user);
+					break;
+				case "inscription" :
+					break;
+				case "pass" :
+					break;
+				default :
+			}			
+		} catch (UrlException e ) {
+			DLOG.log(Level.ERROR , e.getMessage());
+			delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), e.getMessage());
+		}
+		delivry.setParameters(parameters);
+		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
+		String info = "Service " + this.serviceName + " do GetAction.";
+		DLOG.log(Level.DEBUG , info);
+		return delivry;
+	}
+	
 }

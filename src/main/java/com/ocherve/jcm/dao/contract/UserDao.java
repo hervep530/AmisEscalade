@@ -38,7 +38,14 @@ public interface UserDao extends Dao {
 	 * @return user requested
 	 */
 	User get(Integer id );
-		
+
+	/**
+	 * @param queryName 
+	 * @param parameters 
+	 * @return id
+	 */
+	Integer getIdFromNamedQuery(String queryName, Map<String,Object> parameters);		
+
 	/**
 	 * @return user list
 	 */

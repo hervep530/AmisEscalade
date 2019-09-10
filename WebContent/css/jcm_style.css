@@ -11,3 +11,8 @@
 #proposal p {
 	font-size: 0.8em;
 }
+
+#connexionForm {
+	width: 60%;
+	margin : 15px 20% 15px auto;
+}

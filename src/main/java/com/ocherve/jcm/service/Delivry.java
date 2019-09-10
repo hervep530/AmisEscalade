@@ -12,6 +12,7 @@ public class Delivry {
 	
 	private Map<String,String> errors;
 	private Map<String,Object> attributes;
+	private Map<String,Object> session;
 	private Parameters parameters;
 
 	/**
@@ -21,6 +22,7 @@ public class Delivry {
 		errors = new HashMap<>();
 		parameters = new Parameters();
 		attributes = new HashMap<>();
+		session = new HashMap<>();
 	}
 
 	/**
@@ -101,6 +103,27 @@ public class Delivry {
 		return this.attributes.get(name);
 	}
 
+	/**
+	 * @return the session
+	 */
+	public Map<String, Object> getSession() {
+		return session;
+	}
+
+	/**
+	 * @param session the session to set
+	 */
+	public void setSession(Map<String, Object> session) {
+		this.session = session;
+	}
+
+	/**
+	 * @param name
+	 * @param value
+	 */
+	public void appendSession(String name, Object value) {
+		this.session.put(name, value);
+	}
 
 
 }

@@ -13,7 +13,7 @@
 					<nav id="condensedNav" class="navbar navbar-expand-lg col-xl-3">
 						<ul class="navbar-nav">
 							<li class="nav-item">
-								<a href="#" class="p-2">
+								<a href="${pageContext.request.contextPath}/session/d" class="p-2">
 									<img alt="Mon compte" src="${pageContext.request.contextPath}/images/user.png"
 										width="32" height="32">
 								</a>

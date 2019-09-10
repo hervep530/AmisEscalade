@@ -25,6 +25,8 @@ import javax.persistence.Table;
 @Table(name="jcm_user")
 @NamedQueries({
 	@NamedQuery(name="User.findAll", query="SELECT u FROM User u"),
+	@NamedQuery(name="User.findByMail", query="SELECT u FROM User u WHERE u.mailAddress like :mailAddress"),
+	@NamedQuery(name="User.findUserIdByMail", query="SELECT u.id FROM User u WHERE u.mailAddress like :mailAddress"),
 	@NamedQuery(name="User.FindUserIdGreaterThan", query="SELECT u FROM User u WHERE u.id >= :idMin"),
 	@NamedQuery(name="User.findUserAtLeastGrantedTo", query="SELECT u FROM User u WHERE u.role.id > :roleIdMini")
 })

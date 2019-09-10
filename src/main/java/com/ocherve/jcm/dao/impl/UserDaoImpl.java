@@ -27,6 +27,15 @@ public class UserDaoImpl extends DaoImpl implements UserDao {
 		return user;
 	}
 
+	@Override
+	public Integer getIdFromNamedQuery(String queryName, Map<String, Object> parameters) {
+		try {
+			return ((Integer) super.getColumnsFromNamedQuery(Integer.class, queryName, parameters));
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> getList() {

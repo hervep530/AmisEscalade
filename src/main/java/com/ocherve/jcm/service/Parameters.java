@@ -15,6 +15,7 @@ public class Parameters {
 	
 	private Map<String,String> errors;
 	private ParsedUrl parsedUrl;
+	private Object form;
 
 	/**
 	 * Constructor
@@ -79,4 +80,19 @@ public class Parameters {
 		this.parsedUrl = parsedUrl;
 	}
 
+	/**
+	 * @return the form
+	 */
+	public Object getForm() {
+		return form;
+	}
+
+	/**
+	 * @param form the form to set
+	 */
+	public void setForm(Object form) {
+		this.form = form;
+	}
+
+	
 }

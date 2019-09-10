@@ -193,6 +193,26 @@ public abstract class DaoImpl implements Dao {
 		return count;
 	}
 
+	@Override
+	public Object getColumnsFromNamedQuery(Class<?> entityClass, String queryName, Map<String, Object> parameters) {
+		daoInit();
+		Object columns = null;
+		try {
+			Query query = em.createNamedQuery(queryName, entityClass);
+			if ( parameters != null ) {
+				for (String parameterName : parameters.keySet()) {
+					query.setParameter(parameterName, parameters.get(parameterName));
+				}				
+			}
+			columns = (Object)query.getSingleResult();
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, "Query " + queryName + " : can not get id.");
+			DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
+		} 
+		DLOG.log(Level.DEBUG, String.format("result of query " + queryName + " : " + columns));		
+		return columns;
+	}
+	
 	protected void setUpdateAttributes(Map<String,Object> fields) {
 		// Add code with overriding in each EntityDaoImpl
 	}

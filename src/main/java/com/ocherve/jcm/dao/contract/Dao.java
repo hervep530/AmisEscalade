@@ -59,6 +59,14 @@ public interface Dao {
 	 * @param entityClass
 	 * @param namedQuery
 	 * @param Parameters
+	 * @return id
+	 */
+	Object getColumnsFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> Parameters);
+
+	/**
+	 * @param entityClass
+	 * @param namedQuery
+	 * @param Parameters
 	 * @return list of requested objects
 	 */
 	Long getCountFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> Parameters);
