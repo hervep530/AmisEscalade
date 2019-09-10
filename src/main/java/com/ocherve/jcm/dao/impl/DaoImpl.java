@@ -26,6 +26,10 @@ public abstract class DaoImpl implements Dao {
 	protected Object object;
 	protected List<?> objects;
 	
+	protected DaoImpl() {
+		daoInit();
+	}
+	
 	protected void daoInit() {
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
 		object = null;
@@ -34,6 +38,7 @@ public abstract class DaoImpl implements Dao {
 			//em = Persistence.createEntityManagerFactory("HibernateHikariPersistenceUnit").createEntityManager();
 			em = Persistence.createEntityManagerFactory("JpaPersistenceUnit").createEntityManager();			
 			em.setFlushMode(FlushModeType.COMMIT);
+			DLOG.log(Level.DEBUG, String.format(this.getClass().getSimpleName() + "is now initialized"));
 		}
 	}
 

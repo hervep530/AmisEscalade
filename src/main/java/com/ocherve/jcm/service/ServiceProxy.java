@@ -30,7 +30,7 @@ public class ServiceProxy {
 	private Service commentService;
 	private Service messageService;
 	private Service userService;
-	private static ServiceProxy instance = new ServiceProxy();
+	private static ServiceProxy instance;
 	
 	
 	private ServiceProxy() {
@@ -49,6 +49,7 @@ public class ServiceProxy {
 	 * @return		ServiceProxy : the proxy itself
 	 */
 	public static ServiceProxy getInstance() {
+		if ( instance == null ) instance = new ServiceProxy();
 		return instance;
 	}
 
