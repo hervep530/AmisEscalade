@@ -24,52 +24,31 @@
 									aria-label="Text input with radio button"/>
 							</div>							
 						</div>
-						<div class="row mb-3">
-							<div class="input-group col-xl-4">
-								<div class="input-group-prepend">
-									<div class="input-group-text">
-										<input type="radio"  id="block" name="site_type" value="block"
-											aria-label="Radio button for following text input">
-									</div>
-								</div>
-								<input type="text" value="Bloc" class="form-control"
-									aria-label="Text input with radio button">
-							</div>
-							<div class="input-group col-xl-4">
-								<div class="input-group-prepend">
-									<div class="input-group-text">
-										<input type="radio"  id="cliff" name="site_type" value="cliff"
-											aria-label="Radio button for following text input" checked>
-									</div>
-								</div>
-								<input type="text" value="Falaise" class="form-control"
-									aria-label="Text input with radio button">
-							</div>
-							<div class="input-group col-xl-4">
-								<div class="input-group-prepend">
-									<div class="input-group-text">
-										<input type="radio"  id="wall" name="site_type" value="wall"
-											aria-label="Radio button for following text input">
-									</div>
-								</div>
-								<input type="text" value="Mur" class="form-control"
-									aria-label="Text input with radio button">
-							</div>
-						</div>
 						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<label class="input-group-text" for="height">Par hauteur</label>
+							<div class="input-group-prepend search-prepend-label">
+								<label class="input-group-text search-label" for="site_type">Par type</label>
+							</div>
+							<select class="custom-select" id="site_type" name="site_type">
+								<option value="0" selected>Choisir un type d'escalade...</option>
+								<option value="1">Bloc</option>
+								<option value="2">Falaise</option>
+								<option value="3">Mur</option>
+							</select>
+						</div>						
+						<div class="input-group mb-3">
+							<div class="input-group-prepend search-prepend-label">
+								<label class="input-group-text search-label" for="height">Par hauteur</label>
 							</div>
 							<input type="number" id="height" name="height" min="0" max="2000" class="form-control" 
 								aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
 								placeholder="Hauteur de voie (mètres)"/>
 						</div>						
 						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<label class="input-group-text" for="cotation">Par cotation</label>
+							<div class="input-group-prepend search-prepend-label">
+								<label class="input-group-text search-label" for="cotation">Par cotation</label>
 							</div>
 							<select class="custom-select" id="cotation" name="cotation">
-								<option selected>Choisir une cotation...</option>
+								<option value="0" selected>Choisir une cotation...</option>
 <c:if test="${ fn:length(delivry.attributes.cotations) gt 0 }">
 	<c:forEach items="${ delivry.attributes.cotations }" var="cotation">
 								<option value="${ cotation.id }">${ cotation.label }</option>
