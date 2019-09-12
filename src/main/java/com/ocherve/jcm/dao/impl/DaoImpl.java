@@ -159,6 +159,32 @@ public abstract class DaoImpl implements Dao {
 		return objects;
 	}
 
+	public List<?> getListFromFilteredQuery(Class<?> entityClass, String unfilteredQuery,
+							WhereClause where, OrderClause order, Map<String,Object> parameters) {
+		daoInit();
+		String queryString = unfilteredQuery + where.getSql() + order.getSql();
+		try {
+			Query query = em.createQuery(queryString, entityClass);
+			if ( parameters != null ) {
+				for (String parameterName : parameters.keySet()) {
+					if ( ! parameterName.matches("^(offset|limit)$") )
+					query.setParameter(parameterName, parameters.get(parameterName));
+				}				
+			}
+			if ( parameters != null ) {
+				if ( parameters.containsKey("limit")) 
+					query.setMaxResults(Integer.valueOf(parameters.get("limit").toString()));
+				if ( parameters.containsKey("offset")) 
+					query.setFirstResult(Integer.valueOf(parameters.get("offset").toString()));
+			}
+			objects = query.getResultList();
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, entityClass.getSimpleName() + " can not get list of objects.");
+			DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
+		} 
+		return objects;
+	}
+
 	@Override
 	public boolean delete(Class<?> entityClass, Integer id) {
 		daoInit();
