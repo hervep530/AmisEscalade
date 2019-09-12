@@ -31,7 +31,7 @@ public class JcmServletContextListener implements ServletContextListener{
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
 		ServiceProxy.getInstance();
 		DaoProxy.getInstance();
-		DLOG.log(Level.DEBUG, "Jcm Web application is now stopped.");		
+		DLOG.log(Level.DEBUG, "Jcm Web application is now started.");		
 	}
 
 }
