@@ -12,7 +12,14 @@
 	font-size: 0.8em;
 }
 
+#searchForm,
 #connexionForm {
 	width: 60%;
 	margin : 15px 20% 15px auto;
+}
+
+#debugGroup .form-control:disabled,
+#debugGroup .form-control[readonly] {
+  background-color: #F3F6F9;
+  opacity: 0.6;
 }

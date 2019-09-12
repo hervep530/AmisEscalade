@@ -1,8 +1,5 @@
 package com.ocherve.jcm.service.factory;
 
-import java.util.List;
-
-import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
 
@@ -24,6 +21,12 @@ public interface SiteService extends Service {
 	 * @param parameters 
 	 * @return Site List from request send to dao with form with post method
 	 */
+	Delivry getFindForm(Parameters parameters);
+
+	/**
+	 * @param parameters 
+	 * @return Site List from request send to dao with form with post method
+	 */
 	Delivry postFindForm(Parameters parameters);
 	
 	/**
@@ -35,6 +38,7 @@ public interface SiteService extends Service {
 	/**
 	 *  requesting formular to create new Site
 	 * @param parameters 
+	 * @return delivry
 	 */
 	Delivry getCreateForm(Parameters parameters);
 	
@@ -47,6 +51,7 @@ public interface SiteService extends Service {
 	/**
 	 * requesting formular to update Site
 	 * @param parameters 
+	 * @return delivry
 	 */
 	Delivry getUpdateForm(Parameters parameters);
 	

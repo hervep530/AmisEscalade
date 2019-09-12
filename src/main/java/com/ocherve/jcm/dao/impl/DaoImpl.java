@@ -131,10 +131,12 @@ public abstract class DaoImpl implements Dao {
 					query.setParameter(parameterName, parameters.get(parameterName));
 				}				
 			}
-			if ( parameters.containsKey("limit")) 
-				query.setMaxResults(Integer.valueOf(parameters.get("limit").toString()));
-			if ( parameters.containsKey("offset")) 
-				query.setFirstResult(Integer.valueOf(parameters.get("offset").toString()));
+			if ( parameters != null ) {
+				if ( parameters.containsKey("limit")) 
+					query.setMaxResults(Integer.valueOf(parameters.get("limit").toString()));
+				if ( parameters.containsKey("offset")) 
+					query.setFirstResult(Integer.valueOf(parameters.get("offset").toString()));
+			}
 			objects = query.getResultList();
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, entityClass.getSimpleName() + " can not get list of objects.");

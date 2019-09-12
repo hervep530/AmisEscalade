@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.SiteDao;
+import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
@@ -59,6 +60,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 					delivry = getList(parameters);
 					break;
 				case "f" :
+					delivry = getFindForm(parameters);
 					break;
 				case "r" :
 					delivry = getSite(parameters);
@@ -144,6 +146,20 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	public Delivry postFindForm(Parameters parameters) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Delivry getFindForm(Parameters parameters) {
+		Delivry result = new Delivry();
+		List<Cotation> cotations = null;
+		cotations = siteDao.getCotations();
+		try {
+			result.appendattribute("cotations", cotations);
+		} catch (Exception e ) {
+			result.appendError("Site search", "Error on displaying search site formular.");
+			DLOG.log(Level.ERROR, "Error on displaying search site formular Cotation references can not be reached.");
+		}
+		return result;
 	}
 
 	@Override

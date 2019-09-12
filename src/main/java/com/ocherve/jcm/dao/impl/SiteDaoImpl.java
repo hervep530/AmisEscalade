@@ -81,6 +81,16 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 		return (Site) super.update(Site.class,site.getId(), site);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Cotation> getCotations() {
+		try {
+			return (List<Cotation>) getListFromNamedQuery(Cotation.class, "Cotation.findAll", null);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	@Override
 	public Cotation getCotationByLabel(String cotationName) {
 		Cotation cotation = null;
@@ -95,7 +105,6 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 		}
 		return cotation;
 	}
-
 
 	@Override
 	public boolean delete(Integer id) {

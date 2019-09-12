@@ -21,7 +21,8 @@
 <!-- l f r c u uac umc ut utt utf upt upf d -->
 <c:set var="a" value="${delivry.parameters.parsedUrl.action}" scope="page"/>
 <c:choose>
-    <c:when test="${action == 'l' || action == 'f'}"><%@ include file="jspSite/View.jsp" %></c:when>
+    <c:when test="${action == 'l'}"><%@ include file="jspSite/View.jsp" %></c:when>
+    <c:when test="${action == 'f'}"><%@ include file="jspSite/Search.jsp" %></c:when>
     <c:when test="${action == 'r'}"><%@ include file="jspSite/Content.jsp" %></c:when>
     <c:when test="${action == 'c'}"><%@ include file="jspSite/CreateForm.jsp" %></c:when>
     <c:when test="${action == 'u'}"><%@ include file="jspSite/UpdateForm.jsp" %></c:when>

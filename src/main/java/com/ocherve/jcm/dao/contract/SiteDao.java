@@ -69,6 +69,11 @@ public interface SiteDao extends Dao {
 	boolean delete (Integer id);
 	
 	/**
+	 * @return cotations list (references)
+	 */
+	List<Cotation> getCotations();
+	
+	/**
 	 * @param cotationName
 	 * @return cotation
 	 */
