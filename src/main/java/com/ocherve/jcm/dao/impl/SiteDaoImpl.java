@@ -92,6 +92,11 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 	}
 
 	@Override
+	public Cotation getCotation(Integer id) {
+		return (Cotation) super.get(Cotation.class, id);
+	}
+
+	@Override
 	public Cotation getCotationByLabel(String cotationName) {
 		Cotation cotation = null;
 		Map<String,Object> parameters = new HashMap<>();

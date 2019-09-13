@@ -72,7 +72,13 @@ public interface SiteDao extends Dao {
 	 * @return cotations list (references)
 	 */
 	List<Cotation> getCotations();
-	
+
+	/**
+	 * @param id
+	 * @return cotation
+	 */
+	Cotation getCotation(Integer id);
+
 	/**
 	 * @param cotationName
 	 * @return cotation
