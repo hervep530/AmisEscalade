@@ -159,10 +159,8 @@ public abstract class DaoImpl implements Dao {
 		return objects;
 	}
 
-	public List<?> getListFromFilteredQuery(Class<?> entityClass, String unfilteredQuery,
-							WhereClause where, OrderClause order, Map<String,Object> parameters) {
+	public List<?> getListFromFilteredQuery(Class<?> entityClass, String queryString, Map<String,Object> parameters) {
 		daoInit();
-		String queryString = unfilteredQuery + where.getSql() + order.getSql();
 		try {
 			Query query = em.createQuery(queryString, entityClass);
 			if ( parameters != null ) {
@@ -223,6 +221,26 @@ public abstract class DaoImpl implements Dao {
 			DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
 		} 
 		DLOG.log(Level.DEBUG, String.format("result of query " + queryName + " : " + count));		
+		return count;
+	}
+
+	@Override
+	public Long getCountFromFilteredQuery(Class<?> entityClass, String queryString, Map<String, Object> parameters) {
+		daoInit();
+		long count = 0;
+		try {
+			Query query = em.createQuery(queryString, Long.class);
+			if ( parameters != null ) {
+				for (String parameterName : parameters.keySet()) {
+					query.setParameter(parameterName, parameters.get(parameterName));
+				}				
+			}
+			count = (long)query.getSingleResult();
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, entityClass.getSimpleName() + " can not get count.");
+			DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
+		} 
+		DLOG.log(Level.DEBUG, String.format("result of query " + queryString + " : " + count));		
 		return count;
 	}
 

@@ -73,6 +73,14 @@ public interface Dao {
 	
 	/**
 	 * @param entityClass
+	 * @param queryString
+	 * @param parameters
+	 * @return entitiescount   
+	 */
+	Long getCountFromFilteredQuery(Class<?> entityClass, String queryString, Map<String, Object> parameters);
+	
+	/**
+	 * @param entityClass
 	 * @param namedQuery
 	 * @param id
 	 * @return List of Objects
