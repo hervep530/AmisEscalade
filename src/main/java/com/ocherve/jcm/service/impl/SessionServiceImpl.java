@@ -39,9 +39,11 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 	
 	public Parameters setParameters(HttpServletRequest request) {
 		Parameters parameters = super.setParameters(request);
-		ConnexionForm form = new ConnexionForm(request);
-		parameters.setForm(form);
-		
+		if ( request.getMethod().contentEquals("POST") && 
+						parameters.getParsedUrl().getAction().contentEquals("connexion") ) {
+			ConnexionForm form = new ConnexionForm(request);
+			parameters.setForm(form);
+		}		
 		return parameters;
 	}
 
