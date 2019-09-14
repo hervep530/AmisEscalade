@@ -55,6 +55,7 @@ public class SearchForm {
 	 */
 	public final static String SEARCH_FIELD = "search";
 
+	@SuppressWarnings("unused")
 	private SiteDao siteDao;
 	
 	private String typeField = "";
