@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.SiteDao;
+import com.ocherve.jcm.form.SearchForm;
 import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.service.Delivry;
@@ -50,17 +53,27 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		super(SVC_DEFAULT_URL);
 		siteDao = SiteDao.class.cast(DaoProxy.getInstance().getSiteDao());
 	}
-
+	
+	public Parameters setParameters(HttpServletRequest request) {
+		Parameters parameters = super.setParameters(request);
+		if ( request.getMethod().contentEquals("POST") && 
+						parameters.getParsedUrl().getAction().contentEquals("f") ) {
+			SearchForm form = new SearchForm(request);
+			parameters.setForm(form);
+		}		
+		return parameters;
+	}
+	
 	@Override
 	public Delivry doGetAction(Parameters parameters) {
-		Delivry delivry = new Delivry();
+		Delivry delivry = null;
 		try {
 			switch (parameters.getParsedUrl().getAction()) {
 				case "l" :
 					delivry = getList(parameters);
 					break;
 				case "f" :
-					delivry = getFindForm(parameters);
+					if ( getFindForm(parameters) != null ) delivry = getFindForm(parameters);
 					break;
 				case "r" :
 					delivry = getSite(parameters);
@@ -89,14 +102,42 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			}			
 		} catch (UrlException e ) {
 			DLOG.log(Level.ERROR , e.getMessage());
+			delivry = new Delivry();
 			delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), e.getMessage());
 		}
+		if ( delivry == null ) delivry = new Delivry();
 		delivry.setParameters(parameters);
 		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
 		String info = "Service " + this.serviceName + " do GetAction.";
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
 	}
+
+	@Override
+	public Delivry doPostAction(Parameters parameters) {
+		Delivry delivry = null;
+		try {
+			switch (parameters.getParsedUrl().getAction()) {
+				case "f" :
+					if ( getFindForm(parameters) != null ) delivry = postFindForm(parameters);
+					break;
+				case "c" :
+					break;
+				default :
+			}			
+		} catch (UrlException e ) {
+			DLOG.log(Level.ERROR , e.getMessage());
+			delivry = new Delivry();
+			delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), e.getMessage());
+		}
+		if ( delivry == null ) delivry = new Delivry();
+		delivry.setParameters(parameters);
+		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
+		String info = "Service " + this.serviceName + " do GetAction.";
+		DLOG.log(Level.DEBUG , info);
+		return delivry;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -142,10 +183,43 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Delivry postFindForm(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		// variables
+		Delivry result = new Delivry();
+		List<Site> sites = null;
+		String queryString = "";
+		Map<String,Object> queryParameters = null;
+		SearchForm form = (SearchForm) parameters.getForm();
+
+		try {
+			// Get queryString and queryParameters from form
+			form.Search();
+			queryString = form.getQuery();
+			queryParameters = form.getQueryParameters();			
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, e.getMessage());
+		}
+		DLOG.log(Level.DEBUG, "Search Query : " + queryString);
+
+		// Getting query result
+		try {
+			sites = (List<Site>) siteDao.getListFromFilteredQuery(Site.class, queryString, queryParameters);
+		} catch (Exception e ) {
+			DLOG.log(Level.ERROR, "Search Query : " + queryString);
+			throw new UrlException("Echec de la requete de recherche");
+		}
+		/*
+		if (sites == null) throw new UrlException("Aucun resultat pour la requete");
+		if ( sites.isEmpty() ) throw new UrlException("Aucun resultat pour la requete");
+		*/
+		
+		// Appending data to result and return it
+		result.appendattribute("sites", sites);
+		result.appendattribute("query", form.getQuery());
+
+		return result;
 	}
 
 	@Override

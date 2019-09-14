@@ -14,6 +14,10 @@ public enum Operator {
 	 */
 	LIKE(" LIKE "),
 	/**
+	 * Insensitive Case String compare
+	 */
+	ILIKE(" ILIKE "),
+	/**
 	 * Numeric compare =
 	 */
 	EQUAL(" = "),

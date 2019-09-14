@@ -54,6 +54,13 @@ import javax.persistence.*;
 			this.id = id;
 			this.label = label;
 		}
+		
+		/**
+		 * @return cotation meaning null
+		 */
+		public Cotation getNull() {
+			return new Cotation(0,"null");
+		}
 
 
 		/**

@@ -60,8 +60,25 @@ public class Site extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+
+		request.setAttribute("uri", request.getRequestURI());
+		Parameters parameters = null;
+		Delivry delivry = null;
+		
+		try {		
+			parameters = ServiceProxy.getInstance().getSiteService().setParameters(request);
+			delivry = ServiceProxy.getInstance().getSiteService().doPostAction(parameters);
+		} catch (ServiceException e) {
+			delivry = ServiceProxy.getInstance().getSiteService().abort(parameters);
+		}
+
+		request.setAttribute("delivry", delivry);
+
+		if ( delivry.getErrors().isEmpty() )
+			this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
+		else
+			this.getServletContext().getRequestDispatcher(PAGE_ERROR).forward(request, response);
+
 	}
 
 }

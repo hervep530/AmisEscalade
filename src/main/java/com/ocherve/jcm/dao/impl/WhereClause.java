@@ -18,7 +18,22 @@ public class WhereClause {
 	public WhereClause(String target, Operator operator) {
 		clause = " WHERE " + target + operator.getSql() + ":" + getCamel(target);
 	}
-	
+
+	/**
+	 * @param andGroup
+	 * @param group
+	 */
+	public WhereClause(Boolean andGroup, Map<String,Operator> group) {
+		clause = "";
+		if ( andGroup ) {
+			addAndGroup(AddingMode.OR, group);
+			clause = clause.replaceFirst("OR", "WHERE");
+		} else {
+			addOrGroup(AddingMode.AND, group);
+			clause = clause.replaceFirst("AND", "WHERE");
+		}
+	}
+
 	/**
 	 * @param addingMode
 	 * @param target
@@ -36,7 +51,9 @@ public class WhereClause {
 		String groupedClauses = "( ";
 		for ( String target : group.keySet() ) {
 			if ( ! groupedClauses.contentEquals("( ") ) groupedClauses += AddingMode.AND.getSql();
-			groupedClauses += target + group.get(target).getSql() + ":" + getCamel(target);
+			groupedClauses += "LOWER(" + target.replaceAll("\\.[0-9]{1,}$", "") +")"
+							+ group.get(target).getSql()
+							+ "LOWER(:" + getCamel(target) + ")";
 		}
 		groupedClauses += " )";
 		clause += addingMode.getSql() + groupedClauses;
@@ -50,13 +67,19 @@ public class WhereClause {
 		String groupedClauses = "( ";
 		for ( String target : group.keySet() ) {
 			if ( ! groupedClauses.contentEquals("( ") ) groupedClauses += AddingMode.OR.getSql();
-			groupedClauses += target + group.get(target).getSql() + ":" + getCamel(target);
+			groupedClauses += "LOWER(" + target.replaceAll("\\.[0-9]{1,}$", "") +")"
+							+ group.get(target).getSql() 
+							+ "LOWER(:" + getCamel(target) +")";
 		}
 		groupedClauses += " )";
 		clause += addingMode.getSql() + groupedClauses;
 	}
 	
-	private static String getCamel(String text) {
+	/**
+	 * @param text
+	 * @return camel String
+	 */
+	public static String getCamel(String text) {
 		String[] splitText = text.replaceAll("[\\W]{1,}", "_").split("_");
 		String camel = splitText[0];
 		for (int i = 1 ; i < splitText.length; i++) {

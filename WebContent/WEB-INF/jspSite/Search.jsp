@@ -61,7 +61,7 @@
 							<div class="input-group-prepend">
 								<span class="input-group-text" id="inputGroup-sizing-default">Saisir</span>
 							</div>
-							<input type="text" class="form-control" id="searchText" name="searchText" 
+							<input type="text" class="form-control" id="search" name="search" 
 								aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
 						</div>
 
