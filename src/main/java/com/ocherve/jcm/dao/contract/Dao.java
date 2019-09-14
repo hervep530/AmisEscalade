@@ -50,26 +50,26 @@ public interface Dao {
 	/**
 	 * @param entityClass
 	 * @param namedQuery
-	 * @param Parameters
+	 * @param parameters
 	 * @return list of requested objects
 	 */
-	List<?> getListFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> Parameters);
+	List<?> getListFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> parameters);
 
 	/**
 	 * @param entityClass
 	 * @param namedQuery
-	 * @param Parameters
+	 * @param parameters
 	 * @return id
 	 */
-	Object getColumnsFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> Parameters);
+	Object getColumnsFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> parameters);
 
 	/**
 	 * @param entityClass
 	 * @param namedQuery
-	 * @param Parameters
+	 * @param parameters
 	 * @return list of requested objects
 	 */
-	Long getCountFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> Parameters);
+	Long getCountFromNamedQuery(Class<?> entityClass, String namedQuery, Map<String, Object> parameters);
 	
 	/**
 	 * @param entityClass
@@ -86,7 +86,15 @@ public interface Dao {
 	 * @return List of Objects
 	 */
 	List<?> getListFromNamedQueryAndIdParameter(Class<?> entityClass, String namedQuery, Integer id);
-	
+
+	/**
+	 * @param entityClass
+	 * @param queryString
+	 * @param parameters
+	 * @return List of Objects
+	 */
+	List<?> getListFromFilteredQuery(Class<?> entityClass, String queryString, Map<String, Object> parameters);
+
 	/**
 	 * @param em 
 	 * @param entityClass

@@ -159,6 +159,7 @@ public abstract class DaoImpl implements Dao {
 		return objects;
 	}
 
+	@Override
 	public List<?> getListFromFilteredQuery(Class<?> entityClass, String queryString, Map<String,Object> parameters) {
 		daoInit();
 		try {
