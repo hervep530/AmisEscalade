@@ -22,7 +22,7 @@
 <c:set var="a" value="${delivry.parameters.parsedUrl.action}" scope="page"/>
 <c:choose>
     <c:when test="${action == 'l'}"><%@ include file="jspSite/View.jsp" %></c:when>
-    <c:when test="${action == 'f' && method == 'GET'}"><%@ include file="jspSite/Search.jsp" %></c:when>
+    <c:when test="${action == 'f' && method == 'GET'}"><%@ include file="jspSite/SearchForm.jsp" %></c:when>
     <c:when test="${action == 'f' && method == 'POST'}">
     	<%@ include file="jspSite/View.jsp" %>
     	<%@ include file="jspDebug/TestForm.jsp" %>
