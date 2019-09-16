@@ -28,7 +28,15 @@ public enum Operator {
 	/**
 	 * Numeric compare <
 	 */
-	LESS(" < ");
+	LESS(" < "),
+	/**
+	 * Numeric compare >
+	 */
+	GREATEREQ(" >= "),
+	/**
+	 * Numeric compare <
+	 */
+	LESSEQ(" <= ");
 	
 	private String sql;
 	

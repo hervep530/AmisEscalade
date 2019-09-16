@@ -156,11 +156,11 @@ public class SearchForm {
 		}
 		if ( heightField == 0 ) return;
 		if ( whereClauses == null ) {
-			whereClauses = new WhereClause("r.minHeight" , Operator.LESS);
+			whereClauses = new WhereClause("r.minHeight" , Operator.LESSEQ);
 		} else {
-			whereClauses.add(AddingMode.AND, "r.minHeight" , Operator.LESS);
+			whereClauses.add(AddingMode.AND, "r.minHeight" , Operator.LESSEQ);
 		}
-		whereClauses.add(AddingMode.AND, "r.maxHeight" , Operator.GREATER);		
+		whereClauses.add(AddingMode.AND, "r.maxHeight" , Operator.GREATEREQ);		
 		queryParameters.put("rMinHeight", heightField);
 		queryParameters.put("rMaxHeight", heightField);
 	}
