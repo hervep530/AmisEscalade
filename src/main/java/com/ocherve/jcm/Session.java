@@ -73,7 +73,7 @@ public class Session extends HttpServlet {
 			parameters = ServiceProxy.getInstance().getSessionService().setParameters(request);
 			delivry = ServiceProxy.getInstance().getSessionService().doPostAction(parameters);
 		} catch (ServiceException e ) {
-			System.out.println("Erreur Servlet Session");
+			System.out.println("============== Erreur Servlet Session ==================");
 			delivry = ServiceProxy.getInstance().getSessionService().abort(parameters);
 		}
 

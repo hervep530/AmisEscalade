@@ -14,10 +14,22 @@
 
 #testSearchForm,
 #searchForm,
+#InscriptionForm,
 #connexionForm {
 	width: 60%;
 	margin : 15px 20% 15px auto;
 }
+
+form .basic-top-label {
+	float: left;
+	margin :0;
+	color: #505050
+}
+
+form .required {
+    color: #c00;
+}
+
 
 #testSearchForm .form-control:disabled,
 #testSearchForm .form-control[readonly],
@@ -33,6 +45,10 @@
 
 .search-label {
 	width: 100%;
+}
+
+.invalid-feedback {
+	display: block;
 }
 
 

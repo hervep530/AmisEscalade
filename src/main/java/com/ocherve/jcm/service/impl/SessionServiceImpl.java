@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.model.User;
 import com.ocherve.jcm.form.ConnexionForm;
+import com.ocherve.jcm.form.InscriptionForm;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.UrlException;
@@ -39,11 +40,17 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 	
 	public Parameters setParameters(HttpServletRequest request) {
 		Parameters parameters = super.setParameters(request);
-		if ( request.getMethod().contentEquals("POST") && 
-						parameters.getParsedUrl().getAction().contentEquals("connexion") ) {
-			ConnexionForm form = new ConnexionForm(request);
-			parameters.setForm(form);
-		}		
+		
+		if ( request.getMethod().contentEquals("POST")) {
+			switch (parameters.getParsedUrl().getAction()) {
+				case  "connexion" :
+					parameters.setForm(new ConnexionForm(request));
+					break;
+				case  "inscription" :
+					parameters.setForm(new InscriptionForm(request));
+					break;
+			}
+		}
 		return parameters;
 	}
 
@@ -74,14 +81,22 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		try {
 			switch (parameters.getParsedUrl().getAction()) {
 				case "connexion" :
-					ConnexionForm form = (ConnexionForm) parameters.getForm();
-					User user = form.connectUser();
-					if ( ! form.getErrors().isEmpty() ) {
-						delivry.appendattribute("formError", form);
+					ConnexionForm connexionForm = (ConnexionForm) parameters.getForm();
+					User user = connexionForm.connectUser();
+					if ( ! connexionForm.getErrors().isEmpty() ) {
+						delivry.setErrors(connexionForm.getErrors());
+						delivry.appendattribute("connexionForm", connexionForm);
 					} 
 					delivry.appendSession("sessionUser", user);
 					break;
 				case "inscription" :
+					InscriptionForm inscriptionForm = (InscriptionForm) parameters.getForm();
+					User inscriptionUser = inscriptionForm.createUser();
+					if ( ! inscriptionForm.getErrors().isEmpty() ) {
+						delivry.setErrors(inscriptionForm.getErrors());
+						delivry.appendattribute("inscriptionForm", inscriptionForm);
+					} 
+					delivry.appendattribute("user", inscriptionUser);
 					break;
 				case "pass" :
 					break;

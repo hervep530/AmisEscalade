@@ -17,6 +17,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.ocherve.jcm.dao.DaoProxy;
+import com.ocherve.jcm.dao.contract.UserDao;
+
 /**
  * The persistent class for the jcm_user database table.
  * 
@@ -27,6 +30,7 @@ import javax.persistence.Table;
 	@NamedQuery(name="User.findAll", query="SELECT u FROM User u"),
 	@NamedQuery(name="User.findByMail", query="SELECT u FROM User u WHERE u.mailAddress like :mailAddress"),
 	@NamedQuery(name="User.findUserIdByMail", query="SELECT u.id FROM User u WHERE u.mailAddress like :mailAddress"),
+	@NamedQuery(name="User.findUserIdByUsername", query="SELECT u.id FROM User u WHERE u.username like :username"),
 	@NamedQuery(name="User.FindUserIdGreaterThan", query="SELECT u FROM User u WHERE u.id >= :idMin"),
 	@NamedQuery(name="User.findUserAtLeastGrantedTo", query="SELECT u FROM User u WHERE u.role.id > :roleIdMini")
 })
@@ -88,6 +92,24 @@ public class User implements Serializable {
 	 * Basic constructeur
 	 */
 	public User() {
+	}
+
+	/**
+	 * Constructor with parameters
+	 * @param mailAddress
+	 * @param password
+	 * @param roleId
+	 * @param username
+	 */
+	public User(String mailAddress, String username, String password, int roleId) {
+		super();
+		this.mailAddress = mailAddress;
+		this.password = password;
+		this.username = username;
+		this.salt = "enPetitGrain";
+		this.token = "telestprisquicroyaitprendre";
+		this.tsAccess = Timestamp.from(Instant.now());
+		this.role = ((UserDao) DaoProxy.getInstance().getUserDao()).getRole(roleId);
 	}
 
 	/**
