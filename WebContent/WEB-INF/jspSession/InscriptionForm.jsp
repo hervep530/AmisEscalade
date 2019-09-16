@@ -11,7 +11,7 @@
 				    		<label class="basic-top-label" for="mailAddress">
 				    			<em>Adresse mail </em><span class="required">*</span>
 				    		</label>
-							<input type="text" id="mailAddress" name="mailAddress"
+							<input type="email" id="mailAddress" name="mailAddress"
 									class="form-control${empty mailError?'':' is-invalid'}" 
 									aria-label="Search" aria-describedby="labelMailAddress"
 									placeholder="Saisir une adresse mail valide..."
@@ -37,7 +37,7 @@
 				    		<label class="basic-top-label" for="password">
 				    			<em>Mot de passe </em><span class="required">*</span>
 				    		</label>
-							<input type="text" id="password" name="password"
+							<input type="password" id="password" name="password"
 								class="form-control${empty passwdError?'':' is-invalid'}" 
 								aria-label="password" aria-describedby="labelPassword"
 								placeholder="Saisissez un mot de passe...">
@@ -49,7 +49,7 @@
 				    		<label class="basic-top-label" for="confirmPassword">
 				    			<em>Confirmation </em><span class="required">*</span>
 				    		</label>
-							<input type="text" id="confirmPassword" name="confirmPassword"
+							<input type="password" id="confirmPassword" name="confirmPassword"
 								class="form-control${empty passwdError?'':' is-invalid'}" 
 								aria-label="confirmPassword" aria-describedby="labelConfirmPassword"
 								placeholder="Saisir à nouveau votre mot de passe...">
