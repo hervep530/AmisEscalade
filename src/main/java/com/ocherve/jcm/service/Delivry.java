@@ -44,13 +44,22 @@ public class Delivry {
 	}
 	
 	/**
-	 * Appender for errors - easier to use than setter
+	 * Appender for error - easier to use than setter
 	 * 
 	 * @param errorLabel		String : label to identified error
 	 * @param ErrorDetail		String : text to describe error
 	 */
 	public void appendError(String errorLabel, String ErrorDetail) {
 		this.errors.put(errorLabel, ErrorDetail);
+	}
+
+	/**
+	 * Appender for errors - easier to use than setter
+	 * 
+	 * @param errors Map of errors
+	 */
+	public void appendErrors(Map<String,String> errors) {
+		this.errors.putAll(errors);
 	}
 
 	/**
