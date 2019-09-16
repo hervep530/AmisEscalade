@@ -65,9 +65,9 @@ public class ConnexionForm {
 		}
 		
 		try {
-			user = this.validationMotsDePasse();
+			user = this.validatePassword();
 		} catch (FormException e ) {
-			this.errors.put("motdepasse", e.getMessage());
+			this.errors.put("password", e.getMessage());
 		}
 		
 		if ( errors.isEmpty() ) {
@@ -86,7 +86,7 @@ public class ConnexionForm {
 	/**
 	 * @throws FormException
 	 */
-	public void validationEmail() throws FormException {
+	private void validationEmail() throws FormException {
 
 		// Rejecting empty mail
 		if ( this.mailAddress.isEmpty() ) 
@@ -112,7 +112,7 @@ public class ConnexionForm {
 	 * @return user
 	 * @throws FormException
 	 */
-	public User validationMotsDePasse() throws FormException {
+	private User validatePassword() throws FormException {
 		
 		// Rejecting empty password
 		if ( this.password.isEmpty()  ) 
@@ -143,6 +143,20 @@ public class ConnexionForm {
 	 */
 	public Map<String, String> getErrors() {
 		return errors;
+	}
+
+	/**
+	 * @return the mailAddress
+	 */
+	public String getMailAddress() {
+		return mailAddress;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
 	}
 
 	private static String getValeurChamp( HttpServletRequest request, String nomChamp ) {
