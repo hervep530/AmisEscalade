@@ -20,9 +20,16 @@
 	margin : 15px 20% 15px auto;
 }
 
+#createSiteForm {
+	width: 94%;
+	margin : 15px 3% 15px auto;
+}
+
 form .basic-top-label {
 	float: left;
-	margin :0;
+	width: 96%;
+	margin :0 2% 0 2%;
+	text-align: left;
 	color: #505050
 }
 
@@ -47,8 +54,23 @@ form .required {
 	width: 100%;
 }
 
+.form-check-group{
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+	
+}
+
+.form-check-group .form-control {
+	display: flex;
+	justify-content: space-around;
+}
+
 .invalid-feedback {
 	display: block;
 }
 
+.tab-error {
+	color: #dc3545;
+}
 
