@@ -16,6 +16,7 @@ public class Parameters {
 	private Map<String,String> errors;
 	private ParsedUrl parsedUrl;
 	private Object form;
+	private String contextPath;
 
 	/**
 	 * Constructor
@@ -92,6 +93,20 @@ public class Parameters {
 	 */
 	public void setForm(Object form) {
 		this.form = form;
+	}
+
+	/**
+	 * @return the contextPath
+	 */
+	public String getContextPath() {
+		return contextPath;
+	}
+
+	/**
+	 * @param contextPath the contextPath to set
+	 */
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
 	}
 
 	
