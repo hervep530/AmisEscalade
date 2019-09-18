@@ -9,6 +9,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import com.ocherve.jcm.model.User;
+import com.ocherve.jcm.dao.DaoProxy;
+import com.ocherve.jcm.dao.contract.UserDao;
 import com.ocherve.jcm.service.AccessLevel;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
@@ -87,6 +90,7 @@ public abstract class ServiceImpl implements Service {
 	public Parameters setParameters(HttpServletRequest request) {
 		Parameters parameters = new Parameters();
 		String context = request.getContextPath();
+		parameters.setContextPath(context);
 		String uri = (String) request.getAttribute("uri");
 		
 		// Global uri validation before using it with String tools 
@@ -147,6 +151,11 @@ public abstract class ServiceImpl implements Service {
 	@Override
 	public AccessLevel checkSecurity(Parameters parameters) {
 		return AccessLevel.DEFAULT;
+	}
+	
+	@Override
+	public User openAnonymousSession() {
+		return ((UserDao) DaoProxy.getInstance().getUserDao()).get(1);
 	}
 
 }

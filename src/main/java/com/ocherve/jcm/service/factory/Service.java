@@ -2,6 +2,7 @@ package com.ocherve.jcm.service.factory;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocherve.jcm.model.User;
 import com.ocherve.jcm.service.AccessLevel;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
@@ -52,5 +53,10 @@ public interface Service {
 	 * @return					Delivry : result of action processing (contains object needed by jsp)
 	 */
 	Delivry abort(Parameters parameters);
+	
+	/**
+	 * @return anonymous user if not connected
+	 */
+	User openAnonymousSession();
 
 }

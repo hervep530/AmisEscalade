@@ -7,16 +7,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocherve.jcm.service.Delivry;
-import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.ServiceProxy;
+import com.ocherve.jcm.service.factory.SiteService;
 
 /**
  * Servlet implementation class Site
  */
 @WebServlet("/site/*")
-public class Site extends HttpServlet {
+public class Site extends JcmServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,26 +27,27 @@ public class Site extends HttpServlet {
      */
     public Site() {
         super();
-        // TODO Auto-generated constructor stub
+        service = (SiteService) ServiceProxy.getInstance().getSiteService();
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		
+		this.startSession(request);
+		request.setAttribute("notification", this.getSessionNotification());
 		request.setAttribute("uri", request.getRequestURI());
-		Parameters parameters = null;
-		Delivry delivry = null;
 		
 		try {		
-			parameters = ServiceProxy.getInstance().getSiteService().setParameters(request);
-			delivry = ServiceProxy.getInstance().getSiteService().doGetAction(parameters);
+			parameters = service.setParameters(request);
+			delivry = service.doGetAction(parameters);
 		} catch (ServiceException e) {
-			delivry = ServiceProxy.getInstance().getSiteService().abort(parameters);
+			delivry = service.abort(parameters);
 		}
 
 		request.setAttribute("delivry", delivry);
+		this.setSessionNotification();
 
 		if ( delivry.getErrors().isEmpty() )
 			this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
@@ -61,24 +61,31 @@ public class Site extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		this.startSession(request);
+
+		request.setAttribute("notification", this.getSessionNotification());
 		request.setAttribute("uri", request.getRequestURI());
-		Parameters parameters = null;
-		Delivry delivry = null;
 		
 		try {		
-			parameters = ServiceProxy.getInstance().getSiteService().setParameters(request);
-			delivry = ServiceProxy.getInstance().getSiteService().doPostAction(parameters);
+			parameters = service.setParameters(request);
+			delivry = service.doPostAction(parameters);
 		} catch (ServiceException e) {
-			delivry = ServiceProxy.getInstance().getSiteService().abort(parameters);
+			delivry = service.abort(parameters);
 		}
 
 		request.setAttribute("delivry", delivry);
 
-		if ( delivry.getErrors().isEmpty() )
-			this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
-		else
+		if ( ! delivry.getErrors().isEmpty() ) {
 			this.getServletContext().getRequestDispatcher(PAGE_ERROR).forward(request, response);
-
+		} else {
+			if (delivry.getAttributes().containsKey("redirect") ) {
+				this.setSessionNotification();
+				response.sendRedirect((String) delivry.getAttributes().get("redirect")); 
+			} else {
+				this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
+			}
+		}
+		
 	}
 
 }

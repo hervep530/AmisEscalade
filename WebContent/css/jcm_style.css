@@ -54,7 +54,12 @@ form .required {
 	width: 100%;
 }
 
-.form-check-group{
+#createSiteForm .form-row{
+	align-items: flex-start;
+}
+
+.form-check-group {
+    display: -ms-flexbox;
 	display: flex;
     flex-direction: column;
     justify-content: center;
@@ -62,6 +67,7 @@ form .required {
 }
 
 .form-check-group .form-control {
+    display: -ms-flexbox;
 	display: flex;
 	justify-content: space-around;
 }

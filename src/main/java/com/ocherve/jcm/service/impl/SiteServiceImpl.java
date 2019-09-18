@@ -10,10 +10,13 @@ import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.SiteDao;
+import com.ocherve.jcm.form.CreateSiteForm;
 import com.ocherve.jcm.form.SearchForm;
 import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.service.Delivry;
+import com.ocherve.jcm.service.Notification;
+import com.ocherve.jcm.service.NotificationType;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.UrlException;
 import com.ocherve.jcm.service.factory.SiteService;
@@ -56,11 +59,17 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	
 	public Parameters setParameters(HttpServletRequest request) {
 		Parameters parameters = super.setParameters(request);
-		if ( request.getMethod().contentEquals("POST") && 
-						parameters.getParsedUrl().getAction().contentEquals("f") ) {
-			SearchForm form = new SearchForm(request);
-			parameters.setForm(form);
-		}		
+
+		if ( request.getMethod().contentEquals("POST") ) {
+			switch (parameters.getParsedUrl().getAction()) {
+				case  "f" :
+					parameters.setForm(new SearchForm(request));
+					break;
+				case  "c" :
+					parameters.setForm(new CreateSiteForm(request));
+					break;
+			}
+		}
 		return parameters;
 	}
 	
@@ -73,12 +82,15 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 					delivry = getList(parameters);
 					break;
 				case "f" :
-					if ( getFindForm(parameters) != null ) delivry = getFindForm(parameters);
+					Delivry resultGetFind = getFindForm(parameters);
+					if ( resultGetFind != null ) delivry = resultGetFind;
 					break;
 				case "r" :
 					delivry = getSite(parameters);
 					break;
 				case "c" :
+					Delivry resultGetCreate = getFindForm(parameters);
+					if ( resultGetCreate != null ) delivry = resultGetCreate;
 					break;
 				case "u" :
 					break;
@@ -122,6 +134,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 					if ( getFindForm(parameters) != null ) delivry = postFindForm(parameters);
 					break;
 				case "c" :
+					if ( getCreateForm(parameters) != null ) delivry = postCreateForm(parameters);
 					break;
 				default :
 			}			
@@ -133,7 +146,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		if ( delivry == null ) delivry = new Delivry();
 		delivry.setParameters(parameters);
 		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
-		String info = "Service " + this.serviceName + " do GetAction.";
+		String info = "Service " + this.serviceName + " do PostAction.";
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
 	}
@@ -224,6 +237,10 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 
 	@Override
 	public Delivry getFindForm(Parameters parameters) {
+		return getSiteForm(parameters);
+	}
+
+	private Delivry getSiteForm(Parameters parameters) {
 		Delivry result = new Delivry();
 		List<Cotation> cotations = null;
 		cotations = siteDao.getCotations();
@@ -256,15 +273,25 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 
 	@Override
 	public Delivry getCreateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
-		
+		return getSiteForm(parameters);
 	}
 
 	@Override
 	public Delivry postCreateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		Delivry result = new Delivry();
+		CreateSiteForm createSiteForm = (CreateSiteForm) parameters.getForm();
+		Site createSite = createSiteForm.createSite();
+		// If errors we set result values and return it
+		if ( ! createSiteForm.getErrors().isEmpty() ) {
+			result.appendattribute("createSiteForm", createSiteForm);
+			return result;
+		} 
+		// Else we set notification and redirection
+		String message = "Le site vient d'être créé avec succès.";
+		result.appendSession("notification", new Notification(NotificationType.SUCCESS, message));
+		result.appendattribute("redirect", parameters.getContextPath() + "/site/r/" +
+				createSite.getId() + "/" + createSite.getSlug());
+		return result;
 	}
 
 	@Override
@@ -330,8 +357,11 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		message += "Nombre de voies : " + site.getPathsNumber() + "%n";
 		message += "Cotation mini : " + site.getCotationMin().getLabel() + "%n";
 		message += "Cotation maxi : " + site.getCotationMax().getLabel() + "%n";
-		String content = site.getContent();
-		if ( content.length() > 70) content = content.substring(0, 70);
+		String content = "";
+		if ( site.getContent() != null ) {
+			content = site.getContent();
+			if ( content.length() > 71) content = content.substring(0, 70);
+		}
 		message += "Content : " + content + "...%n";
 		message += "Auteur : " + site.getAuthor().getUsername() + "%n";
 		message += "Créé le : " + site.getTsCreated().toString() + "%n";
