@@ -2,6 +2,7 @@ package com.ocherve.jcm.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.Normalizer;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -91,6 +92,8 @@ public class Reference implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+		String slug = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
+		this.setSlug(slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase());
 	}
 
 	/**

@@ -45,38 +45,38 @@ public class Site extends Reference implements Serializable {
 	private String country;
 
 	@Column(name="department")
-	private String department;
+	private String department = "";
 
 	@Column(name="block")
-	private boolean block;
+	private boolean block = false;
 
-	private boolean cliff;
+	private boolean cliff = false;
 
-	private boolean wall;
+	private boolean wall = false;
 
 	@Column(name="max_height")
-	private Integer maxHeight;
+	private Integer maxHeight = 0;
 
 	@Column(name="min_height")
-	private Integer minHeight;
+	private Integer minHeight = 0;
 
 	@Column(name="paths_number")
-	private Integer pathsNumber;
+	private Integer pathsNumber = 0;
 
-	private String orientation;
+	private String orientation = "";
 
 	@Column(name="friend_tag")
-	private boolean friendTag;
+	private boolean friendTag = false;
 
 	//bi-directional many-to-one association to JcmCotation
 	@ManyToOne
 	@JoinColumn(name="fk_min_site_cotation")
-	private Cotation cotationMin;
+	private Cotation cotationMin = null;
 
 	//bi-directional many-to-one association to JcmCotation
 	@ManyToOne
 	@JoinColumn(name="fk_max_site_cotation")
-	private Cotation cotationMax;
+	private Cotation cotationMax = null;
 
 	//bi-directional many-to-one association to JcmTopo
 	@ManyToMany(mappedBy="sites", cascade = {CascadeType.MERGE })
