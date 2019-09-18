@@ -65,7 +65,7 @@ public class ConnexionForm {
 		}
 		
 		try {
-			user = this.validatePassword();
+			if ( errors.isEmpty() ) user = this.validatePassword();
 		} catch (FormException e ) {
 			this.errors.put("password", e.getMessage());
 		}
@@ -101,7 +101,7 @@ public class ConnexionForm {
 		parameters.put("mailAddress", this.mailAddress);
 		try {
 			this.userId = userDao.getIdFromNamedQuery("User.findUserIdByMail", parameters);
-		} catch (Exception e) { /* if it's a dao error it was tracked anyway */ }
+		} catch (Exception e) {/* if it's a dao error it was tracked anyway */}
 		DLOG.log(Level.DEBUG , "Id trouvé : " + this.userId);				
 		if ( this.userId < 2 )
 			throw new FormException("Identifiant ou mot de passe invalide.");
