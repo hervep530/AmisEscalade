@@ -17,6 +17,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.UserDao;
 
@@ -104,7 +106,7 @@ public class User implements Serializable {
 	public User(String mailAddress, String username, String password, int roleId) {
 		super();
 		this.mailAddress = mailAddress;
-		this.password = password;
+		this.password = BCrypt.hashpw(password, BCrypt.gensalt(12));
 		this.username = username;
 		this.salt = "enPetitGrain";
 		this.token = "telestprisquicroyaitprendre";
@@ -123,7 +125,7 @@ public class User implements Serializable {
 	public User(String mailAddress, String username, String password, String salt, String token) {
 		super();
 		this.mailAddress = mailAddress;
-		this.password = password;
+		this.password = BCrypt.hashpw(password, BCrypt.gensalt(12));
 		this.salt = salt;
 		this.token = token;
 		this.username = username;
@@ -169,7 +171,7 @@ public class User implements Serializable {
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
-		this.password = password;
+		this.password = BCrypt.hashpw(password, BCrypt.gensalt(12));
 	}
 
 	/**

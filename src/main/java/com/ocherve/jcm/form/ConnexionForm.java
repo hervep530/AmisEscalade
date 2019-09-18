@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.UserDao;
@@ -124,9 +125,12 @@ public class ConnexionForm {
 
 		// Compare password with user password get from database given id from formular
 		User userControl = userDao.get(userId);
-		if ( ! this.password.contentEquals(userControl.getPassword()) )
+		try {
+			if ( ! BCrypt.checkpw(this.password, userControl.getPassword()) )
+				throw new FormException("Identifiant ou mot de passe invalide.");
+		} catch (Exception e) {
 			throw new FormException("Identifiant ou mot de passe invalide.");
-		
+		}
 		return userControl;
 
 	}
