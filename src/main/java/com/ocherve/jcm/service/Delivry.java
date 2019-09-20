@@ -13,6 +13,7 @@ public class Delivry {
 	private Map<String,String> errors;
 	private Map<String,Object> attributes;
 	private Map<String,Object> session;
+	private Map<String,Notification> notifications;
 	private Parameters parameters;
 
 	/**
@@ -23,6 +24,7 @@ public class Delivry {
 		parameters = new Parameters();
 		attributes = new HashMap<>();
 		session = new HashMap<>();
+		notifications = new HashMap<>();
 	}
 
 	/**
@@ -134,5 +136,36 @@ public class Delivry {
 		this.session.put(name, value);
 	}
 
+	/**
+	 * @return the notification
+	 */
+	public Map<String,Notification> getNotifications() {
+		return notifications;
+	}
+
+	/**
+	 * @param notifications the notification to set
+	 */
+	public void setNotifications(Map<String,Notification> notifications) {
+		this.notifications = notifications;
+	}
+	
+	/**
+	 * @param actionLabel
+	 * @param notification
+	 */
+	public void appendNotification(String actionLabel, Notification notification) {
+		this.notifications.put(actionLabel, notification);
+	}
+
+	/**
+	 * @param notifications
+	 */
+	public void appendNotifications(Map<String,Notification> notifications) {
+		if ( notifications == null ) return;
+		this.notifications.putAll(notifications);
+	}
+
+	
 
 }

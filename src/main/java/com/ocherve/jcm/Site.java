@@ -36,7 +36,7 @@ public class Site extends JcmServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		this.startSession(request);
-		request.setAttribute("notification", this.getSessionNotification());
+		request.setAttribute("notifications", this.getSessionNotifications());
 		request.setAttribute("uri", request.getRequestURI());
 		
 		try {		
@@ -63,7 +63,7 @@ public class Site extends JcmServlet {
 
 		this.startSession(request);
 
-		request.setAttribute("notification", this.getSessionNotification());
+		request.setAttribute("notifications", this.getSessionNotifications());
 		request.setAttribute("uri", request.getRequestURI());
 		
 		try {		

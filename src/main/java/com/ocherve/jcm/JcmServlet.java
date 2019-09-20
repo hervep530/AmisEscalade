@@ -1,5 +1,8 @@
 package com.ocherve.jcm;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -43,23 +46,45 @@ abstract class JcmServlet extends HttpServlet {
 		session = request.getSession();
 		if ( session.getAttribute("sessionUser") == null ) 
 			session.setAttribute("sessionUser", service.openAnonymousSession());
+		if ( session.getAttribute("notifications") == null ) {
+			Map<String,Notification> notifications = new HashMap<>();
+			session.setAttribute("notifications", notifications);
+		}
     }
     
-    protected Notification getSessionNotification() {
-    	if ( session == null ) return null;
-    	Notification notification = null;
+    @SuppressWarnings("unchecked")
+	protected Map<String,Notification> getSessionNotifications() {
+    	// Probably never null because we excecute startSession before...
+    	if ( session == null ) return new HashMap<String,Notification>();
+    	if ( session.getAttribute("notifications") == null ) return new HashMap<String,Notification>();
+    	// Get notifications ... or not... if error
+    	Map<String,Notification> notifications;
     	try {
-        	notification = (Notification) session.getAttribute("notification");
+        	notifications = (Map<String,Notification>) session.getAttribute("notifications");
     	} catch (Exception e ) {
+    		notifications = new HashMap<String,Notification>();
     		DLOG.log(Level.ERROR, e.getMessage());
     	}
-    	if ( notification != null ) session.setAttribute("notification", null);
-    	return notification;
+    	// Reset notifications session attribute
+    	session.setAttribute("notifications", new HashMap<String,Notification>());
+    	// ... and return notifications
+    	return notifications;
     }
     
-    protected void setSessionNotification() {
-    	if ( delivry.getSession().containsKey("notification") )
-    		session.setAttribute("notification", delivry.getSession().get("notification"));
+    @SuppressWarnings("unchecked")
+	protected void setSessionNotification() {
+    	// Do nothing if delivry doesn't content notifications
+    	if ( ! delivry.getSession().containsKey("notifications") ) return;
+    	// Get delivry notifications or set empty if errors
+    	Map<String,Notification> notifications = new HashMap<>();
+    	try {
+    		notifications = (Map<String,Notification>) delivry.getSession().get("notifications");
+    	} catch ( Exception e ) {
+    		notifications = new HashMap<String,Notification>();
+    		DLOG.log(Level.ERROR, e.getMessage());    		
+    	}
+    	// Set session attribute
+   		if ( ! notifications.isEmpty() ) session.setAttribute("notifications", notifications);
     }
 
 }

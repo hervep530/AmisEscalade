@@ -14,7 +14,7 @@
 				<section id="main" class="col-xl-9">
 <%@ include file="jspCommon/Header.jsp" %>
 <%@ include file="jspCommon/NavBar.jsp" %>
-<c:if test="${ not empty delivry.errors }">
+<c:if test="${ not empty delivry.notifications }">
 	<%@ include file="jspCommon/Notification.jsp" %>
 </c:if>
 
