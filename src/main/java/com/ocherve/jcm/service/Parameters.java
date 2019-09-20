@@ -17,12 +17,14 @@ public class Parameters {
 	private ParsedUrl parsedUrl;
 	private Object form;
 	private String contextPath;
+	private Map<String,Notification> notifications;
 
 	/**
 	 * Constructor
 	 */
 	public Parameters() {
 		errors = new HashMap<>();
+		notifications = new HashMap<>();
 	}
 	
 	/**
@@ -109,5 +111,39 @@ public class Parameters {
 		this.contextPath = contextPath;
 	}
 
+	/**
+	 * @return the notification
+	 */
+	public Map<String,Notification> getNotifications() {
+		return notifications;
+	}
+
+	/**
+	 * @param notifications the notification to set
+	 */
+	public void setNotifications(Map<String,Notification> notifications) {
+		this.notifications = notifications;
+	}
+
+	/**
+	 * Map Entry Appender - easier to use than Setter
+	 * 
+	 * @param notificationLabel		String : name identifing error 
+	 * @param notification 		Notification
+	 * 
+	 */
+	public void appendNotification(String notificationLabel, Notification notification) {
+		this.notifications.put(notificationLabel, notification);
+	}
+	
+	/**
+	 * Map Appender - easier to use than Setter
+	 * 
+	 * @param notifications 		Map<String,Notification> errors
+	 */
+	public void appendNotifications(Map<String,Notification> notifications) {
+		this.notifications.putAll(notifications);
+	}
+	
 	
 }

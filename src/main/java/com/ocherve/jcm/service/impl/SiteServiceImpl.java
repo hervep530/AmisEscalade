@@ -119,6 +119,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		}
 		if ( delivry == null ) delivry = new Delivry();
 		delivry.setParameters(parameters);
+		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
 		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
 		String info = "Service " + this.serviceName + " do GetAction.";
 		DLOG.log(Level.DEBUG , info);
@@ -145,6 +146,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		}
 		if ( delivry == null ) delivry = new Delivry();
 		delivry.setParameters(parameters);
+		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
 		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
 		String info = "Service " + this.serviceName + " do PostAction.";
 		DLOG.log(Level.DEBUG , info);
@@ -286,11 +288,16 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			result.appendattribute("createSiteForm", createSiteForm);
 			return result;
 		} 
-		// Else we set notification and redirection
+		// Else we set redirection and notification(s) to display after redirection
+		String notificationLabel = "Ajout d'un nouveau site";
 		String message = "Le site vient d'être créé avec succès.";
-		result.appendSession("notification", new Notification(NotificationType.SUCCESS, message));
-		result.appendattribute("redirect", parameters.getContextPath() + "/site/r/" +
-				createSite.getId() + "/" + createSite.getSlug());
+		Notification notification = new Notification(NotificationType.SUCCESS, message);
+		Map<String,Notification> notifications = new HashMap<>();
+		notifications.put(notificationLabel, notification);
+		result.appendSession("notifications", notifications);
+		/*result.appendattribute("redirect", parameters.getContextPath() + "/site/r/" +
+				createSite.getId() + "/" + createSite.getSlug());*/
+		result.appendattribute("redirect", parameters.getContextPath() + "/site/l/1");
 		return result;
 	}
 

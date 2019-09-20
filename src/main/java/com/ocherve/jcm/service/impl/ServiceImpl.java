@@ -1,5 +1,6 @@
 package com.ocherve.jcm.service.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.UserDao;
 import com.ocherve.jcm.service.AccessLevel;
 import com.ocherve.jcm.service.Delivry;
+import com.ocherve.jcm.service.Notification;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.UrlException;
@@ -86,14 +88,24 @@ public abstract class ServiceImpl implements Service {
 		DLOG.log(Level.INFO , info);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Parameters setParameters(HttpServletRequest request) {
 		Parameters parameters = new Parameters();
+		// Storing contextPath in parameters 
 		String context = request.getContextPath();
 		parameters.setContextPath(context);
-		String uri = (String) request.getAttribute("uri");
-		
+		// Storing notifications (from session) in parameters 
+		Map<String,Notification> notifications = new HashMap<>();
+		try {
+			if ( request.getAttribute("notifications") != null )
+				notifications = (Map<String,Notification>) request.getAttribute("notifications");			
+		} catch ( Exception e ) {
+			DLOG.log(Level.ERROR, serviceName + " - no notification found" + e.getMessage());			
+		}
+		parameters.setNotifications(notifications); 		
 		// Global uri validation before using it with String tools 
+		String uri = (String) request.getAttribute("uri");
 		try {
 			ServiceChecker.validateGlobalPatternUrl(context, this.serviceName, uri);
 		} catch (UrlException e) {
@@ -126,6 +138,7 @@ public abstract class ServiceImpl implements Service {
 	public Delivry doGetAction(Parameters parameters) {
 		Delivry delivry = new Delivry();
 		delivry.setParameters(parameters);
+		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
 		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
 		String info = "Service " + this.serviceName + " do GetAction.";
 		DLOG.log(Level.DEBUG , info);
