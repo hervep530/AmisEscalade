@@ -22,6 +22,8 @@ public class Site extends JcmServlet {
 	private static final String VUE = "/WEB-INF/SiteLayout.jsp";
 	private static final String PAGE_ERROR = "/WEB-INF/ErrorLayout.jsp";
 
+	// session, service, parameters and delivry variable herited from abstract JcmServlet
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -34,21 +36,25 @@ public class Site extends JcmServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		// initializing session (heriting jcmServlet)
 		this.startSession(request);
+		// Getting deferred notification from the next http request (was stored in session)
 		request.setAttribute("notifications", this.getSessionNotifications());
 		request.setAttribute("uri", request.getRequestURI());
 		
+		// we set service parameters from request and execute "GET" action. Result is return with delivry.
 		try {		
 			parameters = service.setParameters(request);
 			delivry = service.doGetAction(parameters);
 		} catch (ServiceException e) {
 			delivry = service.abort(parameters);
 		}
-
 		request.setAttribute("delivry", delivry);
+
+		// Deferred notification (if exists) copied from delivry to session (heriting jcmServlet)
 		this.setSessionNotification();
 
+		// Forwarding to Site jsp or error
 		if ( delivry.getErrors().isEmpty() )
 			this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
 		else
@@ -61,11 +67,14 @@ public class Site extends JcmServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		// initializing session (heriting jcmServlet)
 		this.startSession(request);
 
+		// Getting deferred notification from the next http request (was stored in session)
 		request.setAttribute("notifications", this.getSessionNotifications());
 		request.setAttribute("uri", request.getRequestURI());
 		
+		// we set service parameters from request and execute "POST" action. Result is return with delivry.
 		try {		
 			parameters = service.setParameters(request);
 			delivry = service.doPostAction(parameters);
@@ -75,6 +84,7 @@ public class Site extends JcmServlet {
 
 		request.setAttribute("delivry", delivry);
 
+		// Forwarding to Site jsp, redirect,  or forwarding error
 		if ( ! delivry.getErrors().isEmpty() ) {
 			this.getServletContext().getRequestDispatcher(PAGE_ERROR).forward(request, response);
 		} else {
