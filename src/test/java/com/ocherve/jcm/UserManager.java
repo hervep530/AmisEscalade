@@ -24,11 +24,11 @@ public class UserManager {
 
 	private static final Logger DLOG = LogManager.getLogger("development_file");
 	private static final String[][] USERS_DE_TEST = new String[][] {
-		{"herve.oc@amiescalade.fr", "hervep", "passwd", "seldeguerande", "jetetienstumetiens","2"},
-		{"aurelie.lavant@amiescalade.fr", "alavant", "souffledouest", "selfin", "quacelanetienne","3"},
-		{"julien.lami@amiescalade.fr", "lamij", "passwd", "grossel", "alatienne","4"},
-		{"christine.chappard@amiescalade.fr", "chachristi", "chapardeuse", "lessalins", "çasetient","2"},
-		{"solene.marsault@amiescalade.fr", "solema", "sans", "fleurdesel", "desdeuxmains","2"}
+		{"herve.oc@amiescalade.fr", "hervesca", "paSS13word", "seldeguerande", "jetetienstumetiens","2"},
+		{"aurelie.lavant@amiescalade.fr", "alavantie", "paSS12word", "selfin", "quacelanetienne","3"},
+		{"julien.lami@amiescalade.fr", "lamijiii", "paSS13word", "grossel", "alatienne","4"},
+		{"christine.chappard@amiescalade.fr", "chachristi", "paSS14word", "lessalins", "çasetient","2"},
+		{"solene.marsault@amiescalade.fr", "solemarsa", "PaSS13worD", "fleurdesel", "desdeuxmains","2"}
 	};
 	private static Integer[] ids;
 	private static UserDao dao;
