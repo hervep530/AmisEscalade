@@ -12,6 +12,7 @@
 	font-size: 0.8em;
 }
 
+#accountProperties,
 #testSearchForm,
 #searchForm,
 #InscriptionForm,
@@ -38,6 +39,7 @@ form .required {
 }
 
 
+#accountProperties .form-control[readonly],
 #testSearchForm .form-control:disabled,
 #testSearchForm .form-control[readonly],
 #debugGroup .form-control:disabled,

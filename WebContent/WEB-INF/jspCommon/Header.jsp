@@ -4,17 +4,19 @@
 			<div class="container">
 				<div class="row">
 					<div id="logo" class="col-xl-2">
-						<img alt="" src="${pageContext.request.contextPath}/images/escalade.png"
+						<img alt="Logo Amis escalade" src="${pageContext.request.contextPath}/images/escalade.png"
 								width="64" height="64">
 					</div>
 					<div id="title" class="col-xl-7">
 						<p class="h1 text-center pt-2">Les Amis de l'escalade</p>
 					</div>
+<c:if test="${sessionScope.sessionUser.id > 1}">
 					<nav id="condensedNav" class="navbar navbar-expand-lg col-xl-3">
 						<ul class="navbar-nav">
 							<li class="nav-item">
 								<a href="${pageContext.request.contextPath}/session/d" class="p-2">
-									<img alt="Mon compte" src="${pageContext.request.contextPath}/images/user.png"
+									<img alt="Mon compte" src="${pageContext.request.contextPath}/images/user.png" 
+										title="<c:out value="${sessionScope.sessionUser.username}"></c:out>"
 										width="32" height="32">
 								</a>
 							</li>
@@ -24,14 +26,15 @@
 									width="32" height="32">
 								</a>
 							</li>
-							<li class="nav-item">
+							<!-- li class="nav-item">
 								<a href="#" class="p-2">
 								<img alt="Menu" src=""
 									width="32" height="32">
 								</a>
-							</li>
+							</li -->
 						</ul>
 					</nav>
+</c:if>
 				</div>				
 			</div>
 		</header>
