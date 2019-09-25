@@ -9,7 +9,7 @@ public enum NotificationType {
 	/**
 	 * Error notification
 	 */
-	ERROR("error"),
+	ERROR("danger"),
 	/**
 	 * Success notification
 	 */

@@ -11,6 +11,8 @@ import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.ServiceProxy;
 import com.ocherve.jcm.service.factory.SessionService;
 
+import com.ocherve.jcm.model.User;
+
 /**
  * Servlet implementation class Session
  */
@@ -83,7 +85,12 @@ public class Session extends JcmServlet {
 		} catch (ServiceException e ) {
 			delivry = service.abort(parameters);
 		}
+		
+		// forwarding delivry to jsp inside request, and if delivry contains sessionUser, we update session
 		request.setAttribute("delivry", delivry);
+		if ( delivry.getSession().containsKey("sessionUser") ) {
+			session.setAttribute("sessionUser", (User) delivry.getSession().get("sessionUser") );
+		}
 
 		// Forwarding to Site jsp, redirect,  or forwarding error
 		if ( delivry.getAttributes().containsKey("redirect") ) {
