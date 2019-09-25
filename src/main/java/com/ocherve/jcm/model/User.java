@@ -108,8 +108,8 @@ public class User implements Serializable {
 		this.mailAddress = mailAddress;
 		this.password = BCrypt.hashpw(password, BCrypt.gensalt(12));
 		this.username = username;
-		this.salt = "enPetitGrain";
-		this.token = "telestprisquicroyaitprendre";
+		this.salt = "s";
+		this.token = "";
 		this.tsAccess = Timestamp.from(Instant.now());
 		this.role = ((UserDao) DaoProxy.getInstance().getUserDao()).getRole(roleId);
 	}

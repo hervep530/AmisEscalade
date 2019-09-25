@@ -14,6 +14,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -25,7 +26,11 @@ import javax.persistence.Table;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name="jcm_reference")
-@NamedQuery(name="Reference.findAll", query="SELECT r FROM Reference r")
+@NamedQueries({
+	@NamedQuery(name="Reference.findAll", query="SELECT r FROM Reference r"),
+	@NamedQuery(name="Reference.getIdFromSlug", 
+	query="SELECT r.id FROM Reference r WHERE r.slug = :slug AND r.type= :type")
+})
 public class Reference implements Serializable {
 	private static final long serialVersionUID = 1L;
 

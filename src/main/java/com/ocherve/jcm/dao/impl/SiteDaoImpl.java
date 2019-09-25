@@ -31,6 +31,15 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 		return site.getSlug();
 	}
 
+	@Override
+	public Integer getIdFromNamedQuery(String queryName, Map<String, Object> parameters) {
+		try {
+			return ((Integer) super.getColumnsFromNamedQuery(Integer.class, queryName, parameters));
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Site> getList() {

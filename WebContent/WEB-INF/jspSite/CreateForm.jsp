@@ -26,7 +26,7 @@
 </c:set>
     
 					<form id="createSiteForm" class="text-center border border-light p-3" 
-							action="c" method="POST">
+							action="c" method="POST" enctype="multipart/form-data">
 							<div class="form-row mb-3">
 								<div class="col-md-9"><p class="h4">Nouveau site d'escalade</p></div>
 								<div class="col-md-3">
@@ -124,18 +124,21 @@
 					    		<div class="form-control">
 								<div class="form-check form-check-inline">
 									<input type="checkbox" id="block" name="block"
-										class="form-check-input" value="true">
+										class="form-check-input" value="true"
+										${delivry.attributes.createSiteForm.site.block ? 'checked' : ''}>
 									<label class="form-check-label" for="block">Bloc</label>
 								</div>
 								<div class="form-check form-check-inline">
-									<input type="checkbox" id="falaise" name="falaise"
-										class="form-check-input" value="true">
-									<label class="form-check-label" for="falaise">Falaise</label>
+									<input type="checkbox" id="cliff" name="cliff"
+										class="form-check-input" value="true"
+										${delivry.attributes.createSiteForm.site.cliff ? 'checked' : ''}>
+									<label class="form-check-label" for="cliff">Falaise</label>
 								</div>
 								<div class="form-check form-check-inline">
-									<input type="checkbox" id="mur" name="mur"
-										class="form-check-input" value="true">
-									<label class="form-check-label" for="mur">Mur</label>
+									<input type="checkbox" id="wall" name="wall"
+										class="form-check-input" value="true"
+										${delivry.attributes.createSiteForm.site.wall ? 'checked' : ''}>
+									<label class="form-check-label" for="wall">Mur</label>
 								</div>
 					    		</div>
 								<div class="invalid-feedback${empty typeError?' invisible':''}"
@@ -174,10 +177,10 @@
 					    		<select id="cotationMin" name="cotationMin"
 										class="custom-select${empty cotationMinError?'':' is-invalid'}" 
 										aria-label="CotationMin" aria-describedby="labelCotationMin">
-									<option value="0" selected>Choisir le minimum...</option>
+									<option value="0"${delivry.attributes.createSiteForm.site.cotationMin.id == 0 ? ' selected' : ''}>Choisir le minimum...</option>
 <c:if test="${ fn:length(delivry.attributes.cotations) gt 0 }">
 	<c:forEach items="${ delivry.attributes.cotations }" var="cotation">
-									<option value="${ cotation.id }">${ cotation.label }</option>
+									<option value="${ cotation.id }"${delivry.attributes.createSiteForm.site.cotationMin.id == cotation.id ? ' selected' : ''}>${ cotation.label }</option>
 	</c:forEach>
 </c:if>								
 								</select>
@@ -191,10 +194,10 @@
 					    		<select id="cotationMax" name="cotationMax"
 										class="custom-select${empty cotationMaxError?'':' is-invalid'}" 
 										aria-label="CotationMax" aria-describedby="labelCotationMax">
-									<option value="0" selected>Choisir le maximum...</option>
+									<option value="0"${delivry.attributes.createSiteForm.site.cotationMax.id == 0 ? ' selected' : ''}>Choisir le maximum...</option>
 <c:if test="${ fn:length(delivry.attributes.cotations) gt 0 }">
 	<c:forEach items="${ delivry.attributes.cotations }" var="cotation">
-									<option value="${ cotation.id }">${ cotation.label }</option>
+									<option value="${ cotation.id }"${delivry.attributes.createSiteForm.site.cotationMax.id == cotation.id ? ' selected' : ''}>${ cotation.label }</option>
 	</c:forEach>
 </c:if>								
 								</select>
@@ -209,18 +212,25 @@
 				<input type="file" id="media" name="media"
 				 class="form-control-file${empty mediaError?'':' is-invalid'}">
 			</div>
+			<input type="hidden" id="partMethod" name="partMethod" value="false">
   </div>
   <div class="tab-pane fade" id="siteContent" role="tabpanel" aria-labelledby="siteContent-tab">
 						<div class="form-group">
 							<label class="basic-top-label" for="summary">Résumé</label>
 							<textarea id="summary" name="summary" rows="1"
-								 class="form-control${empty summaryError?'':' is-invalid'}"></textarea>
+								 class="form-control${empty summaryError?'':' is-invalid'}"
+								 ><c:out value='${delivry.attributes.createSiteForm.site.summary}'></c:out></textarea>
+							<div class="invalid-feedback${empty summaryError?' invisible':''}"
+								id="summaryError">${summaryError}</div>
 						</div>
-			<div class="form-group">
-					<label class="basic-top-label" for="content">Contenu</label>
-					<textarea id="content" name="content" rows="6"
-					 class="form-control${empty contentError?'':' is-invalid'}"></textarea>
-			</div>
+						<div class="form-group">
+							<label class="basic-top-label" for="content">Contenu</label>
+							<textarea id="content" name="content" rows="6"
+								 class="form-control${empty contentError?'':' is-invalid'}"
+								 ><c:out value='${delivry.attributes.createSiteForm.site.content}'></c:out></textarea>
+							<div class="invalid-feedback${empty contentError?' invisible':''}"
+								id="contentError">${contentError}</div>
+						</div>
 
   </div>
 </div>

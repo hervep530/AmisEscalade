@@ -286,6 +286,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		// If errors we set result values and return it
 		if ( ! createSiteForm.getErrors().isEmpty() ) {
 			result.appendattribute("createSiteForm", createSiteForm);
+			result.appendattribute("cotations", this.getSiteForm(parameters).getAttribute("cotations"));
 			return result;
 		} 
 		// Else we set redirection and notification(s) to display after redirection
