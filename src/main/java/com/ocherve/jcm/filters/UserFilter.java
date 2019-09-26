@@ -27,7 +27,7 @@ import com.ocherve.jcm.service.NotificationType;
 /**
  * Servlet Filter implementation class ConnexionFilter
  */
-@WebFilter({
+@WebFilter(filterName = "UserFilter", urlPatterns = {
 	"/site/c",
 	"/site/u/*",
 	"/site/uac",
@@ -73,7 +73,6 @@ public class UserFilter extends Object implements Filter {
 		
         /* we don't filter public data */
         String chemin = request.getRequestURI().substring( request.getContextPath().length() );
-        System.out.println(chemin);
         if ( chemin.matches("/(css|js|images|bootstrap|jquery|tinymce)/.*") ) {
             chain.doFilter( request, response );
             return;

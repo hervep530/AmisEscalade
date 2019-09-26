@@ -27,7 +27,7 @@ import com.ocherve.jcm.service.NotificationType;
 /**
  * Servlet Filter implementation class AnonymousFilter
  */
-@WebFilter({
+@WebFilter(filterName = "AnonymousFilter", urlPatterns = {
 	"/session/connexion",
 	"/session/inscription"
 })
@@ -65,7 +65,6 @@ public class AnonymousFilter implements Filter {
 		
         /* we don't filter public data */
         String chemin = request.getRequestURI().substring( request.getContextPath().length() );
-        System.out.println(chemin);
         if ( chemin.matches("/(css|js|images|bootstrap|jquery|tinymce)/.*") ) {
             chain.doFilter( request, response );
             return;

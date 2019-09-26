@@ -12,7 +12,7 @@ import javax.servlet.annotation.WebFilter;
 /**
  * Servlet Filter implementation class MemberFilter
  */
-@WebFilter({
+@WebFilter(filterName = "MemberFilter", urlPatterns = {
 	"/site/utt/*",
 	"/site/utf/*",
 	"/site/d/*"
