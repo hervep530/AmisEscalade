@@ -64,6 +64,9 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		Delivry delivry = new Delivry();
 		try {
 			switch (parameters.getParsedUrl().getAction()) {
+				case "deconnexion" :
+					delivry = getDeconnexion(parameters);
+					break;
 				case "pass" :
 					break;
 				case "d" :
@@ -80,6 +83,23 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
 		String info = "Service " + this.serviceName + " do GetAction.";
 		DLOG.log(Level.DEBUG , info);
+		return delivry;
+	}
+
+	private Delivry getDeconnexion(Parameters parameters) {
+		Delivry delivry = new Delivry();
+		
+		// will reset session - value of resetSession doesn't matter... always operate
+		delivry.appendSession("resetSession", "yes");
+		// Setting redirection and notification(s)
+		String notificationLabel = "Déconnexion";
+		String message = "Vous êtes maintenant déconnecté.";
+		Notification notification = new Notification(NotificationType.SUCCESS, message);
+		Map<String,Notification> notifications = new HashMap<>();
+		notifications.put(notificationLabel, notification);
+		delivry.appendSession("notifications", notifications);
+		delivry.appendattribute("redirect", parameters.getContextPath());
+		
 		return delivry;
 	}
 
@@ -140,7 +160,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 
 		// get Connexion Form stored in parameters and call connectUser()
 		InscriptionForm inscriptionForm = (InscriptionForm) parameters.getForm();
-		User inscriptionUser = inscriptionForm.createUser();
+		//User inscriptionUser = inscriptionForm.createUser();
 		if ( ! inscriptionForm.getErrors().isEmpty() ) {
 			// if errors, we will forward delivry to formular with errors embedded in connexionForm
 			delivry.setErrors(inscriptionForm.getErrors());

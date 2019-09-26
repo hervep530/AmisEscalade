@@ -95,6 +95,15 @@ public abstract class ServiceImpl implements Service {
 		// Storing contextPath in parameters 
 		String context = request.getContextPath();
 		parameters.setContextPath(context);
+		// Storing sessionUser in parameters
+		User sessionUser = null;
+		try {
+			sessionUser = (User) request.getSession().getAttribute("sessionUser");
+			parameters.setSessionUser(sessionUser);
+		} catch (Exception e) {
+			DLOG.log(Level.FATAL, serviceName + " - user not found in session" + e.getMessage());			
+			sessionUser = openAnonymousSession();		
+		}
 		// Storing notifications (from session) in parameters 
 		Map<String,Notification> notifications = new HashMap<>();
 		try {

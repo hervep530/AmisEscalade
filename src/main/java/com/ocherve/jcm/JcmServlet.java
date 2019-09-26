@@ -16,6 +16,9 @@ import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Notification;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.factory.Service;
+import com.ocherve.jcm.dao.DaoProxy;
+import com.ocherve.jcm.dao.contract.UserDao;
+import com.ocherve.jcm.model.User;
 
 /**
  * Servlet implementation class JcmServlet
@@ -52,6 +55,13 @@ abstract class JcmServlet extends HttpServlet {
 		}
     }
     
+    protected void resetSession() {
+    	session.setAttribute("sessionUser", getAnonymous());
+    	session.removeAttribute("notifications");
+    }
+    
+    
+    
     @SuppressWarnings("unchecked")
 	protected Map<String,Notification> getSessionNotifications() {
     	// Probably never null because we excecute startSession before...
@@ -87,4 +97,7 @@ abstract class JcmServlet extends HttpServlet {
    		if ( ! notifications.isEmpty() ) session.setAttribute("notifications", notifications);
     }
 
+    protected User getAnonymous(){
+    	return ((UserDao) DaoProxy.getInstance().getUserDao()).get(1);
+    }
 }

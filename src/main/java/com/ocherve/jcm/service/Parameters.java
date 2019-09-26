@@ -3,6 +3,7 @@ package com.ocherve.jcm.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ocherve.jcm.model.User;
 import com.ocherve.jcm.service.impl.ParsedUrl;
 
 /**
@@ -17,6 +18,7 @@ public class Parameters {
 	private ParsedUrl parsedUrl;
 	private Object form;
 	private String contextPath;
+	private User sessionUser;
 	private Map<String,Notification> notifications;
 
 	/**
@@ -143,6 +145,20 @@ public class Parameters {
 	 */
 	public void appendNotifications(Map<String,Notification> notifications) {
 		this.notifications.putAll(notifications);
+	}
+
+	/**
+	 * @return the sessionUser
+	 */
+	public User getSessionUser() {
+		return sessionUser;
+	}
+
+	/**
+	 * @param sessionUser the sessionUser to set
+	 */
+	public void setSessionUser(User sessionUser) {
+		this.sessionUser = sessionUser;
 	}
 	
 	

@@ -69,7 +69,7 @@ public class UserFilter extends Object implements Filter {
 		HttpServletRequest request = (HttpServletRequest) inRequest;
 		HttpServletResponse response = (HttpServletResponse) inResponse;
 
-		DLOG.log(Level.INFO , "Filter ConnexionFilter active for " + request.getRequestURI());
+		DLOG.log(Level.INFO , "Filter UserFilter active for " + request.getRequestURI());
 		
         /* we don't filter public data */
         String chemin = request.getRequestURI().substring( request.getContextPath().length() );
@@ -87,7 +87,7 @@ public class UserFilter extends Object implements Filter {
 			//log
 		}
 
-		DLOG.log(Level.INFO , "Filter ConnexionFilter - User Id : " + idUser);
+		DLOG.log(Level.INFO , "Filter UserFilter - User Id : " + idUser);
 
 		// pass the request along the filter chain
 		if ( idUser > 1 )
