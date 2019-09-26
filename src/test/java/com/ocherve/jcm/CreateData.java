@@ -57,7 +57,7 @@ public class CreateData {
 		assertEquals(users.size(), 6);
 		assertEquals(sites.size(), 5);
 		assertEquals(topos.size(), 3);
-		assertEquals(comments.size(), 6);
+		assertEquals(comments.size(), 17);
 		assertEquals(messages.size(), 10);
 	}
 

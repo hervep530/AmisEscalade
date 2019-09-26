@@ -29,6 +29,17 @@ public class CommentManager {
 		{"0", "Ah oui vraiment magnifique", "6", "TOPO"},
 		{"0", "En général c'est plus pour montrer le paysage ou le contexte technique", "6", "TOPO"},
 		{"0", "C est varié un peu des 2 je dirais", "6", "TOPO"},
+		{"1", "Bonjour, il a l'air chouette ce site. Il y a des voies accessible pour les ados", "2", "SITE"},
+		{"1", "Bonjour, tout dépend s'ils pratiquent déjà...", "4", "SITE"},
+		{"1", "Bien, il grimpe souvent dans les arbres dans le jardin", "2", "SITE"},
+		{"1", "Ils ont déjà essayé un mur d'escalade", "4", "SITE"},
+		{"1", "Non, jamais...", "2", "SITE"},
+		{"1", "Je pense qu'il y a des voies pas trop compliquées, mais l'escalade reste un sport dangereux. C'est toujours bien de commencer avec du mur...", "2", "SITE"},
+		{"1", "Je vais probablement suivre ton conseil. Je n'ai pas envie de ramener des blessés", "2", "SITE"},
+		{"4", "Bonjour, Est ce que ce spot est beaucoup fréquenté, stp?", "0", "SITE"},
+		{"4", "En fait, ça dépend de la saison... C'est plutôt calme une grande partie de l'année", "4", "SITE"},
+		{"4", "Donc là, à l'automne... grimper la journée oui... mais la fête le soir, c'est plus compliqué?", "0", "SITE"},
+		{"4", "Il faut voir le bon coté des choses. Cela permet d'avoir une bonne nuit de repos pour repartir le lendemain.", "4", "SITE"},
 	};
 	private static Integer[] ids;
 	private static CommentDao dao;
