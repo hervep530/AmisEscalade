@@ -166,6 +166,35 @@ public class Delivry {
 		this.notifications.putAll(notifications);
 	}
 
+	/**
+	 * @return the notification
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String,Notification> getSessionNotifications() {
+		Map<String,Notification> sessionNotifications = new HashMap<>();
+		try {
+			sessionNotifications.putAll( (HashMap<String,Notification>) session.get("notifications") );
+		} catch (Exception ignore) { }
+		return sessionNotifications;
+	}
+
+	/**
+	 * @param actionLabel
+	 * @param notification
+	 */
+	@SuppressWarnings("unchecked")
+	public void appendSessionNotification(String actionLabel, Notification notification) {
+		Map<String,Notification> sessionNotifications = new HashMap<>();
+		if ( session.containsKey("notifications") ) {
+			try {
+				sessionNotifications.putAll( (HashMap<String,Notification>) session.get("notifications") );
+			} catch (Exception ignore) { }
+		}
+		sessionNotifications.put(actionLabel, notification);
+		this.session.put("notifications", sessionNotifications);
+	}
+
+
 	
 
 }

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.ServiceProxy;
 import com.ocherve.jcm.service.factory.SiteService;
+import com.ocherve.jcm.service.impl.SiteServiceImpl;
 
 /**
  * Servlet implementation class Site
@@ -57,11 +58,17 @@ public class Site extends JcmServlet {
 		// Deferred notification (if exists) copied from delivry to session (heriting jcmServlet)
 		this.setSessionNotification();
 
-		// Forwarding to Site jsp or error
-		if ( delivry.getErrors().isEmpty() )
+		// Forwarding to Session jsp or error
+		if ( ! delivry.getErrors().isEmpty() ) {
+			this.getServletContext().getRequestDispatcher(PAGE_ERROR).forward(request, response);
+			return;
+		}
+
+		this.setSessionNotification();
+		if ( ! delivry.getAttributes().containsKey("redirect") )
 			this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
 		else
-			this.getServletContext().getRequestDispatcher(PAGE_ERROR).forward(request, response);
+			response.sendRedirect((String) delivry.getAttributes().get("redirect"));
 
 	}
 
@@ -100,5 +107,6 @@ public class Site extends JcmServlet {
 		}
 		
 	}
+
 
 }

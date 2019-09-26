@@ -9,8 +9,12 @@
 						<c:out value="${ delivry.attributes.site.name }" />
 					</h1>
 					<div class="col-md-3">
+						<nav id="NavContent" class="navbar navbar-expand-lg">
+							<ul class="navbar-nav">
 <%@ include file="AuthorNavContent.jsp" %>
 <%@ include file="MemberNavContent.jsp" %>
+							</ul>
+						</nav>
 					</div>
 				</div>
 				<p id="description"><c:out value="${ delivry.attributes.site.summary }" /></p>

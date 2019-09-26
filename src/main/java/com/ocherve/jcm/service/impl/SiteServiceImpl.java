@@ -101,8 +101,9 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 				case "ut" :
 					break;
 				case "utt" :
-					break;
 				case "utf" :
+					Delivry resultPutFriendTag = putFriendTag(parameters);
+					if ( resultPutFriendTag != null ) delivry = resultPutFriendTag;
 					break;
 				case "upt" : 
 					break;
@@ -314,6 +315,40 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		return null;
 	}
 
+	private Delivry putFriendTag(Parameters parameters) {
+		Delivry result = new Delivry();
+		Map<String,Object> fields = new HashMap<>();
+		Boolean friendTag = false;
+		String notificationLabel = "Tag ami";
+		Site updatedSite = null;
+
+		try {
+			// set flag regarding url and call UserDao to update tag
+			if ( parameters.getParsedUrl().getAction().contentEquals("utt") ) friendTag = true;
+			fields.put("friendTag", friendTag);
+			updatedSite = siteDao.update(Integer.valueOf(parameters.getParsedUrl().getId()), fields);			
+		} catch (Exception e) {
+			// Append deferred error notification and redirect on sites list
+			String message = "Echec lors de l'attribution du tag ami";
+			Notification notification = new Notification(NotificationType.ERROR, message);
+			result.appendSessionNotification(notificationLabel, notification);
+			result.appendattribute("redirect", parameters.getContextPath() + "site/l/1");
+			return result;		
+		}
+		// append site from Dao (after update) in result (Delivry)
+		result.appendattribute("site", updatedSite);
+		// append deferred notification in delivry
+		String message = "Vous avez attribué le tag Ami à ce site.";
+		if ( ! friendTag ) message = "Vous avez retiré le tag Ami à ce site";
+		Notification notification = new Notification(NotificationType.SUCCESS, message);
+		result.appendSessionNotification(notificationLabel, notification);
+		// Set Redirection
+		result.appendattribute("redirect", parameters.getContextPath() + "/site/r/" + updatedSite.getId() +
+				"/" + updatedSite.getSlug());
+		// And return result
+		return result;
+	}
+	
 	@Override
 	public Delivry postAddComment(Parameters parameters) {
 		// TODO Auto-generated method stub
