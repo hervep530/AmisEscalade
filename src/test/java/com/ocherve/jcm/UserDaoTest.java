@@ -16,6 +16,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.UserDao;
@@ -117,8 +118,8 @@ public class UserDaoTest {
 
 		/* Test userControl after creating user*/
 		assertNotNull(userControl);
-		assertEquals(userControl.getUsername(), "solema");
-		assertEquals(userControl.getPassword(),  "STR0nGER0mot0de0passe");		
+		assertEquals(userControl.getUsername(), "solemarsa");
+		assertTrue(BCrypt.checkpw("STR0nGER0mot0de0passe", userControl.getPassword()));		
 	}
 
 	/**
