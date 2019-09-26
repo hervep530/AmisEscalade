@@ -3,7 +3,16 @@
     	<c:set var="site" value="${ delivry.attributes.site}" scope="page" />
 		<article id="acceuil">
 			<div id="summary" class="mx-4">
-				<h1 class="h2 text-center"><c:out value="${ delivry.attributes.site.name }" /></h1>
+				<div class="row">
+					<h1 class="h2 text-center col-md-9">
+						${ delivry.attributes.site.friendTag ? '<span class="badge badge-pill badge-warning">Ami !</span> ' : ''}
+						<c:out value="${ delivry.attributes.site.name }" />
+					</h1>
+					<div class="col-md-3">
+<%@ include file="AuthorNavContent.jsp" %>
+<%@ include file="MemberNavContent.jsp" %>
+					</div>
+				</div>
 				<p id="description"><c:out value="${ delivry.attributes.site.summary }" /></p>
 			</div>
 			<div id="detail" class="container mx-4">
