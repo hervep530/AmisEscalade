@@ -82,3 +82,8 @@ form .required {
 	color: #dc3545;
 }
 
+#comment-group{
+	width: 88%;
+	margin-left: 6%;
+	font-size: 0.8em
+}

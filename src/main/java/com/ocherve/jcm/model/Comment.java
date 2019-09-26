@@ -15,6 +15,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.ocherve.jcm.utils.JcmDate;
+
 /**
  * The persistent class for the jcm_comment database table.
  * 
@@ -124,6 +126,13 @@ public class Comment implements Serializable {
 	 */
 	public Timestamp getTsModified() {
 		return this.tsModified;
+	}
+	
+	/**
+	 * @return elapsed time as string (usefull for jsp)
+	 */
+	public String getModifiedElapsedTime() {
+		return JcmDate.getElapseTime(tsModified);
 	}
 
 	/**

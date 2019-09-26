@@ -32,7 +32,9 @@
     <c:when test="${action == 'u'}"><%@ include file="jspSite/UpdateForm.jsp" %></c:when>
     <c:otherwise><%@ include file="jspSite/Content.jsp" %></c:otherwise>
 </c:choose>
-
+<c:if test="${action == 'r'}">
+<%@ include file="jspSite/Comment.jsp" %>
+</c:if>
 
 
 <%@ include file="jspDebug/DebugDelivry.jsp" %>
