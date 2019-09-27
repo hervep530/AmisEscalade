@@ -79,8 +79,8 @@ public class ServiceChecker {
      * 
      * @throws UrlException		Exception if checking fails
      */
-    public static void validateGlobalPatternUrl(String context, String serviceName, String uri)
-    	throws UrlException {
+    public static void validateGlobalPatternUrl(String context, String serviceName, String uri) throws UrlException {
+    	DLOG.log(Level.INFO,"uri : " + uri);
     	String message = "";
     	String url = uri.replaceAll("^[^/]{1,}:[^/]*/{1,}[^/]{1,}:?[^/]*/?", "");
     	String globalPattern = "^(/[0-9a-zA-Z-.]{1,})?/?(\\w{1,})?(/\\w{1,})?(/\\d{1,8}|/\\d{1,8}/\\w{1,})?(#\\w*)?$";
@@ -93,6 +93,7 @@ public class ServiceChecker {
     	if ( ! url.matches(globalPattern) ) {
     		message = "Url \"" + url + "\" doesn't match with global pattern.";
             DLOG.log(Level.ERROR, message);
+            DLOG.log(Level.ERROR, "Debug uri :" + uri);
             throw new UrlException(message);
     	}
     }

@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<c:set var="commentContentError" value="${delivry.attributes.addCommentForm.errors.content}" scope="page"></c:set>
     				<aside id="comment-group">
     					<div class="card-header my-1 py-0"><em>Commentaires</em></div>
 						<form id="commentSiteForm" class="text-center border border-light p-1 my-1" 
-								action="uac" method="POST">
+								action="${pageContext.request.contextPath}/site/uac" method="POST">
 							<input type="hidden" id="commentReferenceId" name="commentReferenceId" 
 								value="${delivry.attributes.site.id}">
 							<input type="hidden" id="commentReferenceType" name="commentReferenceType" 
@@ -19,7 +20,7 @@
 								</div>
 								<textarea id="commentContent" name="commentContent" rows="2"
 											 class="form-control${empty commentContentError?'':' is-invalid'}"
-											 ><c:out value='${delivry.attributes.commentSiteForm.comment.content}'></c:out></textarea>
+											 ><c:out value='${delivry.attributes.addCommentForm.comment.content}'></c:out></textarea>
 								<div class="invalid-feedback${empty commentContentError?' invisible':''}"
 											id="summaryError">${commentContentError}</div>
 							</div>
@@ -28,7 +29,7 @@
 						<div class="card mb-1">
 							<div class="row no-gutters">
 								<div class="col-md-1">
-								<img src="..." class="card-img" alt="...">
+								<img src="${pageContext.request.contextPath}/images/comment-writer.png" class="card-img" alt="Comment writer">
 								</div>
 								<div class="col-md-11">
 									<div class="card-body">

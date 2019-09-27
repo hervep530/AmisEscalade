@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.Instant;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,7 +41,7 @@ public class Comment implements Serializable {
 	private String content = "";
 
 	//bi-directional many-to-one association to Document
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH })
 	@JoinColumn(name="fk_comment_reference")
 	private Reference reference;
 
@@ -71,7 +72,7 @@ public class Comment implements Serializable {
 	public Comment(Object object, String text, User author) {
 		super();
 		try {
-			this.reference = Reference.class.cast(object);
+			this.setReference(Reference.class.cast(object));
 		} catch (Exception e) {
 			return;
 		}
@@ -154,6 +155,8 @@ public class Comment implements Serializable {
 	 * @param reference
 	 */
 	public void setReference(Reference reference) {
+		reference.getComments().add(this);
+		reference.setComments(reference.getComments());
 		this.reference = reference;
 	}
 

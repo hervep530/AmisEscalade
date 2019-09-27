@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.Level;
+
 import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.ServiceProxy;
 import com.ocherve.jcm.service.factory.SiteService;
-import com.ocherve.jcm.service.impl.SiteServiceImpl;
 
 /**
  * Servlet implementation class Site
@@ -60,15 +61,20 @@ public class Site extends JcmServlet {
 
 		// Forwarding to Session jsp or error
 		if ( ! delivry.getErrors().isEmpty() ) {
+			DLOG.log(Level.DEBUG, "Forward on errors : " + delivry.getErrors().keySet().toString());
 			this.getServletContext().getRequestDispatcher(PAGE_ERROR).forward(request, response);
 			return;
 		}
 
 		this.setSessionNotification();
-		if ( ! delivry.getAttributes().containsKey("redirect") )
+		if ( ! delivry.getAttributes().containsKey("redirect") ) {
+			DLOG.log(Level.DEBUG, "Forward to view : " + VUE);
 			this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
-		else
+		} else {
+			DLOG.log(Level.DEBUG, "Redirection : " + delivry.getAttributes().get("redirect"));
+			DLOG.log(Level.DEBUG, "Redirection : " + delivry.getAttribute("redirect").toString());
 			response.sendRedirect((String) delivry.getAttributes().get("redirect"));
+		}
 
 	}
 

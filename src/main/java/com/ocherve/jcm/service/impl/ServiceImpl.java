@@ -114,11 +114,12 @@ public abstract class ServiceImpl implements Service {
 		}
 		parameters.setNotifications(notifications); 		
 		// Global uri validation before using it with String tools 
+		DLOG.log(Level.INFO,"uri : " + (String) request.getAttribute("uri"));
 		String uri = (String) request.getAttribute("uri");
 		try {
 			ServiceChecker.validateGlobalPatternUrl(context, this.serviceName, uri);
 		} catch (UrlException e) {
-			DLOG.log(Level.ERROR, serviceName + "- " + e.getMessage());
+			DLOG.log(Level.ERROR, "validateGlobalPatternUrl - " + e.getMessage());
 			parameters.appendError(serviceName + "ServiceParameters", e.getMessage());
 		}
 
@@ -131,13 +132,14 @@ public abstract class ServiceImpl implements Service {
     	try {
     		UrlChecker.validateAction(serviceName, actions, parsedUrl);
     	} catch (UrlException e) {
+			DLOG.log(Level.ERROR, "validateAction - " + e.getMessage());
 			parameters.appendError(serviceName + "ServiceParameters", e.getMessage());			    		
     	}
 
 		parameters.setParsedUrl(parsedUrl);
 		parameters.appendAllError(parsedUrl.getErrors());
 		
-		String info = "Service " + this.serviceName + " set parameters";
+		String info = "Service" + this.serviceName + ".setParameters is done";
 		DLOG.log(Level.INFO , info);
 
 		return parameters;
@@ -149,7 +151,7 @@ public abstract class ServiceImpl implements Service {
 		delivry.setParameters(parameters);
 		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
 		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
-		String info = "Service " + this.serviceName + " do GetAction.";
+		String info = "ServiceGeneric.doGetAction is done.";
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
 	}

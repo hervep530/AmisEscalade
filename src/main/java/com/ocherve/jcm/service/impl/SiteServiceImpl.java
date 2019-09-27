@@ -10,8 +10,10 @@ import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.SiteDao;
+import com.ocherve.jcm.form.AddCommentForm;
 import com.ocherve.jcm.form.CreateSiteForm;
 import com.ocherve.jcm.form.SearchForm;
+import com.ocherve.jcm.model.Comment;
 import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.service.Delivry;
@@ -68,6 +70,9 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 				case  "c" :
 					parameters.setForm(new CreateSiteForm(request));
 					break;
+				case  "uac" :
+					parameters.setForm(new AddCommentForm(request));
+					break;
 			}
 		}
 		return parameters;
@@ -122,7 +127,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		delivry.setParameters(parameters);
 		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
 		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
-		String info = "Service " + this.serviceName + " do GetAction.";
+		String info = "Service" + this.serviceName + ".doGetAction is done.";
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
 	}
@@ -138,6 +143,9 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 				case "c" :
 					if ( getCreateForm(parameters) != null ) delivry = postCreateForm(parameters);
 					break;
+				case "uac" :
+					delivry = postAddCommentForm(parameters);
+					break;
 				default :
 			}			
 		} catch (UrlException e ) {
@@ -148,7 +156,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		if ( delivry == null ) delivry = new Delivry();
 		delivry.setParameters(parameters);
 		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
-		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
+		if ( ! parameters.getErrors().isEmpty() ) delivry.appendErrors(parameters.getErrors());
 		String info = "Service " + this.serviceName + " do PostAction.";
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
@@ -266,7 +274,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			throw new UrlException("Echec de la requete sur la base");
 		}
 		if (site == null) throw new UrlException("Aucun site trouvé avec cet id.");
-		debugSite(site);
+		//debugSite(site);
 		if ( site.getSlug() == null ) throw new UrlException("Ce site n'a pas de slug associé");
 		if ( ! site.getSlug().contentEquals(parameters.getParsedUrl().getSlug()) )
 			throw new UrlException("L'id et le slug fourni par l'url ne correspondent pas.");
@@ -283,6 +291,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	public Delivry postCreateForm(Parameters parameters) {
 		Delivry result = new Delivry();
 		CreateSiteForm createSiteForm = (CreateSiteForm) parameters.getForm();
+		@SuppressWarnings("unused")
 		Site createSite = createSiteForm.createSite();
 		// If errors we set result values and return it
 		if ( ! createSiteForm.getErrors().isEmpty() ) {
@@ -303,6 +312,40 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		return result;
 	}
 
+	/**
+	 * @param parameters
+	 * @return delivry as result
+	 */
+	public Delivry postAddCommentForm(Parameters parameters) {
+		Delivry result = new Delivry();
+		AddCommentForm addCommentForm = (AddCommentForm) parameters.getForm();
+		Comment comment = addCommentForm.createComment();
+		String redirection = parameters.getContextPath();
+		// If errors we set result values and return it
+		if ( ! addCommentForm.getErrors().isEmpty() ) {
+			DLOG.log(Level.ERROR, addCommentForm.getErrors().keySet().toString());
+			if ( addCommentForm.getErrors().containsKey("internal")) {
+				Notification notification = new Notification(NotificationType.ERROR, 
+					"Une erreur interne s'est produite. Le commentaire n'a pas pu être créé.");
+				result.appendSessionNotification("Nouveau commentaire", notification);
+				redirection += "/site/l/1";
+			} else {
+				result.appendattribute("addCommentForm", addCommentForm);
+				redirection += "/site/r/" + comment.getReference().getId() + "/" + comment.getReference().getSlug();
+			}
+			result.appendattribute("redirect", redirection);
+			return result;				
+		} 
+		// Else we set redirection and notification(s) to display after redirection
+		Notification notification = new Notification(NotificationType.SUCCESS, 
+				"Votre commentaire est ajouté.");
+		result.appendSessionNotification("Nouveau commentaire", notification);
+		redirection += "/site/r/" + comment.getReference().getId() + "/" + comment.getReference().getSlug();
+		result.appendattribute("redirect", redirection);
+		DLOG.log(Level.DEBUG, result.getAttribute("redirect").toString());
+		return result;
+	}
+	
 	@Override
 	public Delivry getUpdateForm(Parameters parameters) {
 		// TODO Auto-generated method stub
@@ -384,6 +427,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	 * 
 	 * @param site
 	 */
+	@SuppressWarnings("unused")
 	private static void debugSite(Site site) {
 		String message = "%n";
 		message += "Site id : " + site.getType().toString() + " " + site.getId() + "%n";

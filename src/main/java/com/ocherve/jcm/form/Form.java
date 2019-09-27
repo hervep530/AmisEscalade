@@ -117,4 +117,11 @@ public abstract class Form {
 	    return stringValue.toString();
 	}
 
+    /**
+     * @return errors
+     */
+    public Map<String,String> getErrors() {
+    	return errors;
+    }
+
 }
