@@ -131,6 +131,23 @@ public class User implements Serializable {
 		this.username = username;
 		this.tsAccess = Timestamp.from(Instant.now());
 	}
+	
+	/**
+	 * Constructor to return sessionUser
+	 * @param id 
+	 * @param mailAddress
+	 * @param username
+	 * @param role 
+	 */
+	public User(Integer id, String mailAddress, String username, Role role) {
+		super();
+		this.id = id;
+		this.mailAddress = mailAddress;
+		this.username = username;
+		this.role = role;
+	}
+
+
 
 	/**
 	 * @return the id
@@ -388,6 +405,11 @@ public class User implements Serializable {
 		return message;
 	}
 
-
+	/**
+	 * @return light instance of userSession
+	 */
+	public User getSessionInstance() {
+		return new User(this.id, this.mailAddress, this.username, this.role);
+	}
 
 }

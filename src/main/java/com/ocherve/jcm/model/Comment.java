@@ -26,6 +26,8 @@ import com.ocherve.jcm.utils.JcmDate;
 @Table(name="jcm_comment")
 @NamedQueries({
 	@NamedQuery(name="Comment.findAll", query="SELECT c FROM Comment c"),
+	@NamedQuery(name="Comment.getAuthor", 
+	query="SELECT c.author.id FROM Comment c WHERE c.id = :id "),
 	@NamedQuery(name="Comment.findByAuthorId", query="SELECT c FROM Comment c"),
 	@NamedQuery(name="Comment.findByAuthor", query="SELECT c FROM Comment c")
 })

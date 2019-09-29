@@ -28,6 +28,8 @@ import javax.persistence.Table;
 @Table(name="jcm_reference")
 @NamedQueries({
 	@NamedQuery(name="Reference.findAll", query="SELECT r FROM Reference r"),
+	@NamedQuery(name="Reference.getAuthor", 
+	query="SELECT r.author.id FROM Reference r WHERE r.id = :id "),
 	@NamedQuery(name="Reference.getIdFromSlug", 
 	query="SELECT r.id FROM Reference r WHERE r.slug = :slug AND r.type= :type")
 })

@@ -142,14 +142,12 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		} 
 		
 		// if Success, user is stored in session and we will send in the next httpRequest (redirection)
-		delivry.appendSession("sessionUser", user);
+		delivry.appendSession("sessionUser", user.getSessionInstance());
 		// Settin redirection and notification(s)
 		String notificationLabel = "Connexion";
 		String message = "Bonjour " + user.getUsername() + "! Content de vous revoir.";
 		Notification notification = new Notification(NotificationType.SUCCESS, message);
-		Map<String,Notification> notifications = new HashMap<>();
-		notifications.put(notificationLabel, notification);
-		delivry.appendSession("notifications", notifications);
+		delivry.appendSessionNotification(notificationLabel, notification);
 		delivry.appendattribute("redirect", parameters.getContextPath());
 		
 		return delivry;

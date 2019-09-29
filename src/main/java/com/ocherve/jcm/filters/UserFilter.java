@@ -29,11 +29,7 @@ import com.ocherve.jcm.service.NotificationType;
  */
 @WebFilter(filterName = "UserFilter", urlPatterns = {
 	"/site/c",
-	"/site/u/*",
 	"/site/uac",
-	"/site/umc",
-	"/site/upt/*",
-	"/site/upf/*",
 	"/session/deconnexion",
 	"/session/d",
 	"/session/pass"
