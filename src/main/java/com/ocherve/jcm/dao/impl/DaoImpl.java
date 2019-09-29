@@ -185,6 +185,15 @@ public abstract class DaoImpl implements Dao {
 	}
 
 	@Override
+	public Integer getIdFromNamedQuery(String queryName, Map<String, Object> parameters) {
+		try {
+			return ((Integer) getColumnsFromNamedQuery(Integer.class, queryName, parameters));
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	
+	@Override
 	public boolean delete(Class<?> entityClass, Integer id) {
 		daoInit();
 		boolean deleted = false;

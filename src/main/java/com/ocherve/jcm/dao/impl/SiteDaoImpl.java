@@ -30,7 +30,7 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 		Site site = (Site) super.get(Site.class, id);
 		return site.getSlug();
 	}
-
+/*
 	@Override
 	public Integer getIdFromNamedQuery(String queryName, Map<String, Object> parameters) {
 		try {
@@ -39,7 +39,7 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 			return 0;
 		}
 	}
-
+*/
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Site> getList() {

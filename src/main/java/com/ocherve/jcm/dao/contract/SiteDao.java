@@ -49,9 +49,9 @@ public interface SiteDao extends Dao {
 	 * @param queryName
 	 * @param parameters
 	 * @return site id
-	 */
+	 *//*
 	Integer getIdFromNamedQuery(String queryName, Map<String, Object> parameters);
-	
+*/	
 	/**
 	 * @return site list
 	 */

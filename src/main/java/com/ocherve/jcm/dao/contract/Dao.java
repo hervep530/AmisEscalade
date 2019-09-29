@@ -46,7 +46,14 @@ public interface Dao {
 	 * @return entity manager by dao
 	 */
 	Object get(Class<?> entityClass, Integer id);
-	
+
+	/**
+	 * @param queryName
+	 * @param parameters
+	 * @return site id
+	 */
+	Integer getIdFromNamedQuery(String queryName, Map<String, Object> parameters);
+
 	/**
 	 * @param entityClass
 	 * @param namedQuery
