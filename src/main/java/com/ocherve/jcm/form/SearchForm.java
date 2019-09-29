@@ -172,11 +172,11 @@ public class SearchForm {
 		}
 		if ( cotationField == 0 ) return;
 		if ( whereClauses == null ) {
-			whereClauses = new WhereClause("r.cotationMin.id" , Operator.LESS);
+			whereClauses = new WhereClause("r.cotationMin.id" , Operator.LESSEQ);
 		} else {
-			whereClauses.add(AddingMode.AND, "r.cotationMin.id" , Operator.LESS);
+			whereClauses.add(AddingMode.AND, "r.cotationMin.id" , Operator.LESSEQ);
 		}
-		whereClauses.add(AddingMode.AND, "r.cotationMax.id" , Operator.GREATER);		
+		whereClauses.add(AddingMode.AND, "r.cotationMax.id" , Operator.GREATEREQ);		
 		queryParameters.put("rCotationMinId", cotationField);
 		queryParameters.put("rCotationMaxId", cotationField);
 	}
