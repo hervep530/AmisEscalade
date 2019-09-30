@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     	<c:set var="site" value="${ delivry.attributes.site}" scope="page" />
-		<article id="acceuil">
+		<article id="siteContent">
 			<div id="summary" class="mx-4">
 				<div class="row">
 					<h1 class="h2 text-center col-md-9">
