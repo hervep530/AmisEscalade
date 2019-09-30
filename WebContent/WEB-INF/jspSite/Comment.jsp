@@ -35,9 +35,17 @@
 									<div class="card-body">
 										<div class="row">
 										<h6 class="card-title col-md-6">${comment.author.username}</h6>
-										<p class="card-text col-md-6"><small class="text-muted">
+										<p class="card-text col-md-3"><small class="text-muted">
 											il y a ${comment.modifiedElapsedTime}
 										</small></p>
+										<div class="col-md-3">
+											<nav id="NavComment" class="navbar navbar-expand-lg">
+												<ul class="navbar-nav">
+<%@ include file="../jspComment/AuthorNavComment.jsp" %>
+<%@ include file="../jspComment/MemberNavComment.jsp" %>
+												</ul>
+											</nav>
+										</div>
 										</div>
 										<p class="card-text"><c:out value="${comment.content}"></c:out></p>
 									</div>

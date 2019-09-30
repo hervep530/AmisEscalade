@@ -16,7 +16,7 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 			{"u","/comment/u/$id"},
 			{"upt","/comment/upt/$id"},
 			{"upf","/comment/upf/$id"},
-			{"d","/comment/d"}
+			{"d","/comment/d/$id"}
 	};
 
 	/**
