@@ -42,6 +42,7 @@ public class AddCommentForm extends Form {
 	
 	private Reference reference;
 	private User author;
+	private String content;
 	private Comment comment;
 
     
@@ -67,8 +68,7 @@ public class AddCommentForm extends Form {
 		try {
 			author = userDao.get(((User) request.getSession().getAttribute("sessionUser")).getId());
 			reference = (Reference) siteDao.get(getInputIntegerValue(REFERENCE_ID_FIELD));
-			comment = new Comment(reference, getInputTextValue(CONTENT_FIELD), author);
-			logComment(comment);
+			content = getInputTextValue(CONTENT_FIELD);
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, e.getMessage());
 		}
@@ -83,6 +83,7 @@ public class AddCommentForm extends Form {
     	try {
     		validateContent();
     	} catch (FormException e) {
+    		DLOG.log(Level.ERROR, "Content Error : " + this.content);
     		this.errors.put("content", e.getMessage());
     	}
 
@@ -100,14 +101,15 @@ public class AddCommentForm extends Form {
     		this.errors.put("internal", "Unexpected error.");
     	}
     	
-    	if ( this.errors.isEmpty() ) {
-    		try {
-        		comment = commentDao.create(comment);    			
-    		} catch (Exception e ) {
-    			for ( Entry<String,String> error : errors.entrySet() ) {
-    	    		this.errors.put("internal", "Unexpected error.");
-        			DLOG.log(Level.ERROR, "Add comment - " + error.getKey() + " : " + error.getValue());
-    			}
+    	if ( ! this.errors.isEmpty() ) return null;
+
+    	try {
+    		comment = new Comment(reference, content, author);
+        	comment = commentDao.create(comment);    			
+    	} catch (Exception e ) {
+    		for ( Entry<String,String> error : errors.entrySet() ) {
+    	   		this.errors.put("internal", "Unexpected error.");
+        		DLOG.log(Level.ERROR, "Add comment - " + error.getKey() + " : " + error.getValue());
     		}
     	}
     	
@@ -119,8 +121,8 @@ public class AddCommentForm extends Form {
      */
     private void validateContent() throws FormException {
     	String message = "Le contenu du commentaire est invalide";
-    	if ( comment.getContent() == null ) throw new FormException(message);
-    	if ( comment.getContent().length() < 3 ) throw new FormException(message);
+    	if ( content == null ) throw new FormException(message);
+    	if ( content.length() < 3 ) throw new FormException(message);
     	
     }
     
@@ -147,6 +149,7 @@ public class AddCommentForm extends Form {
 	/**
 	 * @param comment
 	 */
+	@SuppressWarnings("unused")
 	private static void logComment(Comment comment) {
 		String message = "%nDisplay Comment Entity%n";
 		try {
@@ -163,5 +166,32 @@ public class AddCommentForm extends Form {
 		DLOG.log(Level.DEBUG, String.format(message));		
 	}
 
+	/**
+	 * @return the reference
+	 */
+	public Reference getReference() {
+		return reference;
+	}
+
+	/**
+	 * @return the author
+	 */
+	public User getAuthor() {
+		return author;
+	}
+
+	/**
+	 * @return the content
+	 */
+	public String getContent() {
+		return content;
+	}
+
+	/**
+	 * @return the comment
+	 */
+	public Comment getComment() {
+		return comment;
+	}
     
 }

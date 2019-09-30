@@ -55,6 +55,13 @@ public interface SiteService extends Service {
 	 */
 	Delivry getUpdateForm(Parameters parameters);
 	
+	/**
+	 * Method call when comment is posted from Site content (RequestMethod : 'POST' - url : '/site/uac/$id')
+	 *  
+	 * @param parameters
+	 * @return delivry as result
+	 */
+	Delivry postAddCommentForm(Parameters parameters);
 	
 	/**
 	 * @param parameters 

@@ -312,10 +312,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		return result;
 	}
 
-	/**
-	 * @param parameters
-	 * @return delivry as result
-	 */
+	@Override
 	public Delivry postAddCommentForm(Parameters parameters) {
 		Delivry result = new Delivry();
 		AddCommentForm addCommentForm = (AddCommentForm) parameters.getForm();
@@ -325,15 +322,20 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		if ( ! addCommentForm.getErrors().isEmpty() ) {
 			DLOG.log(Level.ERROR, addCommentForm.getErrors().keySet().toString());
 			if ( addCommentForm.getErrors().containsKey("internal")) {
+				// Internal error - we redirect with notification
 				Notification notification = new Notification(NotificationType.ERROR, 
 					"Une erreur interne s'est produite. Le commentaire n'a pas pu être créé.");
 				result.appendSessionNotification("Nouveau commentaire", notification);
 				redirection += "/site/l/1";
+				result.appendattribute("redirect", redirection);
 			} else {
+				// content error - we forward error toward formular inside site content
+				Notification notification = new Notification(NotificationType.ERROR, 
+						"Le commentaire n'a pas pu être créé car le contenu n'est pas valide.");
+				result.appendNotification("Nouveau commentaire", notification);
 				result.appendattribute("addCommentForm", addCommentForm);
-				redirection += "/site/r/" + comment.getReference().getId() + "/" + comment.getReference().getSlug();
+				result.appendattribute("site", (Site) addCommentForm.getReference());
 			}
-			result.appendattribute("redirect", redirection);
 			return result;				
 		} 
 		// Else we set redirection and notification(s) to display after redirection
@@ -341,7 +343,9 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 				"Votre commentaire est ajouté.");
 		result.appendSessionNotification("Nouveau commentaire", notification);
 		redirection += "/site/r/" + comment.getReference().getId() + "/" + comment.getReference().getSlug();
-		result.appendattribute("redirect", redirection);
+		// We redirect except if errors only contains "content" key
+		//if ( ! addCommentForm.getErrors().containsKey("content") || addCommentForm.getErrors().size() > 1 ) 
+			result.appendattribute("redirect", redirection);
 		DLOG.log(Level.DEBUG, result.getAttribute("redirect").toString());
 		return result;
 	}

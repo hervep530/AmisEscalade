@@ -19,9 +19,9 @@
 									</div>
 								</div>
 								<textarea id="commentContent" name="commentContent" rows="2"
-											 class="form-control${empty commentContentError?'':' is-invalid'}"
-											 ><c:out value='${delivry.attributes.addCommentForm.comment.content}'></c:out></textarea>
-								<div class="invalid-feedback${empty commentContentError?' invisible':''}"
+											 class="form-control${empty commentContentError ? '' : ' is-invalid'}"
+											 ><c:out value='${delivry.attributes.addCommentForm.content}'></c:out></textarea>
+								<div class="invalid-feedback${empty commentContentError ? ' invisible' : ''}"
 											id="summaryError">${commentContentError}</div>
 							</div>
 						</form>

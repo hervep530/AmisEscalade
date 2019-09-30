@@ -46,6 +46,7 @@ public class AuthorFilter implements Filter {
     private static final String ATT_SESSION_USER = "sessionUser";
     
     private HttpServletRequest request;
+    private String method;
     private HttpSession session;
     private String uri;
     private Integer userId; 
@@ -75,6 +76,7 @@ public class AuthorFilter implements Filter {
 		// scope Class - not static
 		request = (HttpServletRequest) inRequest;
 		HttpServletResponse response = (HttpServletResponse) inResponse;		
+		method = request.getMethod();
 		session = request.getSession();
 		uri = request.getRequestURI().substring( request.getContextPath().length() );
 		String backUrl = request.getHeader("referer");
@@ -129,10 +131,11 @@ public class AuthorFilter implements Filter {
 		DLOG.log(Level.INFO , "Filter AuthorFilter active");
 		// Default miss access issue - user is not connected
 		message = "Vous devez vous connecter pour accéder à cette fonctionnalité.";
-		redirection = URL_CONNEXION;
+		redirection = "";
 		// Filter variables
 		uri = "";
 		component = "";
+		method = "GET";
 		userId = 0;
 		roleId = 0;
 		entityId = 0;
@@ -140,6 +143,7 @@ public class AuthorFilter implements Filter {
 
 	
 	private void setFilterVariables() {
+		redirection += request.getContextPath() + URL_CONNEXION;
 		try {
 			if ( session.getAttribute(ATT_SESSION_USER) != null ) {
 				userId = ((User) session.getAttribute(ATT_SESSION_USER)).getId();
@@ -171,7 +175,17 @@ public class AuthorFilter implements Filter {
 	}
 	
 	private Boolean isValidUrl() {
-		return uri.matches("^/(comment|site|topo)/u[a-z]*/[0-9]{1,}$");
+		if ( method == "POST" ) {
+			String postActions = "(comment/u";
+			postActions += "|site/u|site/uac|site/umc";
+			postActions += "|topo/u|topo/uac|topo/umc)";
+			return uri.matches("^/" + postActions + "/[0-9]{1,}$");
+		} else {
+			String getActions = "(comment/u|comment/upt|comment/upf";
+			getActions += "|site/u|site/upt|site/upf";
+			getActions += "|topo/u|topo/upt|topo/upf)";
+			return uri.matches("^/" + getActions + "/[0-9]{1,}$");
+		}	
 	}
 	
 	private void setDeferredNotification() {

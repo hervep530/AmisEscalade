@@ -27,12 +27,12 @@
     	<%@ include file="jspSite/View.jsp" %>
     	<%@ include file="jspDebug/TestForm.jsp" %>
     </c:when>
-    <c:when test="${action == 'r'}"><%@ include file="jspSite/Content.jsp" %></c:when>
+    <c:when test="${action == 'r' || action == 'uac'}"><%@ include file="jspSite/Content.jsp" %></c:when>
     <c:when test="${action == 'c'}"><%@ include file="jspSite/CreateForm.jsp" %></c:when>
     <c:when test="${action == 'u'}"><%@ include file="jspSite/UpdateForm.jsp" %></c:when>
     <c:otherwise><%@ include file="jspSite/Content.jsp" %></c:otherwise>
 </c:choose>
-<c:if test="${action == 'r'}">
+<c:if test="${action == 'r' || action == 'uac'}">
 <%@ include file="jspSite/Comment.jsp" %>
 </c:if>
 
