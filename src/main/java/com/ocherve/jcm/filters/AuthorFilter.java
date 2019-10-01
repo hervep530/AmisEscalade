@@ -127,7 +127,6 @@ public class AuthorFilter implements Filter {
 	 * @see Filter#init(FilterConfig)
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
 		Configurator.setLevel(DLOG.getName(), DLOGLEVEL);
 		DLOG.log(Level.INFO , "Filter AuthorFilter active");
 		// Default miss access issue - user is not connected
