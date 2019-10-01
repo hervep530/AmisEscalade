@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.ocherve.jcm.dao.contract.CommentDao;
 import com.ocherve.jcm.model.Comment;
+import com.ocherve.jcm.model.Reference;
 import com.ocherve.jcm.model.User;
 
 /**
@@ -98,6 +99,9 @@ class CommentDaoImpl extends DaoImpl implements CommentDao {
 					break;
 				case "user" :
 					((Comment) object).setAuthor((User)fields.get(field));
+					break;
+				case "reference" :
+					((Comment) object).setReference((Reference)fields.get(field));
 					break;
 				default :
 			}

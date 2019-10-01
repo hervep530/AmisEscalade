@@ -100,15 +100,17 @@ public abstract class DaoImpl implements Dao {
 	@Override
 	public Object update(Class<?> entityClass, Integer id, Map<String,Object> fields) {
 		daoInit();
-		try {
-			object=em.find(entityClass, id);
-			em.getTransaction().begin();
-			setUpdateAttributes(fields);
-			em.getTransaction().commit();
-		} catch (Exception e) {
-			DLOG.log(Level.ERROR, entityClass.getSimpleName() + " can not update object.");
-			DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
-			em.getTransaction().rollback();
+		object=em.find(entityClass, id);
+		if ( object != null ) {
+			try {
+				em.getTransaction().begin();
+				setUpdateAttributes(fields);
+				em.getTransaction().commit();
+			} catch (Exception e) {
+				DLOG.log(Level.ERROR, entityClass.getSimpleName() + " can not update object.");
+				DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
+				em.getTransaction().rollback();
+			}			
 		}
 		return object;
 	}
@@ -272,6 +274,37 @@ public abstract class DaoImpl implements Dao {
 		} 
 		DLOG.log(Level.DEBUG, String.format("result of query " + queryName + " : " + columns));		
 		return columns;
+	}
+	
+	@Override
+	public void refresh(Class<?> entityClass, Integer id) {
+		daoInit();
+		object = em.find(entityClass, id);
+		if ( object != null ) {
+			try {
+				em.getTransaction().begin();
+				em.refresh(entityClass.cast(object));
+				em.getTransaction().commit();
+			} catch (Exception e) {
+				DLOG.log(Level.ERROR, 
+						entityClass.getSimpleName() + " can not refresh object" + " with id " + id +".");
+				DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
+			}
+		}
+	}
+
+	@Override
+	public void refresh(Class<?> entityClass, Object entity) {
+		daoInit();
+		if ( entity != null ) {
+			try {
+				em.refresh(entityClass.cast(entity));
+			} catch (Exception e) {
+				DLOG.log(Level.ERROR, 
+						entityClass.getSimpleName() + "can not be refreshed.");
+				DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
+			}
+		}
 	}
 	
 	protected void setUpdateAttributes(Map<String,Object> fields) {

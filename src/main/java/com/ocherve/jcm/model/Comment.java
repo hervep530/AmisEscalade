@@ -42,12 +42,12 @@ public class Comment implements Serializable {
 	@Column(name = "content")
 	private String content = "";
 
-	//bi-directional many-to-one association to Document
-	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH })
+	//bi-directional many-to-one association to Document - fetchType = EAGER (default with ManyToOne)
+	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH })
 	@JoinColumn(name="fk_comment_reference")
 	private Reference reference;
 
-	//bi-directional many-to-one association to User
+	//bi-directional many-to-one association to User - fetchType = EAGER (default with ManyToOne)
 	@ManyToOne
 	@JoinColumn(name="fk_comment_user")
 	private User author;

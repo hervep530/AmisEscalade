@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -58,13 +59,13 @@ public class Reference implements Serializable {
 	@Column(name="ts_modified")
 	private Timestamp tsModified;
 	
-	//bi-directional many-to-one association to User
+	//bi-directional many-to-one association to User - fetchType = EAGER (default with ManyToOne)
 	@ManyToOne
 	@JoinColumn(name="fk_document_user")
 	private User author;
 
-	//bi-directional one-to-many association to Comment
-	@OneToMany(mappedBy="reference")
+	//bi-directional one-to-many association to Comment - fetchType = LAZY (default with OneToMany)
+	@OneToMany(mappedBy="reference", cascade = CascadeType.ALL)
 	private List<Comment> comments;
 
 	/**

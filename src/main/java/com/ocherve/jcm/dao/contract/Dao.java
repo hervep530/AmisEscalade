@@ -109,6 +109,21 @@ public interface Dao {
 	 * @return true if deleted, false if not deleted
 	 */
 	boolean delete(Class<?> entityClass, Integer id);
+	
+	/**
+	 * Refresh entity when a child in collection is updated
+	 * 
+	 * @param entityClass
+	 * @param id
+	 */
+	void refresh(Class<?> entityClass, Integer id);
 
+	/**
+	 * Refresh entity when a child in collection is updated
+	 * 
+	 * @param entityClass
+	 * @param entity
+	 */
+	void refresh(Class<?> entityClass, Object entity);
 	
 }
