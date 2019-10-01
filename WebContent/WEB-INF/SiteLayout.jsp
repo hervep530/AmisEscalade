@@ -33,7 +33,7 @@
     <c:otherwise><%@ include file="jspSite/Content.jsp" %></c:otherwise>
 </c:choose>
 <c:if test="${action == 'r' || action == 'uac'}">
-<%@ include file="jspSite/Comment.jsp" %>
+<%@ include file="jspComment/EmbeddedComments.jsp" %>
 </c:if>
 
 

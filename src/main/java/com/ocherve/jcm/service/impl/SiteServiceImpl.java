@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.SiteDao;
-import com.ocherve.jcm.form.AddCommentForm;
+import com.ocherve.jcm.form.CommentForm;
 import com.ocherve.jcm.form.CreateSiteForm;
 import com.ocherve.jcm.form.SearchForm;
 import com.ocherve.jcm.model.Comment;
@@ -71,7 +71,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 					parameters.setForm(new CreateSiteForm(request));
 					break;
 				case  "uac" :
-					parameters.setForm(new AddCommentForm(request));
+					parameters.setForm(new CommentForm(request));
 					break;
 			}
 		}
@@ -315,13 +315,13 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	@Override
 	public Delivry postAddCommentForm(Parameters parameters) {
 		Delivry result = new Delivry();
-		AddCommentForm addCommentForm = (AddCommentForm) parameters.getForm();
-		Comment comment = addCommentForm.createComment();
+		CommentForm commentForm = (CommentForm) parameters.getForm();
+		Comment comment = commentForm.createComment();
 		String redirection = parameters.getContextPath();
 		// If errors we set result values and return it
-		if ( ! addCommentForm.getErrors().isEmpty() ) {
-			DLOG.log(Level.ERROR, addCommentForm.getErrors().keySet().toString());
-			if ( addCommentForm.getErrors().containsKey("internal")) {
+		if ( ! commentForm.getErrors().isEmpty() ) {
+			DLOG.log(Level.ERROR, commentForm.getErrors().keySet().toString());
+			if ( commentForm.getErrors().containsKey("internal")) {
 				// Internal error - we redirect with notification
 				Notification notification = new Notification(NotificationType.ERROR, 
 					"Une erreur interne s'est produite. Le commentaire n'a pas pu être créé.");
@@ -333,8 +333,8 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 				Notification notification = new Notification(NotificationType.ERROR, 
 						"Le commentaire n'a pas pu être créé car le contenu n'est pas valide.");
 				result.appendNotification("Nouveau commentaire", notification);
-				result.appendattribute("addCommentForm", addCommentForm);
-				result.appendattribute("site", (Site) addCommentForm.getReference());
+				result.appendattribute("commentForm", commentForm);
+				result.appendattribute("site", (Site) commentForm.getReference());
 			}
 			return result;				
 		} 
@@ -344,7 +344,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		result.appendSessionNotification("Nouveau commentaire", notification);
 		redirection += "/site/r/" + comment.getReference().getId() + "/" + comment.getReference().getSlug();
 		// We redirect except if errors only contains "content" key
-		//if ( ! addCommentForm.getErrors().containsKey("content") || addCommentForm.getErrors().size() > 1 ) 
+		//if ( ! commentForm.getErrors().containsKey("content") || commentForm.getErrors().size() > 1 ) 
 			result.appendattribute("redirect", redirection);
 		DLOG.log(Level.DEBUG, result.getAttribute("redirect").toString());
 		return result;

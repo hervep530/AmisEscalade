@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<c:set var="commentContentError" value="${delivry.attributes.addCommentForm.errors.content}" scope="page"></c:set>
+<c:set var="commentContentError" value="${delivry.attributes.commentForm.errors.content}" scope="page"></c:set>
     				<aside id="comment-group">
     					<div class="card-header my-1 py-0"><em>Commentaires</em></div>
 						<form id="commentSiteForm" class="text-center border border-light p-1 my-1" 
@@ -20,7 +20,7 @@
 								</div>
 								<textarea id="commentContent" name="commentContent" rows="2"
 											 class="form-control${empty commentContentError ? '' : ' is-invalid'}"
-											 ><c:out value='${delivry.attributes.addCommentForm.content}'></c:out></textarea>
+											 ><c:out value='${delivry.attributes.commentForm.content}'></c:out></textarea>
 								<div class="invalid-feedback${empty commentContentError ? ' invisible' : ''}"
 											id="summaryError">${commentContentError}</div>
 							</div>
