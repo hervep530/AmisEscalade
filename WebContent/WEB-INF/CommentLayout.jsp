@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<%@ include file="jspComment/PageVar.jsp" %>
+<%@ include file="jspCommon/PageVar.jsp" %>
 	<head>
 		<meta charset="UTF-8">
 <%@ include file="jspCommon/meta/Style.jsp" %>
@@ -25,6 +25,7 @@
     <c:when test="${action == 'l'}"><%@ include file="jspComment/View.jsp" %></c:when>
     <c:when test="${action == 'u'}">
 <%@ include file="jspComment/UpdateForm.jsp" %>
+<%@ include file="jspSite/Summary.jsp" %>
 	</c:when>
     <c:otherwise><%@ include file="jspComment/View.jsp" %></c:otherwise>
 </c:choose>

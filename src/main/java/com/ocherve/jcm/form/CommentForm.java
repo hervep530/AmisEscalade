@@ -1,5 +1,7 @@
 package com.ocherve.jcm.form;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,14 +14,20 @@ import com.ocherve.jcm.dao.contract.SiteDao;
 import com.ocherve.jcm.dao.contract.UserDao;
 import com.ocherve.jcm.model.Comment;
 import com.ocherve.jcm.model.Reference;
+import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.model.User;
 
 /**
  * @author herve_dev
  *
  */
-public class AddCommentForm extends Form {
+public class CommentForm extends Form {
 
+
+	/**
+	 * Field name for  the reference id
+	 */
+	public final static String COMMENT_ID_FIELD = "commentId";
 
 	/**
 	 * Field name for  the reference id
@@ -44,12 +52,13 @@ public class AddCommentForm extends Form {
 	private User author;
 	private String content;
 	private Comment comment;
+	private Integer commentId;
 
     
     /**
      * Constructor
      */
-	public AddCommentForm() {
+	public CommentForm() {
 		super();
 	}
 	
@@ -57,16 +66,16 @@ public class AddCommentForm extends Form {
      * Constructor
      * @param request 
      */
-    public AddCommentForm(HttpServletRequest request) {
+    public CommentForm(HttpServletRequest request) {
     	super();
 		commentDao = (CommentDao) DaoProxy.getInstance().getCommentDao();
 		userDao = (UserDao) DaoProxy.getInstance().getUserDao();
 		siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 		this.request = request;
-		// partMethod = false;
 		
 		try {
 			author = userDao.get(((User) request.getSession().getAttribute("sessionUser")).getId());
+			commentId = getInputIntegerValue(COMMENT_ID_FIELD);
 			reference = (Reference) siteDao.get(getInputIntegerValue(REFERENCE_ID_FIELD));
 			content = getInputTextValue(CONTENT_FIELD);
 		} catch (Exception e) {
@@ -74,7 +83,26 @@ public class AddCommentForm extends Form {
 		}
 		
     }
-    
+
+    /**
+     * Constructor
+     * @param commentId 
+     */
+    public CommentForm(Integer commentId) {
+    	super();
+		commentDao = (CommentDao) DaoProxy.getInstance().getCommentDao();
+		
+		try {
+			comment = commentDao.get(commentId);
+			author = comment.getAuthor();
+			reference = comment.getReference();
+			content = comment.getContent();
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, e.getMessage());
+		}
+		
+    }
+
     /**
      * create comment (validate field and persist with CommentDao)
      * @return comment
@@ -117,7 +145,68 @@ public class AddCommentForm extends Form {
     }
     
     /**
+     * Update comment from form value
+     * 
+     * @return comment
+     */
+    public Comment update() {
+    	try {
+    		validateId();
+    	} catch (FormException e) {
+    		DLOG.log(Level.ERROR, "Content Error : " + this.content);
+    		this.errors.put("content", e.getMessage());
+    	}
+    	
+    	try {
+    		validateContent();
+    	} catch (FormException e) {
+    		DLOG.log(Level.ERROR, "Content Error : " + this.content);
+    		this.errors.put("content", e.getMessage());
+    	}    	
+
+    	try {
+    		validateReference();
+    	} catch (FormException e) {
+    		this.errors.put("reference", "Reference invalid.");
+    		this.errors.put("internal", "Unexpected error.");
+    	}
+
+    	try {
+    		validateAuthor();
+    	} catch (FormException e) {
+    		this.errors.put("author", "Author invalid.");
+    		this.errors.put("internal", "Unexpected error.");
+    	}
+    	
+    	if ( ! this.errors.isEmpty() ) return null;
+
+    	try {
+    		Map<String,Object> fields = new HashMap<>();
+    		fields.put("content", this.content);
+        	comment = commentDao.update(commentId, fields);   
+        	siteDao.refresh(Site.class, reference.getId());
+    	} catch (Exception e ) {
+    		for ( Entry<String,String> error : errors.entrySet() ) {
+    	   		this.errors.put("internal", "Unexpected error.");
+        		DLOG.log(Level.ERROR, "Add comment - " + error.getKey() + " : " + error.getValue());
+    		}
+    	}
+    	
+    	return comment;
+    }
+    
+    /**
      * Checking content not empty
+     */
+    private void validateId() throws FormException {
+    	String message = "Le contenu du commentaire est invalide";
+    	if ( content == null ) throw new FormException(message);
+    	if ( content.length() < 3 ) throw new FormException(message);
+    	
+    }
+
+    /**
+     * Checking commentId is valid
      */
     private void validateContent() throws FormException {
     	String message = "Le contenu du commentaire est invalide";
@@ -125,7 +214,7 @@ public class AddCommentForm extends Form {
     	if ( content.length() < 3 ) throw new FormException(message);
     	
     }
-    
+
     /**
      * Checking author not null
      */

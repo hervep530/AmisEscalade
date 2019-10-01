@@ -35,7 +35,8 @@ import com.ocherve.jcm.service.NotificationType;
 				"/site/u/*", 
 				"/site/upt/*",
 				"/site/upf/*",
-				"/site/umc/*"
+				"/site/umc/*",
+				"/comment/u/*"
 			})
 public class AuthorFilter implements Filter {
 
@@ -163,11 +164,14 @@ public class AuthorFilter implements Filter {
 		Integer idAuthor = -1;
 		try {
 			if ( component.contentEquals("comment") ) {
+				DLOG.log(Level.DEBUG, "component is comment");
 				CommentDao commentDao = (CommentDao) DaoProxy.getInstance().getCommentDao();
 				idAuthor = (Integer) commentDao.getIdFromNamedQuery("Comment.getAuthor", parameters);
+				DLOG.log(Level.DEBUG, "component : " + component + " - authorId : " + idAuthor);
 			} else {
 				SiteDao siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 				idAuthor = (Integer) siteDao.getIdFromNamedQuery("Reference.getAuthor", parameters);
+				DLOG.log(Level.DEBUG, "component : " + component + " - authorId : " + idAuthor);
 			}		
 		} catch (Exception ignore) { /* however acces denied and if Dao error already traced */ }
 				
