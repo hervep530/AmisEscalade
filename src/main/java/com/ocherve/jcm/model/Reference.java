@@ -248,13 +248,10 @@ public class Reference implements Serializable {
 
 	/**
 	 * @param comment
-	 * @return comment removed
 	 */
-	public Comment removeComment(Comment comment) {
+	public void removeComment(Comment comment) {
 		this.getComments().remove(comment);
-		comment.setReference(null);
-
-		return comment;
+		if ( comment != null ) comment.setReference(null);
 	}
 
 }

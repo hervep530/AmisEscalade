@@ -5,10 +5,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.DaoProxy;
+import com.ocherve.jcm.dao.contract.CommentDao;
 import com.ocherve.jcm.dao.contract.SiteDao;
 import com.ocherve.jcm.form.CommentForm;
 import com.ocherve.jcm.model.Comment;
 import com.ocherve.jcm.model.Site;
+import com.ocherve.jcm.model.Reference;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Notification;
 import com.ocherve.jcm.service.NotificationType;
@@ -69,6 +71,7 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 				case "upf" :
 					break;
 				case "d" :
+					delivry = deleteComment(parameters);
 					break;
 				default :
 			}			
@@ -165,5 +168,39 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 		return result;
 	}
 	
+	private Delivry deleteComment(Parameters parameters) {
+		Delivry delivry = new Delivry();
+		Boolean deleted = false;
+		String redirection = parameters.getReferer();
+		// Default redirection and notification for delete success
+		if ( redirection.isEmpty() ) redirection = parameters.getContextPath() + "/site/l/1";
+		Notification notification = new Notification(NotificationType.ERROR, 
+				"Une erreur interne s'est produite. Le commentaire n'a pas pu être supprimé.");
+		// Trying to delete
+		try {
+			// Set dao's and init variable
+			SiteDao siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
+			CommentDao commentDao = (CommentDao) DaoProxy.getInstance().getCommentDao();
+			Integer commentId = 0;
+			Integer siteId = 0;
+			// Get comment and site id
+			commentId = Integer.valueOf(parameters.getParsedUrl().getId());
+			Comment comment = commentDao.get(commentId);
+			Reference reference = comment.getReference();
+			siteId = reference.getId();
+			// delete comment and refresh lazy parent (site)... more than lazy...
+			deleted = ((CommentDao) DaoProxy.getInstance().getCommentDao()).delete(commentId);
+			reference.removeComment(comment);
+			siteDao.refresh(Site.class, siteId);
+		} catch (Exception ignore) {/* Already traced in Dao */}
+		// If it fails, notification is modified
+		if ( deleted ) notification = new Notification(NotificationType.SUCCESS, "Le commentaire est supprimé.");
+		// Append notification and redirection to delivry
+		delivry.appendSessionNotification("Modification commentaire", notification);
+		delivry.appendattribute("redirect", redirection);
+		
+		return delivry;
+	}
+
 	
 }

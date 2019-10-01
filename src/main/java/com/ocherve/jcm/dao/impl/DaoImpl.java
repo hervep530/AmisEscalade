@@ -286,6 +286,7 @@ public abstract class DaoImpl implements Dao {
 				em.refresh(entityClass.cast(object));
 				em.getTransaction().commit();
 			} catch (Exception e) {
+				em.getTransaction().rollback();
 				DLOG.log(Level.ERROR, 
 						entityClass.getSimpleName() + " can not refresh object" + " with id " + id +".");
 				DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));
@@ -298,8 +299,11 @@ public abstract class DaoImpl implements Dao {
 		daoInit();
 		if ( entity != null ) {
 			try {
+				em.getTransaction().begin();
 				em.refresh(entityClass.cast(entity));
+				em.getTransaction().commit();
 			} catch (Exception e) {
+				em.getTransaction().rollback();
 				DLOG.log(Level.ERROR, 
 						entityClass.getSimpleName() + "can not be refreshed.");
 				DLOG.log(Level.DEBUG, String.format(e.getMessage() + formatException(e)));

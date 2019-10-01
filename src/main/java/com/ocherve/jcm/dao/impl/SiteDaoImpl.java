@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ocherve.jcm.dao.contract.SiteDao;
+import com.ocherve.jcm.model.Comment;
 import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Site;
 
@@ -166,6 +167,9 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 
 				case "friendTag":
 					((Site) object).setFriendTag((Boolean)fields.get(field));
+					break;
+				case "removeComment":
+					((Site) object).removeComment((Comment)fields.get(field));
 					break;
 				case "roleId":
 					/*

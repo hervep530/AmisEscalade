@@ -18,6 +18,7 @@ public class Parameters {
 	private ParsedUrl parsedUrl;
 	private Object form;
 	private String contextPath;
+	private String referer;
 	private User sessionUser;
 	private Map<String,Notification> notifications;
 
@@ -160,6 +161,21 @@ public class Parameters {
 	public void setSessionUser(User sessionUser) {
 		this.sessionUser = sessionUser;
 	}
+
+	/**
+	 * @return the referer
+	 */
+	public String getReferer() {
+		return referer;
+	}
+
+	/**
+	 * @param referer the referer to set
+	 */
+	public void setReferer(String referer) {
+		this.referer = referer;
+	}
+	
 	
 	
 }

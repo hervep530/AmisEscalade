@@ -43,7 +43,7 @@ public class Comment implements Serializable {
 	private String content = "";
 
 	//bi-directional many-to-one association to Document - fetchType = EAGER (default with ManyToOne)
-	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH })
+	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH })
 	@JoinColumn(name="fk_comment_reference")
 	private Reference reference;
 
@@ -157,8 +157,10 @@ public class Comment implements Serializable {
 	 * @param reference
 	 */
 	public void setReference(Reference reference) {
-		reference.getComments().add(this);
-		reference.setComments(reference.getComments());
+		if ( reference != null ) {
+			reference.getComments().add(this);
+			reference.setComments(reference.getComments());
+		}
 		this.reference = reference;
 	}
 

@@ -92,9 +92,12 @@ public abstract class ServiceImpl implements Service {
 	@Override
 	public Parameters setParameters(HttpServletRequest request) {
 		Parameters parameters = new Parameters();
-		// Storing contextPath in parameters 
+		// Storing contextPath  and referer in parameters 
 		String context = request.getContextPath();
 		parameters.setContextPath(context);
+		String referer = "";
+		if ( request.getHeader("referer") != null ) referer = request.getHeader("referer");
+		parameters.setReferer(referer);
 		// Storing sessionUser in parameters
 		User sessionUser = null;
 		try {
