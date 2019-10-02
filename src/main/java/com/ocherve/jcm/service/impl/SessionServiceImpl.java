@@ -158,7 +158,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 
 		// get Connexion Form stored in parameters and call connectUser()
 		InscriptionForm inscriptionForm = (InscriptionForm) parameters.getForm();
-		//User inscriptionUser = inscriptionForm.createUser();
+		User inscriptionUser = inscriptionForm.createUser();
 		if ( ! inscriptionForm.getErrors().isEmpty() ) {
 			// if errors, we will forward delivry to formular with errors embedded in connexionForm
 			delivry.setErrors(inscriptionForm.getErrors());
