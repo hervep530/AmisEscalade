@@ -1,5 +1,7 @@
 package com.ocherve.jcm.form;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.time.Instant;
@@ -7,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 
 import org.apache.logging.log4j.Level;
 
@@ -24,6 +27,8 @@ public class CreateSiteForm extends Form {
 	
 	private SiteDao siteDao;
 	private Site site;
+	private String slug;
+	private Part uploadFile;
 
 	
 	/**
@@ -41,6 +46,7 @@ public class CreateSiteForm extends Form {
 	public CreateSiteForm(HttpServletRequest request) {
 		super();
 		this.request = request;
+		this.slug = "";
 		siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 		// creating a null cotation in order to return it to jsp when formular is wrong
 		Cotation nullCotation = new Cotation();
@@ -73,6 +79,10 @@ public class CreateSiteForm extends Form {
 			site.setCotationMax(nullCotation);
 			Integer cotationMax = getInputIntegerValue("cotationMax");
 			if ( cotationMax > 0 ) site.setCotationMax(siteDao.getCotation(cotationMax));
+			// Upload file
+			@SuppressWarnings("unused")
+			String fileDescription = getInputTextValue("description");  // not use - just to keep it in mind
+			uploadFile = getRawPart("uploadFile");
 			// summary and content
 			site.setSummary(getInputTextValue("summary"));
 			site.setContent(getInputTextValue("content"));
@@ -100,16 +110,27 @@ public class CreateSiteForm extends Form {
 		try { validateDepartment() ; } catch (FormException e) { errors.put("department", e.getMessage()); }
 		try { validatePathsNumber() ; } catch (FormException e) { errors.put("pathsNumber", e.getMessage()); }
 		try { validateOrientation() ; } catch (FormException e) { errors.put("orientation", e.getMessage()); }
+		try { validateType() ; } catch (FormException e) { errors.put("type", e.getMessage()); }
 		try { validateMinHeight() ; } catch (FormException e) { errors.put("minHeight", e.getMessage()); }
 		try { validateMaxHeight() ; } catch (FormException e) { errors.put("maxHeight", e.getMessage()); }
 		try { validateCotationMin() ; } catch (FormException e) { errors.put("cotationMin", e.getMessage()); }
 		try { validateCotationMax() ; } catch (FormException e) { errors.put("cotationMax", e.getMessage()); }
+		try { validateFile() ; } catch (FormException e) { errors.put("file", e.getMessage()); }
 		try { validateSummary() ; } catch (FormException e) { errors.put("summary", e.getMessage()); }
 		try { validateContent() ; } catch (FormException e) { errors.put("content", e.getMessage()); }
 		if ( ! errors.isEmpty() ) return site;
-		try { siteDao.create(site); } catch (Exception e) {
+		Integer siteId = 0;
+		try { 
+			siteId = siteDao.create(site).getId(); 
+			siteDao.refresh(Site.class, siteId);
+		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "SiteDao : creating site failed");
 			errors.put("creationSite","La création du site a échoué.");
+		}
+		try {
+			if ( siteId < 1 ) removeFile();
+		} catch (FormException e) {
+			errors.put("file", e.getMessage());
 		}
 		return site;
 	}
@@ -121,11 +142,11 @@ public class CreateSiteForm extends Form {
 		if ( ! site.getName().matches("\\w[- \\w]{2,}\\w") )
 			throw new FormException("Ce nom de site n'est pas valide.");
 		// Test slug is unique, so name is unique
-		String slug = Normalizer.normalize(site.getName(), Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
-		slug = slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase();
+		this.slug = Normalizer.normalize(site.getName(), Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
+		this.slug = this.slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase();
 		// Request user id from database with mail address as filter (one Integer result expected... Else rejecting)
 		Map<String,Object> parameters = new HashMap<>();
-		parameters.put("slug", slug);
+		parameters.put("slug", this.slug);
 		parameters.put("type", "SITE");
 		int siteId = 0;
 		try {
@@ -161,6 +182,10 @@ public class CreateSiteForm extends Form {
 			throw new FormException("La saisie de l'orientation n'est pas valide.");
 	}
 
+	private void validateType() throws FormException {
+		if ( ! (site.isBlock() || site.isCliff() || site.isWall() ) ) 
+			throw new FormException("Aucun type d'escalade n'est sélectionné.");
+	}
 
 	private void validateMinHeight() throws FormException {
 		if ( site.getMinHeight() == null ) throw new FormException("La hauteur de voie minimum n'est pas valide.");
@@ -196,7 +221,45 @@ public class CreateSiteForm extends Form {
 		if ( minCotationId > site.getCotationMax().getId() )
 			throw new FormException("La cotation maximum doit être supérieure à la cotation minimum.");
 	}
-	
+
+	private void validateFile() throws FormException {
+		String rawName = "";
+		String rawType = "jpg";
+		String filePath = UPLOAD_PATH + "/site";
+		String fileName = this.slug + ".jpg";
+		if ( this.slug.isEmpty() ) 
+			throw new FormException("Le fichier ne peut pas être sauvagardé car le nom du site est invalide.");
+		try {
+	        // On vérifie qu'on a bien reçu un fichier
+			rawName = getFileName(uploadFile);
+		} catch (IOException e) {
+			DLOG.log(Level.ERROR, e.getMessage());
+			throw new FormException("Le fichier est invalide.");
+		}
+		if ( rawName == null ) throw new FormException("Le fichier est invalide.");
+		DLOG.log(Level.ERROR, "Nom de fichier dans le part : " + rawName);
+		if ( rawName.isEmpty() ) throw new FormException("Le fichier est invalide.");
+		//if ( rawType == null ) throw new FormException("Ce type de fichier n'est pas reconnu.");
+		if ( ! rawType.matches("^[jJ][pP][eE]?[gG]$") )  throw new FormException("Ce type de fichier est invalide.");
+		try {
+	    	// On écrit définitivement le fichier sur le disque
+	    	writeUploadFile(uploadFile, filePath, fileName, UPLOAD_BUFFER_SIZE);			
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, e.getMessage());
+			throw new FormException("L'envoie du fichier a échoué.");
+		}
+	}
+
+	private void removeFile() throws FormException {
+		String filePath = UPLOAD_PATH + "/site";
+		String fileName = this.slug + ".jpg";
+		try {
+			File file = new File(filePath + "/" + fileName);
+			file.delete();
+		} catch (Exception ignore) {}
+		throw new FormException("La création de site à échoué. Il faut ré-envoyer le fichier.");			
+	}
+
 	private void validateSummary() throws FormException {
 		// Test not null
 		if ( site.getSummary() == null ) throw new FormException("Saisissez un résumé.");

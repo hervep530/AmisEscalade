@@ -11,6 +11,7 @@
 <c:set var="maxHeightError" value="${delivry.attributes.createSiteForm.errors.maxHeight}" scope="page"></c:set>
 <c:set var="cotationMinError" value="${delivry.attributes.createSiteForm.errors.cotationMin}" scope="page"></c:set>
 <c:set var="cotationMaxError" value="${delivry.attributes.createSiteForm.errors.cotationMax}" scope="page"></c:set>
+<c:set var="fileError" value="${delivry.attributes.createSiteForm.errors.file}" scope="page"></c:set>
 <c:set var="summaryError" value="${delivry.attributes.createSiteForm.errors.summary}" scope="page"></c:set>
 <c:set var="mediaError" value="${delivry.attributes.createSiteForm.errors.media}" scope="page"></c:set>
 <c:set var="contentError" value="${delivry.attributes.createSiteForm.errors.content}" scope="page"></c:set>
@@ -20,7 +21,7 @@
 		empty typeError && empty minHeightError && empty maxHeightError && empty cotationMinError && 
 		empty cotationMaxError ? '' : 'tab-error'}">
 </c:set>
-<c:set var="siteMediasError" value="" scope="page"></c:set>
+<c:set var="siteMediasError" scope="page" value="${ empty fileError ? '' : 'tab-error'}"></c:set>
 <c:set var="siteContentError" scope="page" 
 	value="${ empty contentError && empty summaryError ? '' : 'tab-error'}">
 </c:set>
@@ -121,7 +122,7 @@
 					    		<div class="basic-top-label">
 					    			<em>Type d'escalade </em><span class="required">*</span>
 					    		</div>
-					    		<div class="form-control">
+					    		<div class="form-control${empty typeError?'':' is-invalid'}">
 								<div class="form-check form-check-inline">
 									<input type="checkbox" id="block" name="block"
 										class="form-check-input" value="true"
@@ -208,9 +209,12 @@
   </div>
   <div class="tab-pane fade" id="siteMedia" role="tabpanel" aria-labelledby="siteMedia-tab">
 			<div class="form-group">
-				<label class="basic-top-label" for="media">Photo(s)</label>
-				<input type="file" id="media" name="media"
-				 class="form-control-file${empty mediaError?'':' is-invalid'}">
+				<label class="basic-top-label" for="uploadFile">Photo(s)</label>
+				<input type="file" id="uploadFile" name="uploadFile"
+				 class="form-control-file${empty fileError?'':' is-invalid'}">
+				<div class="invalid-feedback${empty fileError?' invisible':''}" id="fileError">
+					${fileError}
+				</div>
 			</div>
 			<input type="hidden" id="partMethod" name="partMethod" value="false">
   </div>

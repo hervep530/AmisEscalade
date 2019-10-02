@@ -18,8 +18,10 @@ import com.ocherve.jcm.service.factory.SiteService;
  * Servlet implementation class Site
  */
 @WebServlet("/site/*")
-@MultipartConfig(location="/tmp", fileSizeThreshold=1024*1024, 
-maxFileSize=1024*1024*5, maxRequestSize=1024*1024*5*5)
+@MultipartConfig(location="/home/1072/3/.dev/Donnees/Projets/JavaEE/Eclipse/workspace/AmisEscalade/tmp",
+				fileSizeThreshold=1024*1024,
+				maxFileSize=1024*1024*5,
+				maxRequestSize=1024*1024*5*5)
 public class Site extends JcmServlet {
 
 	private static final long serialVersionUID = 1L;

@@ -1,6 +1,10 @@
 package com.ocherve.jcm.form;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -23,6 +27,9 @@ public abstract class Form {
 	
     protected static final Logger DLOG = LogManager.getLogger("development_file");
     protected static final Level DLOGLEVEL = Level.TRACE;
+    protected static final String UPLOAD_PATH = "/home/1072/3/.dev/Donnees/Projets/JavaEE/Eclipse/workspace/AmisEscalade/WebContent/medias";
+    protected static final Integer UPLOAD_BUFFER_SIZE = 1024*1024;
+    
 	
 	protected Map<String,String> errors;
 	protected HttpServletRequest request;
@@ -82,7 +89,18 @@ public abstract class Form {
 		}
 	    return value;
 	}
+	
+	protected Part getRawPart(String fieldName) {
+		Part part = null;
+		try { 
+			// for upload only part method is available - so no test needed on it
+			part = this.request.getPart(fieldName);
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, e.getMessage());							
+		}
+	    return part;
 		
+	}
 
 	/**
 	 * Generic method to get checkbox (boolean) value using getParameter or getParts
@@ -116,6 +134,51 @@ public abstract class Form {
 	    }
 	    return stringValue.toString();
 	}
+	
+    protected String getFileName( Part part )  throws IOException {
+    	if ( part == null ) {
+    		DLOG.log(Level.ERROR, "This part is null");
+    		return "";
+    	}
+        for ( String contentDisposition : part.getHeader( "content-disposition" ).split( ";" ) ) {
+            if ( contentDisposition.trim().startsWith( "filename" ) ) {
+            	// bug InternetExplorer
+            	String fileName = contentDisposition.substring( contentDisposition.indexOf( '=' ) + 1 )
+            										.trim()
+            										.replace( "\"", "" );
+            	fileName = fileName.substring(contentDisposition.lastIndexOf('/') + 1);
+                return fileName;
+            }
+        }
+        return "";
+    }   
+
+    protected void writeUploadFile( Part part, String uploadPath, String fileName, int bufferSize) throws IOException {
+        BufferedInputStream inFile = null;
+        BufferedOutputStream outFile = null;
+        try {
+        	inFile = new BufferedInputStream(part.getInputStream(), bufferSize);
+        	outFile = new BufferedOutputStream(new FileOutputStream(new File(uploadPath + "/" + fileName)), bufferSize);
+        	DLOG.log(Level.DEBUG, "Upload done : " + uploadPath + "/" + fileName);
+            byte[] tampon = new byte[bufferSize];
+            int longueur;
+            while ((longueur = inFile.read(tampon)) > 0) {
+            	outFile.write(tampon, 0, longueur);
+            }
+        } catch (Exception e) { 
+        	DLOG.log(Level.ERROR, e.getMessage());
+        } finally {
+            try {
+            	outFile.close();
+            } catch (IOException ignore) {
+            }
+            try {
+            	inFile.close();
+            } catch (IOException ignore) {
+            }
+        }
+    }
+
 
     /**
      * @return errors
