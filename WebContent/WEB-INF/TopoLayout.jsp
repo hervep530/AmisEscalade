@@ -2,11 +2,47 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-<h1>TEST</h1>
-</body>
+<%@ include file="jspCommon/PageVar.jsp" %>
+	<head>
+		<meta charset="UTF-8">
+<%@ include file="jspCommon/meta/Style.jsp" %>
+		<title>Accueil</title>
+	</head>
+	<body>
+		<div id="container">
+			<div class="row">
+				<section id="main" class="col-xl-9">
+<%@ include file="jspCommon/Header.jsp" %>
+<%@ include file="jspCommon/NavBar.jsp" %>
+<c:if test="${ not empty delivry.notifications }">
+	<%@ include file="jspCommon/Notification.jsp" %>
+</c:if>
+
+<!-- l f r c u uac umc ut utt utf upt upf d -->
+<c:set var="a" value="${delivry.parameters.parsedUrl.action}" scope="page"/>
+<c:choose>
+    <c:when test="${action == 'l'}"><%@ include file="jspTopo/View.jsp" %></c:when>
+    <c:when test="${action == 'r'}"><%@ include file="jspTopo/Content.jsp" %></c:when>
+    <c:when test="${action == 'c'}"><%@ include file="jspTopo/CreateForm.jsp" %></c:when>
+    <c:when test="${action == 'u'}"><%@ include file="jspTopo/UpdateForm.jsp" %></c:when>
+    <c:otherwise><%@ include file="jspTopo/Content.jsp" %></c:otherwise>
+</c:choose>
+<c:if test="${action == 'r'}">
+<%@ include file="jspSite/SummarizedList.jsp" %>
+</c:if>
+
+
+<%@ include file="jspDebug/DebugDelivry.jsp" %>
+<%@ include file="jspSite/Footer.jsp" %>
+				</section>
+				<section id="proposal" class="col-xl-3">
+<%@ include file="jspCommon/SocialLinks.jsp" %>
+<%@ include file="jspCommon/Identity.jsp" %>
+<%@ include file="jspCommon/SiteThread.jsp" %>
+<%@ include file="jspCommon/Legals.jsp" %>
+				</section>
+			</div>
+		</div>
+<%@ include file="jspCommon/meta/Script.jsp" %>
+	</body>
 </html>
