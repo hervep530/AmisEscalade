@@ -170,9 +170,25 @@ public abstract class ServiceImpl implements Service {
 	@Override
 	public Delivry abort(Parameters parameters) {
 		Delivry delivry = new Delivry();
-		String info = "Service " + this.serviceName + " aborted.";
+		delivry.setParameters(parameters);
+		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
+		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
+		delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), "message de l'erreur transmise en parametre de service.abort");
+		String info = "Service" + this.serviceName + ".doGetAction is done.";
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
+	}
+	
+	@Override
+	public Delivry getDefaultDelivry(Parameters parameters) {
+		Delivry delivry = new Delivry();
+		delivry.setParameters(parameters);
+		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
+		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
+		String info = "Service" + this.serviceName + ".doGetAction return default delivry.";
+		DLOG.log(Level.DEBUG , info);
+		return delivry;
+
 	}
 	
 	@Override

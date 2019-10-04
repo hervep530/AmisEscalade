@@ -55,6 +55,14 @@ public interface Service {
 	Delivry abort(Parameters parameters);
 	
 	/**
+	 * Build a generic delivry object from parameters
+	 * 
+	 * @param parameters
+	 * @return delivry 
+	 */
+	Delivry getDefaultDelivry(Parameters parameters);
+	
+	/**
 	 * @return anonymous user if not connected
 	 */
 	User openAnonymousSession();
