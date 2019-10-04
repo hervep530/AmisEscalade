@@ -1,8 +1,6 @@
 package com.ocherve.jcm.filters;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,18 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
-
-import com.ocherve.jcm.model.User;
-import com.ocherve.jcm.service.Notification;
-import com.ocherve.jcm.service.NotificationType;
 
 /**
  * Servlet Filter implementation class MemberFilter
@@ -33,87 +21,64 @@ import com.ocherve.jcm.service.NotificationType;
 	"/site/d/*",
 	"/comment/d/*"
 })
-public class MemberFilter extends Object implements Filter {
+public class MemberFilter extends JcmFilter {
 
-	private static final Logger DLOG = LogManager.getLogger("development_file");
-    private static final Level DLOGLEVEL = Level.TRACE;
-
-    private static final String URL_CONNEXION = "/session/connexion";
-    private static final String ATT_SESSION_USER = "sessionUser";
-    
-    private HttpServletRequest request;
-    private String method;
-    private HttpSession session;
-    private String uri;
-    private Integer userId; 
-    private Integer roleId;
-    private String message;
-    private String redirection;
-    
+	// Protected variables defined in Astract JcmFilter 
+	
     /**
      * Default constructor. 
      */
     public MemberFilter() {
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
 	}
 
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest inRequest, ServletResponse inResponse, FilterChain chain) throws IOException, ServletException {
-		// scope Class - not static
-		request = (HttpServletRequest) inRequest;
-		HttpServletResponse response = (HttpServletResponse) inResponse;		
-		method = request.getMethod();
-		session = request.getSession();
-		uri = request.getRequestURI().substring( request.getContextPath().length() );
-		String backUrl = request.getHeader("referer");
-		if (backUrl == null) backUrl = request.getContextPath();
+		/*
+		 * super initializes Filter variables, and let public requests (js,css,images...) pass filter 
+		 */
+		super.doFilter(inRequest, inResponse, chain);
 
-		DLOG.log(Level.INFO , "Filter MemberFilter active for " + uri);
+		DLOG.log(Level.INFO , "Filter MemberFilter is active for url " + uri + " with method " + method);
 		
-        // Public data pass filter
-        if ( uri.matches("/(css|js|images|bootstrap|jquery|tinymce)/.*") ) {
-            chain.doFilter( request, response );
-            return;
-        }
-
-		// Filter invalid URL
-		if ( ! isValidUrl() ) {
-			DLOG.log(Level.DEBUG, "AuthorFilter - url invalide : " + uri);
-			message = "Vous n'avez pas accès à cet fonctionnalité.";
-			redirection = backUrl;
-			// Set notification, and redirect
-			setDeferredNotification();
-			response.sendRedirect( redirection );
-			return;
+		try {
+			if ( ! validateUrl() ) return;
+		} catch (FilterException e) {
+			setRequestError("UrlError", e.getMessage());
+			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
 		}
-		
-		// Continue with valid Url
+
 		setFilterVariables();
-		
-		//DLOG.log(Level.INFO , "Filter AuthorFilter - User Id : " + userId);
-		if ( roleId > 2) {
-			// pass the request along the filter chain
-			chain.doFilter(request, response);
-		} else {
-			if ( userId > 1 ) {
-				DLOG.log(Level.DEBUG, "AuthorFilter - ni author, ni member : " + userId + "/" + roleId);
-				// User is connected  but access is not suffisant - modify default message and redirection
-				message = "Vous n'avez pas accès à cet fonctionnalité.";
-				redirection = backUrl;
-			}
-			// Set notification and redirect
-			setDeferredNotification();
-			response.sendRedirect( redirection );
+
+		try {
+			if ( ! validateToken() ) return;
+		} catch (FilterException e) {
+			setRequestError("TokenError", e.getMessage());
+			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
 		}
+
+		try {
+			if ( ! validateUser() ) return;
+		} catch (FilterException e) {
+			setRequestError("UserError", e.getMessage());
+			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
+		}
+
+		try {
+			if ( ! validateMember() ) return;
+		} catch (FilterException e) {
+			setRequestError("UserError", e.getMessage());
+			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
+		}
+		
+		chain.doFilter(request, response);		
 
 	}
 
@@ -121,44 +86,19 @@ public class MemberFilter extends Object implements Filter {
 	 * @see Filter#init(FilterConfig)
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
-		Configurator.setLevel(DLOG.getName(), DLOGLEVEL);
-		DLOG.log(Level.INFO , "Filter AuthorFilter active");
-		// Default miss access issue - user is not connected
-		message = "Vous devez vous connecter pour accéder à cette fonctionnalité.";
-		redirection = "";
-		// Filter variables
-		uri = "";
-		method = "GET";
-		userId = 0;
-		roleId = 0;
+		super.init(fConfig);
 	}
 
-	private void setFilterVariables() {
-		redirection += request.getContextPath() + URL_CONNEXION;
-		try {
-			if ( session.getAttribute(ATT_SESSION_USER) != null ) {
-				userId = ((User) session.getAttribute(ATT_SESSION_USER)).getId();
-				roleId = ((User) session.getAttribute(ATT_SESSION_USER)).getRole().getId();
-			}
-		} catch (Exception ignore) { /* first access - sessionUser not initialized */ }
-	}
-
-	private Boolean isValidUrl() {
-		if ( method == "POST" ) {
+	@Override
+	protected Boolean isValidUrl() {
+		if ( method.contentEquals("POST") ) {
 			return false;
 		} else {
 			String getActions = "(comment/d";
 			getActions += "|site/d|site/utt|site/utf";
 			getActions += "|topo/d)";
-			return uri.matches("^/" + getActions + "/[0-9]{1,}$");
+			return uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$");
 		}	
 	}
 	
-	private void setDeferredNotification() {
-		Notification notification = new Notification(NotificationType.ERROR, message);
-		Map<String,Notification> notifications = new HashMap<>();
-		notifications.put("Accès refusé", notification);
-		session.setAttribute("notifications", notifications);
-	}
-
 }

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<c:set var="postAction" scope="page" value="${contextPath}/site/c/0/${token}"></c:set>
 <c:set var="nameError" value="${delivry.attributes.createSiteForm.errors.name}" scope="page"></c:set>
 <c:set var="countryError" value="${delivry.attributes.createSiteForm.errors.country}" scope="page"></c:set>
 <c:set var="departmentError" value="${delivry.attributes.createSiteForm.errors.department}" scope="page"></c:set>
@@ -27,7 +27,7 @@
 </c:set>
     
 					<form id="createSiteForm" class="text-center border border-light p-3" 
-							action="c" method="POST" enctype="multipart/form-data">
+							action="${postAction}" method="POST" enctype="multipart/form-data">
 							<div class="form-row mb-3">
 								<div class="col-md-9"><p class="h4">Nouveau site d'escalade</p></div>
 								<div class="col-md-3">

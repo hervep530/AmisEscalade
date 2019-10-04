@@ -10,3 +10,4 @@
 <c:set var="slug" value="${delivry.parameters.parsedUrl.slug}" scope="page"></c:set>
 <c:set var="roleId" value="${sessionScope.sessionUser.role.id}" scope="page"></c:set>
 <c:set var="userId" value="${sessionScope.sessionUser.id}" scope="page"></c:set>
+<c:set var="token" value="${sessionScope.token}" scope="page"></c:set>

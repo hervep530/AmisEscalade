@@ -4,7 +4,7 @@
 <c:set var="nameError" value="${delivry.errors.username}" scope="page"></c:set>
 <c:set var="passwdError" value="${delivry.errors.password}" scope="page"></c:set>
 					<form id="InscriptionForm" class="text-center border border-light p-3" 
-							action="inscription" method="POST">
+							action="${token}" method="POST">
 					    <p class="h4 mb-4">Inscription</p>
 <!-- Email -->
 				    	<div class="form-group mb-3">

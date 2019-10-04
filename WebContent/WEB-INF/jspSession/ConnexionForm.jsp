@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <c:set var="mailError" value="${delivry.errors.mailAddress}" scope="page"></c:set>
 <c:set var="passwdError" value="${delivry.errors.password}" scope="page"></c:set>
-					<form id="connexionForm" class="text-center border border-light p-5" action="" method="POST">
+					<form id="connexionForm" class="text-center border border-light p-5" action="${token}" method="POST">
 					    <p class="h4 mb-4">Connexion</p>
 <!-- Email -->
 				    	<div class="form-group mb-3">

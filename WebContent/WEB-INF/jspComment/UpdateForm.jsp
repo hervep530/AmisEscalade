@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <c:set var="site" scope="page" value="${delivry.attributes.site}"></c:set>	
 <c:set var="commentId" scope="page" value="${action == 'u' ? id : ''}"></c:set>
-<c:set var="postAction" scope="page" value="${contextPath}${action == 'u' ? '/comment/u/' : '/site/uac/'}${id}"></c:set>
+<c:set var="postAction" scope="page" value="${contextPath}${action == 'u' ? '/comment/u/' : '/site/uac/'}${id}/${token}"></c:set>
 <c:set var="labelAction" scope="page" value="${action == 'u' ? 'Modifier le commentaire' : 'Ecrire un commentaire'}"></c:set>
 <c:set var="commentContentError" scope="page" value="${delivry.attributes.commentForm.errors.content}"></c:set>
 						<form method="POST" id="commentSiteForm" class="text-center border border-light p-1 my-1" 

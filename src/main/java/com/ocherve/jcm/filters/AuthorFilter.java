@@ -1,8 +1,6 @@
 package com.ocherve.jcm.filters;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,21 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
-
-import com.ocherve.jcm.dao.DaoProxy;
-import com.ocherve.jcm.dao.contract.CommentDao;
-import com.ocherve.jcm.dao.contract.SiteDao;
-import com.ocherve.jcm.model.User;
-import com.ocherve.jcm.service.Notification;
-import com.ocherve.jcm.service.NotificationType;
 
 /**
  * Servlet Filter implementation class AuthorFilter
@@ -38,24 +23,8 @@ import com.ocherve.jcm.service.NotificationType;
 				"/site/umc/*",
 				"/comment/u/*"
 			})
-public class AuthorFilter implements Filter {
+public class AuthorFilter extends JcmFilter {
 
-	private static final Logger DLOG = LogManager.getLogger("development_file");
-    private static final Level DLOGLEVEL = Level.TRACE;
-
-    private static final String URL_CONNEXION = "/session/connexion";
-    private static final String ATT_SESSION_USER = "sessionUser";
-    
-    private HttpServletRequest request;
-    private String method;
-    private HttpSession session;
-    private String uri;
-    private Integer userId; 
-    private Integer roleId;
-    private String component;
-    private Integer entityId;
-    private String message;
-    private String redirection;
 
     /**
      * Default constructor. 
@@ -67,134 +36,81 @@ public class AuthorFilter implements Filter {
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
 	}
 
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest inRequest, ServletResponse inResponse, FilterChain chain) throws IOException, ServletException {
-		// scope Class - not static
-		request = (HttpServletRequest) inRequest;
-		HttpServletResponse response = (HttpServletResponse) inResponse;		
-		method = request.getMethod();
-		session = request.getSession();
-		uri = request.getRequestURI().substring( request.getContextPath().length() );
-		String backUrl = request.getHeader("referer");
-		if (backUrl == null) backUrl = request.getContextPath();
-
-		DLOG.log(Level.INFO , "Filter AuthorFilter active for " + uri);
+		/*
+		 * super initializes Filter variables, and let public requests (js,css,images...) pass filter 
+		 */
+		super.doFilter(inRequest, inResponse, chain);
 		
-        // Public data pass filter
-        if ( uri.matches("/(css|js|images|bootstrap|jquery|tinymce)/.*") ) {
-            chain.doFilter( request, response );
-            return;
-        }
-
-		// Filter invalid URL
-		if ( ! isValidUrl() ) {
-			DLOG.log(Level.DEBUG, "AuthorFilter - url invalide : " + uri);
-			message = "Vous n'avez pas accès à cet fonctionnalité.";
-			redirection = backUrl;
-			// Set notification, and redirect
-			setDeferredNotification();
-			response.sendRedirect( redirection );
-			return;
+		DLOG.log(Level.INFO , "Filter MemberFilter is active for url " + uri + " with method " + method);
+		
+		try {
+			if ( ! validateUrl() ) return;
+		} catch (FilterException e) {
+			setRequestError("UrlError", e.getMessage());
+			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
 		}
-		
-		// Continue with valid Url
+
 		setFilterVariables();
-		
-		//DLOG.log(Level.INFO , "Filter AuthorFilter - User Id : " + userId);
-		if ( isAuthor() || roleId > 2) {
-			// pass the request along the filter chain
-			chain.doFilter(request, response);
-		} else {
-			if ( userId > 1 ) {
-				DLOG.log(Level.DEBUG, "AuthorFilter - ni author, ni member : " + userId + "/" + roleId);
-				// User is connected  but access is not suffisant - modify default message and redirection
-				message = "Vous n'avez pas accès à cet fonctionnalité.";
-				redirection = backUrl;
-			}
-			// Set notification and redirect
-			setDeferredNotification();
-			response.sendRedirect( redirection );
+
+		try {
+			if ( ! validateToken() ) return;
+		} catch (FilterException e) {
+			setRequestError("TokenError", e.getMessage());
+			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
 		}
 
+		try {
+			if ( ! validateUser() ) return;
+		} catch (FilterException e) {
+			setRequestError("UserError", e.getMessage());
+			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
+		}
+
+		try {
+			if ( ! validateAuthor() ) return;
+		} catch (FilterException e) {
+			setRequestError("UserError", e.getMessage());
+			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
+		}
+		
+		chain.doFilter(request, response);		
+		
 	}
 
 	/**
 	 * @see Filter#init(FilterConfig)
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
-		Configurator.setLevel(DLOG.getName(), DLOGLEVEL);
-		DLOG.log(Level.INFO , "Filter AuthorFilter active");
-		// Default miss access issue - user is not connected
-		message = "Vous devez vous connecter pour accéder à cette fonctionnalité.";
-		redirection = "";
-		// Filter variables
-		uri = "";
-		component = "";
-		method = "GET";
-		userId = 0;
-		roleId = 0;
-		entityId = 0;
-	}
-
-	
-	private void setFilterVariables() {
-		redirection += request.getContextPath() + URL_CONNEXION;
-		try {
-			if ( session.getAttribute(ATT_SESSION_USER) != null ) {
-				userId = ((User) session.getAttribute(ATT_SESSION_USER)).getId();
-				roleId = ((User) session.getAttribute(ATT_SESSION_USER)).getRole().getId();
-			}
-		} catch (Exception ignore) { /* first access - sessionUser not initialized */ }
-		String[] splitUri = uri.split("/");
-		try {
-			component = splitUri[1];
-			entityId = Integer.valueOf(splitUri[3]);
-		} catch (Exception ignore) { /* uri was already checked - no need to log*/ }
+		super.init(fConfig);
 	}
 	
-	private Boolean isAuthor() {
-		Map<String,Object> parameters = new HashMap<>();
-		parameters.put("id", entityId);
-		Integer idAuthor = -1;
-		try {
-			if ( component.contentEquals("comment") ) {
-				DLOG.log(Level.DEBUG, "component is comment");
-				CommentDao commentDao = (CommentDao) DaoProxy.getInstance().getCommentDao();
-				idAuthor = (Integer) commentDao.getIdFromNamedQuery("Comment.getAuthor", parameters);
-				DLOG.log(Level.DEBUG, "component : " + component + " - authorId : " + idAuthor);
-			} else {
-				SiteDao siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
-				idAuthor = (Integer) siteDao.getIdFromNamedQuery("Reference.getAuthor", parameters);
-				DLOG.log(Level.DEBUG, "component : " + component + " - authorId : " + idAuthor);
-			}		
-		} catch (Exception ignore) { /* however acces denied and if Dao error already traced */ }
-				
-		return userId.equals(idAuthor);
-	}
-	
-	private Boolean isValidUrl() {
-		if ( method == "POST" ) {
+	@Override
+	protected Boolean isValidUrl() {
+		if ( method.contentEquals("POST") ) {
 			String postActions = "(comment/u";
 			postActions += "|site/u|site/uac|site/umc";
 			postActions += "|topo/u|topo/uac|topo/umc)";
-			return uri.matches("^/" + postActions + "/[0-9]{1,}$");
+			return uri.matches("^/" + postActions + "/[0-9]{1,}/\\w{1,32}$");
 		} else {
 			String getActions = "(comment/u|comment/upt|comment/upf";
 			getActions += "|site/u|site/upt|site/upf";
 			getActions += "|topo/u|topo/upt|topo/upf)";
-			return uri.matches("^/" + getActions + "/[0-9]{1,}$");
+			return uri.matches("^/" + getActions + "/[0-9]{1,}/\\w{1,32}$");
 		}	
 	}
 	
-	private void setDeferredNotification() {
-		Notification notification = new Notification(NotificationType.ERROR, message);
-		Map<String,Notification> notifications = new HashMap<>();
-		notifications.put("Accès refusé", notification);
-		session.setAttribute("notifications", notifications);
+	@Override
+	protected boolean skipTokenChecking() {
+		// Defines request type / url allowed without checking token
+		String getActions = "(comment/u|site/u|topo/u)";
+		if ( method.contentEquals("GET") && uri.matches("^/" + getActions + "/.*$") ) return true;
+		return false;
 	}
+
 }

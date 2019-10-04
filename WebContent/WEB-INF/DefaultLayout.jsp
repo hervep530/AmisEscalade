@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+<%@ include file="jspCommon/PageVar.jsp" %>
 	<head>
 		<meta charset="UTF-8">
 <%@ include file="jspCommon/meta/Style.jsp" %>

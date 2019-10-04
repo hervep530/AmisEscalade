@@ -4,7 +4,7 @@
     				<aside id="comment-group">
     					<div class="card-header my-1 py-0"><em>Commentaires</em></div>
 						<form id="commentSiteForm" class="text-center border border-light p-1 my-1" 
-								action="${pageContext.request.contextPath}/site/uac" method="POST">
+								action="${contextPath}/site/uac/0/${token}" method="POST">
 							<input type="hidden" id="commentReferenceId" name="commentReferenceId" 
 								value="${delivry.attributes.site.id}">
 							<input type="hidden" id="commentReferenceType" name="commentReferenceType" 

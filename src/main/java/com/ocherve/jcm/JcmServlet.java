@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +17,9 @@ import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Notification;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.factory.Service;
+
+import net.bytebuddy.utility.RandomString;
+
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.UserDao;
 import com.ocherve.jcm.model.User;
@@ -53,6 +57,12 @@ abstract class JcmServlet extends HttpServlet {
 			Map<String,Notification> notifications = new HashMap<>();
 			session.setAttribute("notifications", notifications);
 		}
+		// Security from filter is passed, so for each request, we generate a new token
+		try {
+			session.setAttribute("token", DatatypeConverter.printHexBinary(RandomString.make(16).getBytes()));
+		} catch (Exception ignore) {}
+		session.setAttribute("redirectionCount", 0);
+
     }
     
     protected void resetSession() {

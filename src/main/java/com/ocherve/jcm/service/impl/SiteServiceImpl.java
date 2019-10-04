@@ -37,16 +37,16 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			{"l","/site/l/$id"},
 			{"f","/site/f"},
 			{"r","/site/r/$id/$slug"},
-			{"c","/site/c"},
-			{"u","/site/u/$id"},
-			{"uac","/site/uac"},
-			{"umc","/site/umc"},
-			{"ut","/site/ut"},
-			{"utt","/site/utt/$id"},
-			{"utf","/site/utf/$id"},
-			{"upt","/site/upt/$id"},
-			{"upf","/site/upf/$id"},
-			{"d","/site/d"}
+			{"c","/site/c/$id/$slug"},
+			{"u","/site/u/$id/$slug"},
+			{"uac","/site/uac/$id/$slug"},
+			{"umc","/site/umc/$id/$slug"},
+			{"ut","/site/ut/$id/$slug"},
+			{"utt","/site/utt/$id/$slug"},
+			{"utf","/site/utf/$id/$slug"},
+			{"upt","/site/upt/$id/$slug"},
+			{"upf","/site/upf/$id/$slug"},
+			{"d","/site/d/$id/$slug"}
 	};
 	protected final static long LIST_LIMIT = 3;
 	private SiteDao siteDao;

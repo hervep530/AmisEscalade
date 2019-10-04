@@ -27,11 +27,11 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 	
 	protected final static String SVC_DEFAULT_URL = "session/moncompte";
 	protected final static String[][] SVC_ACTIONS = {
-			{"connexion","/session/connexion"},	
-			{"deconnexion","/session/deconnexion"},	
-			{"inscription","/session/inscription"},	
-			{"pass","/session/pass"},	
-			{"d","/session/d"}
+			{"connexion","/session/connexion/$id/$slug"},	
+			{"deconnexion","/session/deconnexion/$id/$slug"},	
+			{"inscription","/session/inscription/$id/$slug"},	
+			{"pass","/session/pass/$id/$slug"},	
+			{"d","/session/d/$id/$slug"}
 	};
 
 	/**
@@ -158,6 +158,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 
 		// get Connexion Form stored in parameters and call connectUser()
 		InscriptionForm inscriptionForm = (InscriptionForm) parameters.getForm();
+		@SuppressWarnings("unused")
 		User inscriptionUser = inscriptionForm.createUser();
 		if ( ! inscriptionForm.getErrors().isEmpty() ) {
 			// if errors, we will forward delivry to formular with errors embedded in connexionForm

@@ -29,10 +29,10 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 	protected final static String SVC_DEFAULT_URL = "";
 	protected final static String[][] SVC_ACTIONS = {
 			{"l","/comment/l/$id"},
-			{"u","/comment/u/$id"},
-			{"upt","/comment/upt/$id"},
-			{"upf","/comment/upf/$id"},
-			{"d","/comment/d/$id"}
+			{"u","/comment/u/$id/$slug"},
+			{"upt","/comment/upt/$id/$slug"},
+			{"upf","/comment/upf/$id/$slug"},
+			{"d","/comment/d/$id/$slug"}
 	};
 
 	/**
