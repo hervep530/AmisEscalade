@@ -48,7 +48,6 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			{"upf","/site/upf/$id/$slug"},
 			{"d","/site/d/$id/$slug"}
 	};
-	protected final static long LIST_LIMIT = 3;
 	private SiteDao siteDao;
 	
 	/**
