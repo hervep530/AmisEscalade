@@ -40,6 +40,7 @@ public abstract class ServiceImpl implements Service {
 
     
 	// Persistent variable because each service are initialized once and keep as cache in proxy
+	protected Delivry delivry;
     protected String serviceName;
     protected String servicePattern;
 	protected String defaultUrl;
@@ -153,10 +154,8 @@ public abstract class ServiceImpl implements Service {
 
 	@Override
 	public Delivry doGetAction(Parameters parameters) {
-		Delivry delivry = new Delivry();
-		delivry.setParameters(parameters);
-		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
-		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
+		this.delivry = new Delivry();
+		this.appendMandatoryAttributesToDelivry(parameters);
 		String info = "ServiceGeneric.doGetAction is done.";
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
@@ -164,34 +163,31 @@ public abstract class ServiceImpl implements Service {
 
 	@Override
 	public Delivry doPostAction(Parameters parameters) {
-		Delivry delivry = new Delivry();
-		String info = "Service " + this.serviceName + " do PostAction.";
+		delivry = new Delivry();
+		this.appendMandatoryAttributesToDelivry(parameters);
+		String info = "ServiceGeneric.doPostAction is done.";
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
 	}
 
 	@Override
 	public Delivry abort(Parameters parameters) {
-		Delivry delivry = new Delivry();
-		delivry.setParameters(parameters);
-		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
-		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
-		delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), "message de l'erreur transmise en parametre de service.abort");
-		String info = "Service" + this.serviceName + ".doGetAction is done.";
+		this.delivry = new Delivry();
+		this.delivry.setParameters(parameters);
+		if ( ! parameters.getNotifications().isEmpty() ) this.delivry.appendNotifications(parameters.getNotifications());
+		if ( ! parameters.getErrors().isEmpty() ) this.delivry.setErrors(parameters.getErrors());
+		this.delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), "message de l'erreur transmise en parametre de service.abort");
+		String info = "Service" + this.serviceName + ".abort is done.";
 		DLOG.log(Level.DEBUG , info);
-		return delivry;
+		return this.delivry;
 	}
 	
 	@Override
-	public Delivry getDefaultDelivry(Parameters parameters) {
-		Delivry delivry = new Delivry();
-		delivry.setParameters(parameters);
-		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
-		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
-		String info = "Service" + this.serviceName + ".doGetAction return default delivry.";
-		DLOG.log(Level.DEBUG , info);
-		return delivry;
-
+	public void appendMandatoryAttributesToDelivry(Parameters parameters) {
+		if ( delivry == null ) this.delivry = new Delivry();
+		this.delivry.setParameters(parameters);
+		if ( ! parameters.getNotifications().isEmpty() ) this.delivry.appendNotifications(parameters.getNotifications());
+		if ( ! parameters.getErrors().isEmpty() ) this.delivry.setErrors(parameters.getErrors());
 	}
 	
 	@Override

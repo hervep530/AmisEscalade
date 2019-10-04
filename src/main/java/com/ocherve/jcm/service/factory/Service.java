@@ -60,7 +60,7 @@ public interface Service {
 	 * @param parameters
 	 * @return delivry 
 	 */
-	Delivry getDefaultDelivry(Parameters parameters);
+	void appendMandatoryAttributesToDelivry(Parameters parameters);
 	
 	/**
 	 * @return anonymous user if not connected

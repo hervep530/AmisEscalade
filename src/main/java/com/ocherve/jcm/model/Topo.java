@@ -30,12 +30,17 @@ import com.ocherve.jcm.dao.contract.SiteDao;
 @PrimaryKeyJoinColumn(name = "pfk_topo_reference")
 @NamedQueries({
 	@NamedQuery(name="Topo.findAll", query="SELECT t FROM Topo t"),
-	@NamedQuery(name="Topo.findByPublishingStatus", query="SELECT t FROM Topo t WHERE t.published = :published"),
+	@NamedQuery(name="Topo.findByPublishingStatusOrderByIdDesc", 
+		query="SELECT t FROM Topo t WHERE t.published = :published ORDER BY t.id DESC"),
+	@NamedQuery(name="Topo.findByPublishingStatusOrderByIdAsc", 
+		query="SELECT t FROM Topo t WHERE t.published = :published ORDER BY t.id ASC"),
 	@NamedQuery(name="Topo.findByAuthor", 
 		query="SELECT t FROM Topo t WHERE t.author.id = :authorId"),
 	@NamedQuery(name="Topo.findBySite", 
 		query="SELECT t FROM Topo t JOIN t.sites s WHERE s.id = :siteId"),
-	@NamedQuery(name="Topo.countAll", query="SELECT count(0) FROM Topo t")
+	@NamedQuery(name="Topo.countAll", query="SELECT count(0) FROM Topo t"),
+	@NamedQuery(name="Topo.countByPublishingStatus", 
+		query="SELECT count(0) FROM Topo t WHERE t.published = :published")
 })
 public class Topo extends Reference implements Serializable {
 	
