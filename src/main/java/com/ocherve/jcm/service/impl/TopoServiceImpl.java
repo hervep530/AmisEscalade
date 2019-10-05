@@ -92,10 +92,22 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 
 	@Override
 	public Delivry getTopo(Parameters parameters) {
-		// TODO Auto-generated method stub
+		// Initializing variables
 		this.delivry = new Delivry();
-		this.appendMandatoryAttributesToDelivry(parameters);
-		return this.delivry;
+		Topo topo = null;
+		// Getting topo using topoDao
+		try {
+			topo = topoDao.get(Integer.valueOf(parameters.getParsedUrl().getId()));
+		} catch (Exception e ) {
+			throw new UrlException("Echec de la requete sur la base");
+		}
+		// Testing topo - if Ok, append to delivry - else throw UrlException
+		if (topo == null) throw new UrlException("Aucun topo trouvé avec cet id.");
+		if ( topo.getSlug() == null ) throw new UrlException("Ce site n'a pas de slug associé");
+		if ( ! topo.getSlug().contentEquals(parameters.getParsedUrl().getSlug()) )
+			throw new UrlException("L'id et le slug fourni par l'url ne correspondent pas.");
+		delivry.appendattribute("topo", topo);
+		return delivry;
 	}
 
 	@Override
