@@ -9,21 +9,36 @@
 				      </div>
 
 				      <div class="my-3 p-3 bg-white rounded box-shadow">
-				        <h6 class="border-bottom border-gray pb-2 mb-0">Du plus récent au plus ancien</h6>
+						<div class="row border-bottom border-gray">
+							<h6 class="pb-2 mb-0 col-md-9">
+								Du plus récent au plus ancien
+							</h6>							
+							<div class="col-md-3">
+<%@ include file="UserNavView.jsp" %>
+							</div>
+						</div>
+				      	
+				        <!-- h6 class="border-bottom border-gray pb-2 mb-0">Du plus récent au plus ancien</h6 -->
 <c:if test="${fn:length(delivry.attributes.topos) gt 0}">
 	<c:forEach items="${delivry.attributes.topos}" var="topo">
-				        <div class="media text-muted pt-3">
+				        <div class="media text-muted border-bottom border-gray pt-3">
 				        	<img src="${pageContext.request.contextPath}/medias/topo/${topo.slug}.jpg"
 								 alt="${topo.slug} thumb" width="32" height="32" class="mr-2 rounded"/>
-				        	<p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-				            	<span class="d-block text-gray-dark">
-				            		<a href="${pageContext.request.contextPath}/topo/r/${topo.id}/${topo.slug}">
-				            			<strong><c:out value="${topo.name}"></c:out></strong>
-				            		</a>
-				            		
-				            	</span>
-				            	<c:out value="${topo.summary}"></c:out>
-				        	</p>
+				        	<div class="media-body pb-3 mb-0 small lh-125">
+				        		<div class="row">
+					            	<span class="d-block text-gray-dark col-sm-9">
+					            		<a href="${pageContext.request.contextPath}/topo/r/${topo.id}/${topo.slug}">
+					            			<strong><c:out value="${topo.name}"></c:out></strong>
+					            		</a>
+					            		
+					            	</span>
+					            	<div class="col-sm-3">
+<%@ include file="AuthorNavView.jsp" %>
+<%@ include file="MemberNavView.jsp" %>
+					            	</div>
+				        		</div>
+				            	<p><c:out value="${topo.summary}"></c:out></p>
+				        	</div>
 				        </div>
 	</c:forEach>
 </c:if>				
