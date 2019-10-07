@@ -9,7 +9,15 @@
 				      </div>
 
 				      <div class="my-3 p-3 bg-white rounded box-shadow">
-				        <h6 class="border-bottom border-gray pb-2 mb-0">Recent updates</h6>
+				      	<div class="row border-bottom border-gray">
+							<h6 class="pb-2 mb-0 col-md-9">
+								Du plus récent au plus ancien
+							</h6>							
+							<div class="col-md-3">
+<%@ include file="UserNavView.jsp" %>
+							</div>
+						</div>
+				        <!-- h6 class="border-bottom border-gray pb-2 mb-0">Recent updates</h6 -->
 <c:if test="${fn:length(delivry.attributes.sites) gt 0}">
 	<c:forEach items="${delivry.attributes.sites}" var="site">
 				        <div class="media text-muted pt-3">
