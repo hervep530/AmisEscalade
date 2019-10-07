@@ -19,7 +19,8 @@ import org.apache.logging.log4j.Level;
 	"/site/utt/*",
 	"/site/utf/*",
 	"/site/d/*",
-	"/comment/d/*"
+	"/comment/d/*",
+	"/topo/c/*"
 })
 public class MemberFilter extends JcmFilter {
 
@@ -96,7 +97,7 @@ public class MemberFilter extends JcmFilter {
 		} else {
 			String getActions = "(comment/d";
 			getActions += "|site/d|site/utt|site/utf";
-			getActions += "|topo/d)";
+			getActions += "|topo/d|topo/c)";
 			return uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$");
 		}	
 	}

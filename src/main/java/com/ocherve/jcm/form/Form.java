@@ -90,6 +90,25 @@ public abstract class Form {
 	    return value;
 	}
 	
+	/**
+	 * Generic method to get integer field value using getParameter or getParts
+	 * @param fieldName
+	 * @return
+	 */
+	protected Integer[] getMultiSelectIntegersValue(String fieldName) {
+		Integer[] value = null;
+		try {
+			if ( ! this.partMethod ) {
+			    value = Integer[].class.cast(this.request.getParameter( fieldName ));
+			} else {
+				value = Integer[].class.cast(getStringValue(this.request.getPart(fieldName)));
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, e.getMessage());							
+		}
+	    return value;
+	}
+	
 	protected Part getRawPart(String fieldName) {
 		Part part = null;
 		try { 

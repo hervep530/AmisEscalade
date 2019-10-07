@@ -8,8 +8,9 @@
 									<img alt="Icone Tri" src="${contextPath}/images/sort.png" 
 										title="Tri (Ascendant / Descendant)" width="20" height="20">
 							  </button>
-<c:if test="${ roleId > 1 }">
-							  <button type="button" class="btn btn-default">
+<c:if test="${ roleId > 2 }">
+							  <button type="button" class="btn btn-default"
+							  		onclick="location='${contextPath}/topo/c/0/${token}'">
 									<img alt="Icone Ajouter" src="${contextPath}/images/add.png" 
 										title="Créer un nouveau topo" width="20" height="20">
 							  </button>
