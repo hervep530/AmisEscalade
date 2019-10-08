@@ -7,6 +7,7 @@ import java.text.Normalizer;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
@@ -14,7 +15,9 @@ import javax.servlet.http.Part;
 import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.DaoProxy;
+import com.ocherve.jcm.dao.contract.SiteDao;
 import com.ocherve.jcm.dao.contract.TopoDao;
+import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.model.Topo;
 import com.ocherve.jcm.model.User;
 
@@ -25,10 +28,11 @@ import com.ocherve.jcm.model.User;
 public class CreateTopoForm extends Form {
 	
 	private TopoDao topoDao;
+	private SiteDao siteDao;
 	private Topo topo;
 	private String slug;
 	private Part uploadFile;
-	private Integer[] linkedSites;
+	private Map<String,String> selectedIds;
 
 	
 	/**
@@ -46,9 +50,11 @@ public class CreateTopoForm extends Form {
 	public CreateTopoForm(HttpServletRequest request) {
 		super();
 		this.request = request;
+		this.selectedIds = new HashMap<>();
 		this.slug = "";
 		
 		this.topoDao = (TopoDao) DaoProxy.getInstance().getTopoDao();
+		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 		// creating a null cotation in order to return it to jsp when formular is wrong
 		
 		this.topo = new Topo();
@@ -63,7 +69,7 @@ public class CreateTopoForm extends Form {
 			this.topo.setName(getInputTextValue("title"));
 			this.topo.setWriter(getInputTextValue("writer"));
 			this.topo.setWritedAt(getInputTextValue("writedAt"));
-			//this.linkedSites = getMultiSelectIntegersValue("sites");
+			this.selectedIds = getMultiSelectValues("sites");
 			// Upload file
 			@SuppressWarnings("unused")
 			String fileDescription = getInputTextValue("description");  // not use - just to keep it in mind
@@ -93,10 +99,11 @@ public class CreateTopoForm extends Form {
 		try { validateTitle() ; } catch (FormException e) { this.errors.put("title", e.getMessage()); }
 		try { validateWriter() ; } catch (FormException e) { this.errors.put("writer", e.getMessage()); }
 		try { validateWritedAt() ; } catch (FormException e) { this.errors.put("writedAt", e.getMessage()); }
-		try { validateSites() ; } catch (FormException e) { this.errors.put("cotationMax", e.getMessage()); }
 		try { validateFile() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
 		try { validateSummary() ; } catch (FormException e) { this.errors.put("summary", e.getMessage()); }
 		try { validateContent() ; } catch (FormException e) { this.errors.put("content", e.getMessage()); }
+		if ( ! this.errors.isEmpty() ) return topo;
+		try { validateSites() ; } catch (FormException e) { this.errors.put("cotationMax", e.getMessage()); }
 		if ( ! this.errors.isEmpty() ) return topo;
 		Integer topoId = 0;
 		try { 
@@ -113,7 +120,12 @@ public class CreateTopoForm extends Form {
 		}
 		return this.topo;
 	}
-	
+
+	/**
+	 * Validate topo name
+	 * 
+	 * @throws FormException
+	 */
 	private void validateName() throws FormException {
 		// Test not null
 		if ( this.topo.getName() == null ) throw new FormException("Ce nom de topo n'est pas valide.");
@@ -136,39 +148,63 @@ public class CreateTopoForm extends Form {
 			throw new FormException("Un site existe déjà avec un nom similaire.");
 	}
 		
+	/**
+	 * Validate topo title
+	 * 
+	 * @throws FormException
+	 */
 	private void validateTitle() throws FormException {
 		if ( this.topo.getTitle() == null ) throw new FormException("Le titre du topo est invalide.");
 		if ( ! this.topo.getTitle().matches("[- \\w]{3,}") )
 			throw new FormException("Ce titre de topo n'est pas valide.");
 	}
 
+	/**
+	 * Validate topo Writer
+	 * 
+	 * @throws FormException
+	 */
 	private void validateWriter() throws FormException {
 		if ( this.topo.getWriter() == null ) throw new FormException("Le nom d'auteur n'est pas valide.");
 		if ( ! this.topo.getWriter().matches("[- ()\\w]{3,}") )
 			throw new FormException("Le nom d'auteur n'est pas valide (3 caractères minimum.");
 	}
 
+	/**
+	 * Validate topo writing date
+	 * 
+	 * @throws FormException
+	 */
 	private void validateWritedAt() throws FormException {
 		if ( this.topo.getWritedAt() == null ) throw new FormException("La saisie de la date de publication n'est pas valide.");
 		if ( ! this.topo.getWritedAt().matches("[0-9]{1,2}/[0-9]{2}/[0-9]{4}") ) 
 			throw new FormException("La date de publication ne respecte pas le format jj/mm/aaaa");
 	}
-
+	
+	/**
+	 * Validate Topo sites list
+	 * @throws FormException
+	 */
 	private void validateSites() throws FormException {
-		/*
-		for (Integer siteId : this.linkedSites) {
-			DLOG.log(Level.DEBUG, "Site lié au topo - id :" + siteId);
+		if ( this.selectedIds == null ) return;
+		String key = "";
+		try {
+			for (Entry<String,String> entry : this.selectedIds.entrySet()) {
+				key = entry.getKey();
+				DLOG.log(Level.DEBUG, "Site lié au topo - id :" + entry.getKey() + " / " + entry.getValue());
+				Site linkedSite = siteDao.get(Integer.valueOf(entry.getKey()));
+				topo.addSite(linkedSite);
+			}			
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG, "AddingSite error (id :" + key + ") - " + e.getMessage() );
 		}
-		if ( topo.getCotationMax() == null ) throw new FormException("La cotation maximum n'est pas valide.");
-		if ( topo.getCotationMax().getId() <= 0 || topo.getCotationMax().getId() > 30)
-			throw new FormException("La cotation maximum n'est pas valide.");
-		int minCotationId = 0;
-		if ( topo.getCotationMin() != null ) minCotationId = topo.getCotationMin().getId();
-		if ( minCotationId > topo.getCotationMax().getId() )
-			throw new FormException("La cotation maximum doit être supérieure à la cotation minimum.");
-		*/
 	}
 
+	/**
+	 * Validate Image file
+	 * 
+	 * @throws FormException
+	 */
 	private void validateFile() throws FormException {
 		String rawName = "";
 		String rawType = "jpg";
@@ -197,6 +233,11 @@ public class CreateTopoForm extends Form {
 		}
 	}
 
+	/**
+	 * Remove file (needed if topo creation fails)
+	 * 
+	 * @throws FormException
+	 */
 	private void removeFile() throws FormException {
 		String filePath = UPLOAD_PATH + "/topo";
 		String fileName = this.slug + ".jpg";
@@ -207,6 +248,11 @@ public class CreateTopoForm extends Form {
 		throw new FormException("La création de site à échoué. Il faut ré-envoyer le fichier.");			
 	}
 
+	/**
+	 * Validate topo summary
+	 * 
+	 * @throws FormException
+	 */
 	private void validateSummary() throws FormException {
 		// Test not null
 		if ( this.topo.getSummary() == null ) throw new FormException("Saisissez un résumé.");
@@ -215,6 +261,11 @@ public class CreateTopoForm extends Form {
 			throw new FormException("Le résumé doit contenir entre 20 et 150 caractères.");		
 	}
 	
+	/**
+	 * Validate topo content
+	 * 
+	 * @throws FormException
+	 */
 	private void validateContent() throws FormException {
 		// Test not null
 		if ( this.topo.getContent() == null ) throw new FormException("Saisissez un contenu.");
@@ -237,6 +288,13 @@ public class CreateTopoForm extends Form {
 		return this.topo;
 	}
 	
+	/**
+	 * Getter for selectedIds Map
+	 * 
+	 * @return ids in key Map
+	 */
+	public Map<String,String> getSelectedIds() {
+		return this.selectedIds;
+	}
 	
-
 }

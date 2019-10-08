@@ -194,9 +194,10 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		Topo createTopo = createTopoForm.createTopo();
 		// if errors we forward form (containing errors) and sites list in delivry to display form again
 		if ( ! createTopoForm.getErrors().isEmpty() ) {
-			this.delivry.appendattribute("createTopoForm", createTopoForm);
 			try {
-				this.delivry.appendattribute("sites", siteDao.getList());				
+				List<Site> sites = this.siteDao.getList();
+				this.delivry.appendattribute("createTopoForm", createTopoForm);
+				this.delivry.appendattribute("sites", sites);
 			} catch (Exception ignore) {}
 			this.appendMandatoryAttributesToDelivry(parameters);
 			return this.delivry;

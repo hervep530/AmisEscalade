@@ -95,20 +95,33 @@ public abstract class Form {
 	 * @param fieldName
 	 * @return
 	 */
-	protected Integer[] getMultiSelectIntegersValue(String fieldName) {
-		Integer[] value = null;
+	protected Map<String,String> getMultiSelectValues(String fieldName) {
+		String[] stringValues = null;
+		Map<String,String> selectedIds = new HashMap<>();
 		try {
 			if ( ! this.partMethod ) {
-			    value = Integer[].class.cast(this.request.getParameter( fieldName ));
+				stringValues = this.request.getParameterValues( fieldName );
 			} else {
-				value = Integer[].class.cast(getStringValue(this.request.getPart(fieldName)));
+				// not implemented - return null with part
+				stringValues = getStringArrayValues(this.request.getPart(fieldName));
+			}
+			//  If input is null, output is null
+			if (stringValues == null) return null;
+			for ( String idString : stringValues ) {
+				selectedIds.put(idString, " selected");
 			}
 		} catch (Exception e) {
 			DLOG.log(Level.DEBUG, e.getMessage());							
 		}
-	    return value;
+	    return selectedIds;
 	}
 	
+	/**
+	 * Get part as raw data - upload file
+	 * 
+	 * @param fieldName
+	 * @return
+	 */
 	protected Part getRawPart(String fieldName) {
 		Part part = null;
 		try { 
@@ -153,8 +166,32 @@ public abstract class Form {
 	    }
 	    return stringValue.toString();
 	}
+
+	/**
+	 * Method to get array values - for example multiselect field.
+	 */
+	protected String[] getStringArrayValues( Part part ) throws IOException {
+	    /*
+		BufferedReader reader = new BufferedReader( new InputStreamReader( part.getInputStream(), "UTF-8" ) );
+	    StringBuilder stringValue = new StringBuilder();
+	    char[] buffer = new char[1024];
+	    int longueur = 0;
+	    while ( ( longueur = reader.read( buffer ) ) > 0 ) {
+	    	stringValue.append( buffer, 0, longueur );
+	    }
+	    return stringValue.toString();
+	    */
+		return null;
+	}
 	
-    protected String getFileName( Part part )  throws IOException {
+	/**
+	 * Get filename from file upload field
+	 * 
+	 * @param part
+	 * @return
+	 * @throws IOException
+	 */
+	protected String getFileName( Part part )  throws IOException {
     	if ( part == null ) {
     		DLOG.log(Level.ERROR, "This part is null");
     		return "";
@@ -172,7 +209,16 @@ public abstract class Form {
         return "";
     }   
 
-    protected void writeUploadFile( Part part, String uploadPath, String fileName, int bufferSize) throws IOException {
+	/**
+	 * Write uploaded file on filesystem using input stream
+	 * 
+	 * @param part
+	 * @param uploadPath
+	 * @param fileName
+	 * @param bufferSize
+	 * @throws IOException
+	 */
+	protected void writeUploadFile( Part part, String uploadPath, String fileName, int bufferSize) throws IOException {
         BufferedInputStream inFile = null;
         BufferedOutputStream outFile = null;
         try {
