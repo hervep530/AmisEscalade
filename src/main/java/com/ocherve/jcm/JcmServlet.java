@@ -70,6 +70,7 @@ abstract class JcmServlet extends HttpServlet {
 			parameters = service.setParameters(request);
 			delivry = this.doGetAction(parameters);
 		} catch (ServiceException e) {
+			DLOG.log(Level.ERROR, "Aborting service - " + e.getMessage());
 			delivry = service.abort(parameters);
 		}
 		request.setAttribute("delivry", delivry);

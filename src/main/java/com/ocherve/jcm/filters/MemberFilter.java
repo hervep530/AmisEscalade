@@ -93,7 +93,7 @@ public class MemberFilter extends JcmFilter {
 	@Override
 	protected Boolean isValidUrl() {
 		if ( method.contentEquals("POST") ) {
-			return false;
+			return uri.matches("^/topo/c/[0-9]{1,16}/\\w{1,32}$");
 		} else {
 			String getActions = "(comment/d";
 			getActions += "|site/d|site/utt|site/utf";

@@ -5,20 +5,21 @@
 <c:set var="titleError" value="${delivry.attributes.createTopoForm.errors.title}" scope="page"></c:set>
 <c:set var="writerError" value="${delivry.attributes.createTopoForm.errors.writer}" scope="page"></c:set>
 <c:set var="writedAtError" value="${delivry.attributes.createTopoForm.errors.writedAt}" scope="page"></c:set>
+<c:set var="sitesError" value="${delivry.attributes.createTopoForm.errors.sites}" scope="page"></c:set>
 <c:set var="fileError" value="${delivry.attributes.createTopoForm.errors.file}" scope="page"></c:set>
 <c:set var="mediaError" value="${delivry.attributes.createTopoForm.errors.media}" scope="page"></c:set>
 <c:set var="summaryError" value="${delivry.attributes.createTopoForm.errors.summary}" scope="page"></c:set>
 <c:set var="contentError" value="${delivry.attributes.createTopoForm.errors.content}" scope="page"></c:set>
 <c:set var="publishedError" value="${delivry.attributes.createTopoForm.errors.published}" scope="page"></c:set>
 <c:set var="topoInformationError" scope="page"
-	value="${ empty nameError && empty typeError ? '' : 'tab-error'}">
+	value="${ empty nameError && empty titleError && empty writerError && empty writedAtError && empty sitesError ? '' : 'tab-error'}">
 </c:set>
 <c:set var="topoMediasError" scope="page" value="${ empty fileError ? '' : 'tab-error'}"></c:set>
 <c:set var="topoContentError" scope="page" 
 	value="${ empty contentError && empty summaryError ? '' : 'tab-error'}">
 </c:set>
     
-					<form id="createTopoForm" class="text-center border border-light p-3" 
+					<form id="createTopoForm" name="createTopoForm" class="text-center border border-light p-3" 
 							action="${postAction}" method="POST" enctype="multipart/form-data">
 							<div class="form-row mb-3">
 								<div class="col-md-9"><p class="h4">Nouveau Topo</p></div>
@@ -88,19 +89,27 @@
 					    	</div>
 						</div>
 						<div class="form-row">
-	    				    <div class="form-group col-md-9">
+					    	</div>
+	    				    <div class="form-group col-md-2">
+					    	</div>
+	    				    <div class="form-group col-md-8">
 					    		<label class="basic-top-label" for="sites">
 					    			<em>Sites concernés par le topo </em><span class="required">*</span>
 					    		</label>
-								<input type="text" id="sites" name="sites"
+								<select multiple id="sites" name="sites" 
 										class="form-control${empty sitesError?'':' is-invalid'}" 
-										aria-label="Sites" aria-describedby="labelSites"
-										placeholder="Selectionner les spots à rattacher"
-										value="<c:out value='${delivry.attributes.createTopoForm.topo.sites}'></c:out>">
+										aria-label="Sites" aria-describedby="labelSites">
+									<option value="0">Selectionner le(s) site(s) à rattacher à ce topo</option>
+<c:if test="${ fn:length(delivry.attributes.sites) gt 0 }">
+	<c:forEach items="${ delivry.attributes.sites }" var="site">
+									<option value="${ site.id }">${ site.name }</option>
+	</c:forEach>
+</c:if>								
+								</select>
 								<div class="invalid-feedback${empty sitesError?' invisible':''}"
 									id="sitesError">${sitesError}</div>
 					    	</div>
-	    				    <div class="form-group col-md-3">
+	    				    <div class="form-group col-md-2">
 					    	</div>
 						</div>
   </div>

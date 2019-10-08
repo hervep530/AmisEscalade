@@ -4,10 +4,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.logging.log4j.Level;
+
 import com.ocherve.jcm.dao.DaoProxy;
+import com.ocherve.jcm.dao.contract.SiteDao;
 import com.ocherve.jcm.dao.contract.TopoDao;
+import com.ocherve.jcm.form.CreateTopoForm;
+import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.model.Topo;
 import com.ocherve.jcm.service.Delivry;
+import com.ocherve.jcm.service.Notification;
+import com.ocherve.jcm.service.NotificationType;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.UrlException;
 import com.ocherve.jcm.service.factory.TopoService;
@@ -33,6 +42,7 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 			{"d","/topo/d/$id/$slug"}
 	};
 	private TopoDao topoDao;
+	private SiteDao siteDao;
 
 	/**
 	 * Constructor 
@@ -40,7 +50,25 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 	public TopoServiceImpl() {
 		super(SVC_DEFAULT_URL);
 		topoDao = (TopoDao) DaoProxy.getInstance().getTopoDao();
+		siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 	}
+	
+	public Parameters setParameters(HttpServletRequest request) {
+		Parameters parameters = super.setParameters(request);
+		// Overloading set parameters with creating and adding new form to parameters
+		if ( request.getMethod().contentEquals("POST") ) {
+			switch (parameters.getParsedUrl().getAction()) {
+				case  "c" :
+					parameters.setForm(new CreateTopoForm(request));
+					break;
+				case  "u" :
+					parameters.setForm(new CreateTopoForm(request));
+					break;
+			}
+		}
+		return parameters;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -112,8 +140,15 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 
 	@Override
 	public Delivry getCreateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
 		this.delivry = new Delivry();
+		List<Site> sites = null;
+		sites = siteDao.getList();
+		try {
+			this.delivry.appendattribute("sites", sites);
+		} catch (Exception e ) {
+			this.delivry.appendError("Site search", "Error on displaying search site formular.");
+			DLOG.log(Level.ERROR, "Error on displaying search site formular Cotation references can not be reached.");
+		}
 		this.appendMandatoryAttributesToDelivry(parameters);
 		return this.delivry;
 	}
@@ -152,8 +187,30 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 
 	@Override
 	public Delivry postCreateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
 		this.delivry = new Delivry();
+		// Getting form and apply createTopo method
+		CreateTopoForm createTopoForm = (CreateTopoForm) parameters.getForm();
+		@SuppressWarnings("unused")
+		Topo createTopo = createTopoForm.createTopo();
+		// if errors we forward form (containing errors) and sites list in delivry to display form again
+		if ( ! createTopoForm.getErrors().isEmpty() ) {
+			this.delivry.appendattribute("createTopoForm", createTopoForm);
+			try {
+				this.delivry.appendattribute("sites", siteDao.getList());				
+			} catch (Exception ignore) {}
+			this.appendMandatoryAttributesToDelivry(parameters);
+			return this.delivry;
+		} 
+		// Else...
+		String notificationLabel = "Ajout d'un nouveau topo";
+		String message = "Le topo vient d'être créé avec succès.";
+		// Append notifications to delivry
+		Notification notification = new Notification(NotificationType.SUCCESS, message);
+		Map<String,Notification> notifications = new HashMap<>();
+		notifications.put(notificationLabel, notification);
+		this.delivry.appendSession("notifications", notifications);
+		// Append redirection and mandatory attributes from parameters to delivry
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/topo/l/1");
 		this.appendMandatoryAttributesToDelivry(parameters);
 		return this.delivry;
 	}

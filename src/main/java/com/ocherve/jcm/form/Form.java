@@ -37,8 +37,8 @@ public abstract class Form {
 	
 	Form(){
 		Configurator.setLevel(DLOG.getName(), DLOGLEVEL);
-		errors = new HashMap<>();
-		partMethod = false;
+		this.errors = new HashMap<>();
+		this.partMethod = false;
 	}
 	
 	/*
