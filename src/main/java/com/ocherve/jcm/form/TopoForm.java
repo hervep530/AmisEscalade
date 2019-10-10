@@ -49,55 +49,6 @@ public class TopoForm extends Form {
 	 * Constructor using request to instanciate class
 	 * 
 	 * @param request
-	 */
-	public TopoForm(HttpServletRequest request) {
-		super();
-		this.request = request;
-		this.selectedIds = new HashMap<>();
-		this.slug = "";
-		
-		this.topoDao = (TopoDao) DaoProxy.getInstance().getTopoDao();
-		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
-		
-		try {
-			// Hidden field createSiteControl tell us if it's possible to use getParameter with multipart or not
-			if ( this.request.getParameter("partMethod") == null ) this.partMethod = true;
-			// instanciating topo or getting it for update
-			// UPDATE - this.topo = topoDao.get(topoId);
-			this.topo = new Topo();
-			// Setting author from session
-			this.topo.setAuthor((User) request.getSession().getAttribute("sessionUser")); // NOT FOR UPDATE
-			// Getting field necessary to build site object
-			this.topo.setTitle(getInputTextValue("title"));
-			// UPDATE - this.slug = this.topo.getSlug();
-			// UPDATE - if ( ! topo.getName().contentEquals(topo.getTitle()) ) this.updatingName = true;
-			this.topo.setName(getInputTextValue("title"));
-			this.topo.setWriter(getInputTextValue("writer"));
-			this.topo.setWritedAt(getInputTextValue("writedAt"));
-			this.selectedIds = getMultiSelectValues("sites");
-			// Upload file
-			@SuppressWarnings("unused")
-			String fileDescription = getInputTextValue("description");  // not use - just to keep it in mind
-			this.uploadFile = getRawPart("uploadFile");
-			// summary and content
-			this.topo.setSummary(getInputTextValue("summary"));
-			this.topo.setContent(getInputTextValue("content"));
-			// Giving default value for other site attributes
-			this.topo.setPublished(true); // NOT FOR UPDATE
-			this.topo.setType("TOPO"); // NOT FOR UPDATE
-			this.topo.setTsCreated(Timestamp.from(Instant.now())); // NOT FOR UPDATE
-			this.topo.setTsModified(Timestamp.from(Instant.now()));
-		} catch (Exception e) {
-			DLOG.log(Level.ERROR, "Site can not be instanciated from Formular");
-			DLOG.log(Level.ERROR, e.getMessage());
-		}
-		this.request = null;
-	}
-
-	/**
-	 * Constructor using request to instanciate class
-	 * 
-	 * @param request
 	 * @param updating 
 	 */
 	public TopoForm(HttpServletRequest request, boolean updating) {
