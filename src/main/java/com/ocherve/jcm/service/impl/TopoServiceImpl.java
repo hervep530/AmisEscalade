@@ -60,8 +60,10 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		if ( request.getMethod().contentEquals("POST") ) {
 			switch (parameters.getParsedUrl().getAction()) {
 				case  "c" :
+					parameters.setForm(new TopoForm(request,false));
+					break;
 				case  "u" :
-					parameters.setForm(new TopoForm(request));
+					parameters.setForm(new TopoForm(request,true));
 					break;
 			}
 		}

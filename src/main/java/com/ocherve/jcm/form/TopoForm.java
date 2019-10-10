@@ -58,26 +58,19 @@ public class TopoForm extends Form {
 		
 		this.topoDao = (TopoDao) DaoProxy.getInstance().getTopoDao();
 		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
-		// creating a null cotation in order to return it to jsp when formular is wrong
-		
 		
 		try {
 			// Hidden field createSiteControl tell us if it's possible to use getParameter with multipart or not
 			if ( this.request.getParameter("partMethod") == null ) this.partMethod = true;
 			// instanciating topo or getting it for update
-			Integer topoId = 0;
-			if ( getInputTextValue("topoId").matches("^[0-9]{1,}$") ) 
-				topoId = Integer.valueOf(getInputTextValue("topoId"));
-			if ( topoId > 0 )
-				this.topo = topoDao.get(topoId);
-			else	
-				this.topo = new Topo();
+			// UPDATE - this.topo = topoDao.get(topoId);
+			this.topo = new Topo();
 			// Setting author from session
-			if ( topoId == 0 ) this.topo.setAuthor((User) request.getSession().getAttribute("sessionUser"));
+			this.topo.setAuthor((User) request.getSession().getAttribute("sessionUser")); // NOT FOR UPDATE
 			// Getting field necessary to build site object
 			this.topo.setTitle(getInputTextValue("title"));
-			if ( topoId > 0 ) this.slug = this.topo.getSlug();
-			if ( ! topo.getName().contentEquals(topo.getTitle()) ) this.updatingName = true;
+			// UPDATE - this.slug = this.topo.getSlug();
+			// UPDATE - if ( ! topo.getName().contentEquals(topo.getTitle()) ) this.updatingName = true;
 			this.topo.setName(getInputTextValue("title"));
 			this.topo.setWriter(getInputTextValue("writer"));
 			this.topo.setWritedAt(getInputTextValue("writedAt"));
@@ -90,9 +83,66 @@ public class TopoForm extends Form {
 			this.topo.setSummary(getInputTextValue("summary"));
 			this.topo.setContent(getInputTextValue("content"));
 			// Giving default value for other site attributes
-			if ( topoId == 0 ) this.topo.setPublished(true);
-			if ( topoId == 0 ) this.topo.setType("TOPO");
-			if ( topoId == 0 ) this.topo.setTsCreated(Timestamp.from(Instant.now()));
+			this.topo.setPublished(true); // NOT FOR UPDATE
+			this.topo.setType("TOPO"); // NOT FOR UPDATE
+			this.topo.setTsCreated(Timestamp.from(Instant.now())); // NOT FOR UPDATE
+			this.topo.setTsModified(Timestamp.from(Instant.now()));
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, "Site can not be instanciated from Formular");
+			DLOG.log(Level.ERROR, e.getMessage());
+		}
+		this.request = null;
+	}
+
+	/**
+	 * Constructor using request to instanciate class
+	 * 
+	 * @param request
+	 * @param updating 
+	 */
+	public TopoForm(HttpServletRequest request, boolean updating) {
+		super();
+		this.request = request;
+		this.selectedIds = new HashMap<>();
+		this.slug = "";
+		
+		this.topoDao = (TopoDao) DaoProxy.getInstance().getTopoDao();
+		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
+		
+		try {
+			// Hidden field createSiteControl tell us if it's possible to use getParameter with multipart or not
+			if ( this.request.getParameter("partMethod") == null ) this.partMethod = true;
+			// instanciating topo or getting it for update
+			if ( updating ) {
+				Integer topoId = 0;
+				if ( getInputTextValue("topoId").matches("^[0-9]{1,}$") ) 
+					topoId = Integer.valueOf(getInputTextValue("topoId"));
+				// Before all when updating, we get topo from id, set this.slug from topo, and trace name updating
+				this.topo = topoDao.get(topoId);
+				this.slug = this.topo.getSlug();
+				if ( ! topo.getName().contentEquals(topo.getTitle()) ) this.updatingName = true;
+			} else {	
+				// Before all when creating topo instanciate new topo, set author from session, type and dates
+				this.topo = new Topo();
+				this.topo.setAuthor((User) request.getSession().getAttribute("sessionUser"));
+				this.topo.setPublished(true);
+				this.topo.setType("TOPO");
+				this.topo.setTsCreated(Timestamp.from(Instant.now()));
+			}
+			this.topo.setTitle(getInputTextValue("title"));
+			this.topo.setName(getInputTextValue("title"));
+			// Getting field necessary to build site object
+			this.topo.setWriter(getInputTextValue("writer"));
+			this.topo.setWritedAt(getInputTextValue("writedAt"));
+			this.selectedIds = getMultiSelectValues("sites");
+			// Upload file
+			@SuppressWarnings("unused")
+			String fileDescription = getInputTextValue("description");  // not use - just to keep it in mind
+			this.uploadFile = getRawPart("uploadFile");
+			// summary and content
+			this.topo.setSummary(getInputTextValue("summary"));
+			this.topo.setContent(getInputTextValue("content"));
+			// Giving default value for other site attributes
 			this.topo.setTsModified(Timestamp.from(Instant.now()));
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "Site can not be instanciated from Formular");
@@ -138,7 +188,7 @@ public class TopoForm extends Form {
 		try { validateName(); } catch (FormException e ) { this.errors.put("name",e.getMessage()); }
 		DLOG.log(Level.DEBUG, "Author : " + this.topo.getAuthor().getUsername());
 		// validate country
-		try { validateTitle() ; } catch (FormException e) { this.errors.put("title", e.getMessage()); }
+		try { validateCreateTitle() ; } catch (FormException e) { this.errors.put("title", e.getMessage()); }
 		try { validateWriter() ; } catch (FormException e) { this.errors.put("writer", e.getMessage()); }
 		try { validateWritedAt() ; } catch (FormException e) { this.errors.put("writedAt", e.getMessage()); }
 		try { validateFile() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
@@ -168,7 +218,7 @@ public class TopoForm extends Form {
 	 */
 	public Topo updateTopo() {
 		//try { validateName(); } catch (FormException e ) { this.errors.put("name",e.getMessage()); }
-		try { validateTitle() ; } catch (FormException e) { this.errors.put("title", e.getMessage()); }
+		try { validateUpdateTitle() ; } catch (FormException e) { this.errors.put("title", e.getMessage()); }
 		try { validateWriter() ; } catch (FormException e) { this.errors.put("writer", e.getMessage()); }
 		try { validateWritedAt() ; } catch (FormException e) { this.errors.put("writedAt", e.getMessage()); }
 		//try { validateFile() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
@@ -228,7 +278,7 @@ public class TopoForm extends Form {
 	 * 
 	 * @throws FormException
 	 */
-	private void validateTitle() throws FormException {
+	private void validateUpdateTitle() throws FormException {
 		if ( this.topo.getTitle() == null ) throw new FormException("Le titre du topo est invalide.");
 		if ( ! this.topo.getTitle().matches("[- \\w]{3,}") )
 			throw new FormException("Ce titre de topo n'est pas valide.");
@@ -254,6 +304,17 @@ public class TopoForm extends Form {
 			if ( siteId > 0 )
 				throw new FormException("Un site existe déjà avec un nom similaire.");
 		}
+	}
+
+	/**
+	 * Validate topo title
+	 * 
+	 * @throws FormException
+	 */
+	private void validateCreateTitle() throws FormException {
+		if ( this.topo.getTitle() == null ) throw new FormException("Le titre du topo est invalide.");
+		if ( ! this.topo.getTitle().matches("[- \\w]{3,}") )
+			throw new FormException("Ce titre de topo n'est pas valide.");
 	}
 
 	/**
