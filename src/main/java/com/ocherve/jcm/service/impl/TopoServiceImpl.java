@@ -3,6 +3,7 @@ package com.ocherve.jcm.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,7 +12,7 @@ import org.apache.logging.log4j.Level;
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.SiteDao;
 import com.ocherve.jcm.dao.contract.TopoDao;
-import com.ocherve.jcm.form.CreateTopoForm;
+import com.ocherve.jcm.form.TopoForm;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.model.Topo;
 import com.ocherve.jcm.service.Delivry;
@@ -59,10 +60,8 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		if ( request.getMethod().contentEquals("POST") ) {
 			switch (parameters.getParsedUrl().getAction()) {
 				case  "c" :
-					parameters.setForm(new CreateTopoForm(request));
-					break;
 				case  "u" :
-					parameters.setForm(new CreateTopoForm(request));
+					parameters.setForm(new TopoForm(request));
 					break;
 			}
 		}
@@ -155,8 +154,18 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 
 	@Override
 	public Delivry getUpdateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
 		this.delivry = new Delivry();
+		List<Site> sites = null;
+		TopoForm topoForm = null;
+		try {
+			topoForm = new TopoForm(Integer.valueOf(parameters.getParsedUrl().getId()));
+			this.delivry.appendattribute("topoForm", topoForm);
+			sites = siteDao.getList();
+			this.delivry.appendattribute("sites", sites);
+		} catch (Exception e ) {
+			this.delivry.appendError("Site search", "Error on displaying search site formular.");
+			DLOG.log(Level.ERROR, "Error on displaying search site formular Cotation references can not be reached.");
+		}
 		this.appendMandatoryAttributesToDelivry(parameters);
 		return this.delivry;
 	}
@@ -189,14 +198,14 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 	public Delivry postCreateForm(Parameters parameters) {
 		this.delivry = new Delivry();
 		// Getting form and apply createTopo method
-		CreateTopoForm createTopoForm = (CreateTopoForm) parameters.getForm();
+		TopoForm topoForm = (TopoForm) parameters.getForm();
 		@SuppressWarnings("unused")
-		Topo createTopo = createTopoForm.createTopo();
+		Topo createTopo = topoForm.createTopo();
 		// if errors we forward form (containing errors) and sites list in delivry to display form again
-		if ( ! createTopoForm.getErrors().isEmpty() ) {
+		if ( ! topoForm.getErrors().isEmpty() ) {
 			try {
 				List<Site> sites = this.siteDao.getList();
-				this.delivry.appendattribute("createTopoForm", createTopoForm);
+				this.delivry.appendattribute("topoForm", topoForm);
 				this.delivry.appendattribute("sites", sites);
 			} catch (Exception ignore) {}
 			this.appendMandatoryAttributesToDelivry(parameters);
@@ -218,8 +227,34 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 
 	@Override
 	public Delivry postUpdateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
 		this.delivry = new Delivry();
+		// Getting form and apply createTopo method
+		TopoForm topoForm = (TopoForm) parameters.getForm();
+		@SuppressWarnings("unused")
+		Topo updatedTopo = topoForm.updateTopo();
+		// if errors we forward form (containing errors) and sites list in delivry to display form again
+		if ( ! topoForm.getErrors().isEmpty() ) {
+			for ( Entry<String,String> error : topoForm.getErrors().entrySet() ) {
+				DLOG.log(Level.ERROR, error.getKey() + " : " + error.getValue());
+			}
+			try {
+				List<Site> sites = this.siteDao.getList();
+				this.delivry.appendattribute("topoForm", topoForm);
+				this.delivry.appendattribute("sites", sites);
+			} catch (Exception ignore) {}
+			this.appendMandatoryAttributesToDelivry(parameters);
+			return this.delivry;
+		} 
+		// Else...
+		String notificationLabel = "Mise à jour du topo " + updatedTopo.getName();
+		String message = "Le topo vient d'être modifié avec succès.";
+		// Append notifications to delivry
+		Notification notification = new Notification(NotificationType.SUCCESS, message);
+		Map<String,Notification> notifications = new HashMap<>();
+		notifications.put(notificationLabel, notification);
+		this.delivry.appendSession("notifications", notifications);
+		// Append redirection and mandatory attributes from parameters to delivry
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/topo/l/1");
 		this.appendMandatoryAttributesToDelivry(parameters);
 		return this.delivry;
 	}

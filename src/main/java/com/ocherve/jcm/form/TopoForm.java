@@ -25,7 +25,7 @@ import com.ocherve.jcm.model.User;
  * @author herve_dev
  *
  */
-public class CreateTopoForm extends Form {
+public class TopoForm extends Form {
 	
 	private TopoDao topoDao;
 	private SiteDao siteDao;
@@ -38,7 +38,7 @@ public class CreateTopoForm extends Form {
 	/**
 	 * Constructor without arguments
 	 */
-	public CreateTopoForm() {
+	public TopoForm() {
 		super();
 	}
 	
@@ -47,7 +47,7 @@ public class CreateTopoForm extends Form {
 	 * 
 	 * @param request
 	 */
-	public CreateTopoForm(HttpServletRequest request) {
+	public TopoForm(HttpServletRequest request) {
 		super();
 		this.request = request;
 		this.selectedIds = new HashMap<>();
@@ -57,15 +57,23 @@ public class CreateTopoForm extends Form {
 		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 		// creating a null cotation in order to return it to jsp when formular is wrong
 		
-		this.topo = new Topo();
 		
 		try {
 			// Hidden field createSiteControl tell us if it's possible to use getParameter with multipart or not
 			if ( this.request.getParameter("partMethod") == null ) this.partMethod = true;
+			// instanciating topo or getting it for update
+			Integer topoId = 0;
+			if ( getInputTextValue("topoId").matches("^[0-9]{1,}$") ) 
+				topoId = Integer.valueOf(getInputTextValue("topoId"));
+			if ( topoId > 0 )
+				this.topo = topoDao.get(topoId);
+			else	
+				this.topo = new Topo();
 			// Setting author from session
-			this.topo.setAuthor((User) request.getSession().getAttribute("sessionUser"));
+			if ( topoId == 0 ) this.topo.setAuthor((User) request.getSession().getAttribute("sessionUser"));
 			// Getting field necessary to build site object
 			this.topo.setTitle(getInputTextValue("title"));
+			if ( topoId > 0 ) this.slug = this.topo.getSlug();
 			this.topo.setName(getInputTextValue("title"));
 			this.topo.setWriter(getInputTextValue("writer"));
 			this.topo.setWritedAt(getInputTextValue("writedAt"));
@@ -78,9 +86,9 @@ public class CreateTopoForm extends Form {
 			this.topo.setSummary(getInputTextValue("summary"));
 			this.topo.setContent(getInputTextValue("content"));
 			// Giving default value for other site attributes
-			this.topo.setPublished(true);
-			this.topo.setType("SITE");
-			this.topo.setTsCreated(Timestamp.from(Instant.now()));
+			if ( topoId == 0 ) this.topo.setPublished(true);
+			if ( topoId == 0 ) this.topo.setType("TOPO");
+			if ( topoId == 0 ) this.topo.setTsCreated(Timestamp.from(Instant.now()));
 			this.topo.setTsModified(Timestamp.from(Instant.now()));
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "Site can not be instanciated from Formular");
@@ -88,6 +96,36 @@ public class CreateTopoForm extends Form {
 		}
 		this.request = null;
 	}
+	
+	/**
+	 * Constructor using request to instanciate class
+	 * 
+	 * @param topoId
+	 */
+	public TopoForm(Integer topoId) {
+		super();
+		if (topoId == null) {
+			DLOG.log(Level.ERROR, "Topo form can not be instanciated - topoId is null.");
+			return;
+		}
+		this.selectedIds = new HashMap<>();
+		this.topoDao = (TopoDao) DaoProxy.getInstance().getTopoDao();
+		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
+		// Getting topo from id, then setting Topo form and selectedId
+		try {
+			this.topo = topoDao.get(topoId);
+			this.slug = topo.getSlug();
+			if ( this.topo.getSites() != null ) {
+				for (Site site : this.topo.getSites()) {
+					this.selectedIds.put(String.valueOf(site.getId()), " selected");
+				}				
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, "Topo form can not be instanciated - topoId : " + topoId);
+			DLOG.log(Level.ERROR, e.getMessage());
+		}
+	}
+
 	
 	/**
 	 * @return site instanciate from formular
@@ -103,7 +141,7 @@ public class CreateTopoForm extends Form {
 		try { validateSummary() ; } catch (FormException e) { this.errors.put("summary", e.getMessage()); }
 		try { validateContent() ; } catch (FormException e) { this.errors.put("content", e.getMessage()); }
 		if ( ! this.errors.isEmpty() ) return topo;
-		try { validateSites() ; } catch (FormException e) { this.errors.put("cotationMax", e.getMessage()); }
+		try { validateSites() ; } catch (FormException e) { this.errors.put("sites", e.getMessage()); }
 		if ( ! this.errors.isEmpty() ) return topo;
 		Integer topoId = 0;
 		try { 
@@ -122,6 +160,44 @@ public class CreateTopoForm extends Form {
 	}
 
 	/**
+	 * @return site instanciate from formular
+	 */
+	public Topo updateTopo() {
+		Map<String,Object> fields = new HashMap<>();
+		//try { validateName(); } catch (FormException e ) { this.errors.put("name",e.getMessage()); }
+		try { validateTitle() ; } catch (FormException e) { this.errors.put("title", e.getMessage()); }
+		try { validateWriter() ; } catch (FormException e) { this.errors.put("writer", e.getMessage()); }
+		try { validateWritedAt() ; } catch (FormException e) { this.errors.put("writedAt", e.getMessage()); }
+		//try { validateFile() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
+		try { validateSummary() ; } catch (FormException e) { this.errors.put("summary", e.getMessage()); }
+		try { validateContent() ; } catch (FormException e) { this.errors.put("content", e.getMessage()); }
+		if ( ! this.errors.isEmpty() ) return topo;
+		//try { validateSites() ; } catch (FormException e) { this.errors.put("sites", e.getMessage()); }
+		if ( ! this.errors.isEmpty() ) return topo;
+		Integer controlId = 0;
+		try { 
+			
+			fields.put("title", this.topo.getTitle());
+			fields.put("name", this.topo.getName());
+			fields.put("writer", this.topo.getWriter());
+			fields.put("writedAt", this.topo.getWritedAt());
+			fields.put("summary", this.topo.getSummary());
+			fields.put("content", this.topo.getContent());
+			controlId = this.topoDao.update(this.topo.getId(), fields).getId();
+			//if ( controlId > 0 ) this.topoDao.refresh(Topo.class, topoId);
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, "SiteDao : creating site failed");
+			this.errors.put("creationSite","La création du site a échoué.");
+		}
+		try {
+			if ( controlId < 1 ) removeFile();
+		} catch (FormException e) {
+			this.errors.put("file", e.getMessage());
+		}
+		return this.topo;
+	}
+
+	/**
 	 * Validate topo name
 	 * 
 	 * @throws FormException
@@ -133,19 +209,22 @@ public class CreateTopoForm extends Form {
 		if ( ! this.topo.getName().matches("\\w[- \\w]{2,}\\w") )
 			throw new FormException("Ce nom de topo n'est pas valide.");
 		// Test slug is unique, so name is unique
-		this.slug = Normalizer.normalize(topo.getName(), Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
-		this.slug = this.slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase();
-		// Request user id from database with mail address as filter (one Integer result expected... Else rejecting)
-		Map<String,Object> parameters = new HashMap<>();
-		parameters.put("slug", this.slug);
-		parameters.put("type", "TOPO");
-		int siteId = 0;
-		try {
-			siteId = this.topoDao.getIdFromNamedQuery("Reference.getIdFromSlug", parameters);
-		} catch (Exception e) {/* if it's a dao error it was tracked anyway */}
-		DLOG.log(Level.DEBUG , "Id trouvé : " + siteId);
-		if ( siteId > 0 )
-			throw new FormException("Un site existe déjà avec un nom similaire.");
+		DLOG.log(Level.DEBUG, "Slug form / topo : " + this.slug + " / " + this.topo.getSlug());
+		if ( ! this.slug.contentEquals(this.topo.getSlug()) ) {
+			// Request user id from database with mail address as filter (one Integer result expected... Else rejecting)
+			this.slug = Normalizer.normalize(topo.getName(), Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
+			this.slug = this.slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase();
+			Map<String,Object> parameters = new HashMap<>();
+			parameters.put("slug", this.slug);
+			parameters.put("type", "TOPO");
+			int siteId = 0;
+			try {
+				siteId = this.topoDao.getIdFromNamedQuery("Reference.getIdFromSlug", parameters);
+			} catch (Exception e) {/* if it's a dao error it was tracked anyway */}
+			DLOG.log(Level.DEBUG , "Id trouvé : " + siteId);
+			if ( siteId > 0 )
+				throw new FormException("Un site existe déjà avec un nom similaire.");
+		}
 	}
 		
 	/**
@@ -157,6 +236,28 @@ public class CreateTopoForm extends Form {
 		if ( this.topo.getTitle() == null ) throw new FormException("Le titre du topo est invalide.");
 		if ( ! this.topo.getTitle().matches("[- \\w]{3,}") )
 			throw new FormException("Ce titre de topo n'est pas valide.");
+		// Test not null
+		if ( this.topo.getName() == null ) throw new FormException("Ce nom de topo n'est pas valide.");
+		// Test contains more than 4 chars (word, " " or - are accepted
+		if ( ! this.topo.getName().matches("\\w[- \\w]{2,}\\w") )
+			throw new FormException("Ce nom de topo n'est pas valide.");
+		// Test slug is unique, so name is unique
+		DLOG.log(Level.DEBUG, "Slug form / topo : " + this.slug + " / " + this.topo.getSlug());
+		if ( ! this.slug.contentEquals(this.topo.getSlug()) ) {
+			// Request user id from database with mail address as filter (one Integer result expected... Else rejecting)
+			this.slug = Normalizer.normalize(topo.getName(), Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
+			this.slug = this.slug.replaceAll("\\W", "_").replaceAll("_{1,}","_").toLowerCase();
+			Map<String,Object> parameters = new HashMap<>();
+			parameters.put("slug", this.slug);
+			parameters.put("type", "TOPO");
+			int siteId = 0;
+			try {
+				siteId = this.topoDao.getIdFromNamedQuery("Reference.getIdFromSlug", parameters);
+			} catch (Exception e) {/* if it's a dao error it was tracked anyway */}
+			DLOG.log(Level.DEBUG , "Id trouvé : " + siteId);
+			if ( siteId > 0 )
+				throw new FormException("Un site existe déjà avec un nom similaire.");
+		}
 	}
 
 	/**
@@ -189,11 +290,20 @@ public class CreateTopoForm extends Form {
 		if ( this.selectedIds == null ) return;
 		String key = "";
 		try {
+			if ( topo.getSites() != null ) {
+				// when it's a new topo , getSites will return null, so we check it before
+				for ( Site site : topo.getSites() ) {
+					// If sites list contains a site which is now not selected we remove it
+					if ( ! this.selectedIds.containsKey( String.valueOf(site.getId())) ) topo.removeSite(site);
+				}
+			}
+			// Adding site in formular to the list attached to the topo
 			for (Entry<String,String> entry : this.selectedIds.entrySet()) {
 				key = entry.getKey();
 				DLOG.log(Level.DEBUG, "Site lié au topo - id :" + entry.getKey() + " / " + entry.getValue());
 				Site linkedSite = siteDao.get(Integer.valueOf(entry.getKey()));
-				topo.addSite(linkedSite);
+				// if linkedSite (from formular) is not attached to topo, we add it
+				if (! topo.getSites().contains(linkedSite) ) topo.addSite(linkedSite);
 			}			
 		} catch (Exception e) {
 			DLOG.log(Level.DEBUG, "AddingSite error (id :" + key + ") - " + e.getMessage() );

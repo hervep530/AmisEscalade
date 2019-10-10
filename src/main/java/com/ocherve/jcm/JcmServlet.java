@@ -64,6 +64,10 @@ abstract class JcmServlet extends HttpServlet {
 		// Getting deferred notification from the next http request (was stored in session)
 		request.setAttribute("notifications", this.getSessionNotifications());
 		request.setAttribute("uri", request.getRequestURI());
+		String backUrl = request.getHeader("referer");
+		if (backUrl == null) backUrl = request.getContextPath();
+		request.setAttribute("backUrl", backUrl);
+
 		
 		// we set service parameters from request and execute "GET" action. Result is return with delivry.
 		try {		
@@ -108,6 +112,9 @@ abstract class JcmServlet extends HttpServlet {
 		// Getting deferred notification from the next http request (was stored in session)
 		request.setAttribute("notifications", this.getSessionNotifications());
 		request.setAttribute("uri", request.getRequestURI());
+		String backUrl = request.getHeader("referer");
+		if (backUrl == null) backUrl = request.getContextPath();
+		request.setAttribute("backUrl", backUrl);
 		
 		// we set service parameters from request and execute "POST" action. Result is return with delivry.
 		try {		

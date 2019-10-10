@@ -38,24 +38,31 @@
 				<ul class="pagination justify-content-end">
 <c:if test="${pageId > 1}">
 					<li class="page-item">
-						<a class="page-link" href="${pageContext.request.contextPath}/site/l/${pageId - 1}">Previous</a>
+						<a class="page-link" href="${pageContext.request.contextPath}/${service}/l/${pageId - 1}">Previous</a>
 					</li>
 </c:if>
 <c:forEach begin="0" end="8" varStatus="loop">
 	<c:set var="linkId" value="${pageId - 3 + loop.index }"></c:set>
 	<c:if test="${linkId > 0 && linkId <= pageCount}">
 					<li class="page-item">
-						<a href="${pageContext.request.contextPath}/site/l/${linkId}"
+						<a href="${pageContext.request.contextPath}/${service}/l/${linkId}"
 							class="page-link">${linkId}</a>
 					</li>
 	</c:if>
 </c:forEach>
 <c:if test="${pageCount > pageId}">
 					<li class="page-item">
-						<a class="page-link" href="${pageContext.request.contextPath}/site/l/${pageId + 1}">Next</a>
+						<a class="page-link" href="${pageContext.request.contextPath}/${service}/l/${pageId + 1}">Next</a>
 					</li>
 </c:if>
 				</ul>
 			</nav>		
 </c:if>
 		</footer>
+<c:if test="${roleId > 10}">
+<p>Service : ${service}</p>
+<p>Action : ${action}</p>
+<p>footerPagination : ${footerPagination}</p>
+<p>pageId : ${pageId}</p>
+<p>pageCount : ${pageCount}</p>
+</c:if>		

@@ -44,6 +44,7 @@ public abstract class ServiceImpl implements Service {
     protected String serviceName;
     protected String servicePattern;
 	protected String defaultUrl;
+	protected String backUrl;
 	private Map<String,String> actions;
 	// Not persistent : set to null for garbage collector after init
     protected Map<String, String> errors;
@@ -100,6 +101,7 @@ public abstract class ServiceImpl implements Service {
 		String context = request.getContextPath();
 		parameters.setContextPath(context);
 		String referer = "";
+		if ( request.getParameter("backUrl") != null ) this.backUrl = request.getParameter("backUrl");
 		if ( request.getHeader("referer") != null ) referer = request.getHeader("referer");
 		parameters.setReferer(referer);
 		// Storing sessionUser in parameters

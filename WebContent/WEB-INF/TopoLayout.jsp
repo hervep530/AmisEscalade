@@ -24,17 +24,15 @@
 <c:choose>
     <c:when test="${action == 'l'}"><%@ include file="jspTopo/View.jsp" %></c:when>
     <c:when test="${action == 'r'}"><%@ include file="jspTopo/Content.jsp" %></c:when>
-    <c:when test="${action == 'c'}"><%@ include file="jspTopo/CreateForm.jsp" %></c:when>
-    <c:when test="${action == 'u'}"><%@ include file="jspTopo/UpdateForm.jsp" %></c:when>
+    <c:when test="${action == 'c'}"><%@ include file="jspTopo/CreateUpdateForm.jsp" %></c:when>
+    <c:when test="${action == 'u'}"><%@ include file="jspTopo/CreateUpdateForm.jsp" %></c:when>
     <c:otherwise><%@ include file="jspTopo/Content.jsp" %></c:otherwise>
 </c:choose>
 <c:if test="${action == 'r'}">
 <%@ include file="jspSite/SummarizedList.jsp" %>
 </c:if>
-
-
-<%@ include file="jspDebug/DebugDelivry.jsp" %>
 <%@ include file="jspSite/Footer.jsp" %>
+<%@ include file="jspDebug/DebugDelivry.jsp" %>
 				</section>
 				<section id="proposal" class="col-xl-3">
 <%@ include file="jspCommon/SocialLinks.jsp" %>

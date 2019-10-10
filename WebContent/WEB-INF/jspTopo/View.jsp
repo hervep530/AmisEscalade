@@ -14,7 +14,7 @@
 								Du plus récent au plus ancien
 							</h6>							
 							<div class="col-md-3">
-<%@ include file="UserNavView.jsp" %>
+<%@ include file="NavView.jsp" %>
 							</div>
 						</div>
 				      	
@@ -33,8 +33,7 @@
 					            		
 					            	</span>
 					            	<div class="col-sm-3">
-<%@ include file="AuthorNavView.jsp" %>
-<%@ include file="MemberNavView.jsp" %>
+<%@ include file="NavViewEntity.jsp" %>
 					            	</div>
 				        		</div>
 				            	<p><c:out value="${topo.summary}"></c:out></p>

@@ -1,16 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<c:set var="postAction" scope="page" value="${contextPath}/topo/c/0/${token}"></c:set>
-<c:set var="nameError" value="${delivry.attributes.createTopoForm.errors.name}" scope="page"></c:set>
-<c:set var="titleError" value="${delivry.attributes.createTopoForm.errors.title}" scope="page"></c:set>
-<c:set var="writerError" value="${delivry.attributes.createTopoForm.errors.writer}" scope="page"></c:set>
-<c:set var="writedAtError" value="${delivry.attributes.createTopoForm.errors.writedAt}" scope="page"></c:set>
-<c:set var="sitesError" value="${delivry.attributes.createTopoForm.errors.sites}" scope="page"></c:set>
-<c:set var="fileError" value="${delivry.attributes.createTopoForm.errors.file}" scope="page"></c:set>
-<c:set var="mediaError" value="${delivry.attributes.createTopoForm.errors.media}" scope="page"></c:set>
-<c:set var="summaryError" value="${delivry.attributes.createTopoForm.errors.summary}" scope="page"></c:set>
-<c:set var="contentError" value="${delivry.attributes.createTopoForm.errors.content}" scope="page"></c:set>
-<c:set var="publishedError" value="${delivry.attributes.createTopoForm.errors.published}" scope="page"></c:set>
+<c:set var="postAction" scope="page" 
+	value="${contextPath}/topo/${action}/${ action == 'u' ? id : '0'}/${token}">
+</c:set>
+<c:set var="cancelAction" scope="page" 
+	value="${contextPath}/topo/${action == 'c' ? 'l' : 'r'}/${ action == 'c' ? '1' : id}${action == 'c' ? '' : '/'}${action == 'c' ? '' : delivry.attributes.createTopoForm.topo.slug}">
+</c:set>
+<c:set var="formTitle" scope="page"
+	value="${ action == 'c' ? 'Nouveau Topo' : 'Modifier le Topo'}"></c:set>
+<c:set var="buttonLabel" scope="page"
+	value="${ action == 'c' ? 'Créer' : 'Mettre à jour'}"></c:set>
+<c:set var="fieldAccess" scope="page" value="${ action == 'u' ? ' readonly' : ''}"></c:set>
+
+
+<c:set var="nameError" value="${delivry.attributes.topoForm.errors.name}" scope="page"></c:set>
+<c:set var="titleError" value="${delivry.attributes.topoForm.errors.title}" scope="page"></c:set>
+<c:set var="writerError" value="${delivry.attributes.topoForm.errors.writer}" scope="page"></c:set>
+<c:set var="writedAtError" value="${delivry.attributes.topoForm.errors.writedAt}" scope="page"></c:set>
+<c:set var="sitesError" value="${delivry.attributes.topoForm.errors.sites}" scope="page"></c:set>
+<c:set var="fileError" value="${delivry.attributes.topoForm.errors.file}" scope="page"></c:set>
+<c:set var="mediaError" value="${delivry.attributes.topoForm.errors.media}" scope="page"></c:set>
+<c:set var="summaryError" value="${delivry.attributes.topoForm.errors.summary}" scope="page"></c:set>
+<c:set var="contentError" value="${delivry.attributes.topoForm.errors.content}" scope="page"></c:set>
+<c:set var="publishedError" value="${delivry.attributes.topoForm.errors.published}" scope="page"></c:set>
 <c:set var="topoInformationError" scope="page"
 	value="${ empty nameError && empty titleError && empty writerError && empty writedAtError && empty sitesError ? '' : 'tab-error'}">
 </c:set>
@@ -22,10 +34,13 @@
 						<form id="createTopoForm" name="createTopoForm" class="text-center border border-light p-3" 
 							action="${postAction}" method="POST" enctype="multipart/form-data">
 							<!-- Formular header with title and submitt button -->
+							<input type="hidden" name="topoId" value="${delivry.attributes.topoForm.topo.id}"/>
 							<div class="form-row mb-3">
-								<div class="col-md-9"><p class="h4">Nouveau Topo</p></div>
+								<div class="col-md-9"><p class="h4">${formTitle}</p></div>
 								<div class="col-md-3">
-							  		<button type="submit" class="btn btn-primary">Créer</button>
+							  		<button type="submit" class="btn btn-primary">${buttonLabel}</button>
+							  		<button type="button" class="btn btn-danger"
+							  			onclick="location='${cancelAction}'">Annuler</button>
 								</div>
 							</div>
 					    	<!-- Tab headers -->
@@ -60,7 +75,7 @@
 												class="form-control${empty titleError?'':' is-invalid'}" 
 												aria-label="Title" aria-describedby="labelTitle"
 												placeholder="Saisir le titre du topo"
-												value="<c:out value='${delivry.attributes.createTopoForm.topo.title}'></c:out>">
+												value="<c:out value='${delivry.attributes.topoForm.topo.title}'></c:out>">
 										<div class="invalid-feedback${empty titleError?' invisible':''}"
 											id="titleError">${titleError}</div>
 							    	</div>
@@ -75,7 +90,7 @@
 												class="form-control${empty writerError?'':' is-invalid'}" 
 												aria-label="Writer" aria-describedby="labelWriter"
 												placeholder="Saisir le nom de l'écrivain..."
-												value="<c:out value='${delivry.attributes.createTopoForm.topo.writer}'></c:out>">
+												value="<c:out value='${delivry.attributes.topoForm.topo.writer}'></c:out>">
 										<div class="invalid-feedback${empty writerError?' invisible':''}"
 											id="writerError">${writerError}</div>
 							    	</div>
@@ -87,7 +102,7 @@
 												class="form-control${empty writedAtError?'':' is-invalid'}" 
 												aria-label="WritedAt" aria-describedby="labelWritedAt"
 												placeholder="jj/mm/aaaa"
-												value="<c:out value='${delivry.attributes.createTopoForm.topo.writedAt}'></c:out>">
+												value="<c:out value='${delivry.attributes.topoForm.topo.writedAt}'></c:out>">
 										<div class="invalid-feedback${empty writedAtError?' invisible':''}"
 											id="writedAtError">${writedAtError}</div>
 							    	</div>
@@ -104,7 +119,7 @@
 												class="form-control${empty sitesError?'':' is-invalid'}" 
 												aria-label="Sites" aria-describedby="labelSites">
 <c:if test="${ fn:length(delivry.attributes.sites) gt 0 }">
-<c:set var="selectedIds" value="${delivry.attributes.createTopoForm.selectedIds}" scope="page"></c:set>
+<c:set var="selectedIds" value="${delivry.attributes.topoForm.selectedIds}" scope="page"></c:set>
 	<c:forEach items="${ delivry.attributes.sites }" var="site">
 		<c:set var="idAsString">${site.id}</c:set>
 											<option value="${ site.id }"${selectedIds[idAsString]}>
@@ -136,7 +151,7 @@
 														<label class="basic-top-label" for="summary">Résumé</label>
 														<textarea id="summary" name="summary" rows="1"
 															 class="form-control${empty summaryError?'':' is-invalid'}"
-															 ><c:out value='${delivry.attributes.createTopoForm.topo.summary}'></c:out></textarea>
+															 ><c:out value='${delivry.attributes.topoForm.topo.summary}'></c:out></textarea>
 														<div class="invalid-feedback${empty summaryError?' invisible':''}"
 															id="summaryError">${summaryError}</div>
 													</div>
@@ -144,7 +159,7 @@
 														<label class="basic-top-label" for="content">Contenu</label>
 														<textarea id="content" name="content" rows="6"
 															 class="form-control${empty contentError?'':' is-invalid'}"
-															 ><c:out value='${delivry.attributes.createTopoForm.topo.content}'></c:out></textarea>
+															 ><c:out value='${delivry.attributes.topoForm.topo.content}'></c:out></textarea>
 														<div class="invalid-feedback${empty contentError?' invisible':''}"
 															id="contentError">${contentError}</div>
 													</div>

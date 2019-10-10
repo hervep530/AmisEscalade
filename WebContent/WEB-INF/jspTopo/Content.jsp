@@ -10,8 +10,7 @@
 					<div class="col-md-3">
 						<nav id="NavContent" class="navbar navbar-expand-lg">
 							<ul class="navbar-nav">
-<%@ include file="AuthorNavContent.jsp" %>
-<%@ include file="MemberNavContent.jsp" %>
+<%@ include file="NavContent.jsp" %>
 							</ul>
 						</nav>
 					</div>
