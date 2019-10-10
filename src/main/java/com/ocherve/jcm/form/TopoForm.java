@@ -22,6 +22,7 @@ import com.ocherve.jcm.dao.contract.TopoDao;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.model.Topo;
 import com.ocherve.jcm.model.User;
+import com.ocherve.jcm.utils.JcmException;
 
 /**
  * @author herve_dev
@@ -298,35 +299,39 @@ public class TopoForm extends Form {
 		if ( this.selectedIds == null ) return;
 		String key = "";
 		try {
-			if ( topo.getSites() != null ) {
-				// when it's a new topo , getSites will return null, so we check it before
-				for ( Site site : topo.getSites() ) {
-					// If sites list contains a site which is now not selected we remove it
-					boolean removing = ( ! this.selectedIds.containsKey( String.valueOf(site.getId())) );
-					if ( removing ) topo.removeSite(site);
-					DLOG.log(Level.DEBUG, "Site lié au topo - id :" + site.getId() + " ->  " + String.valueOf(removing));					
-				}
-			}
 			// Adding site in formular to the list attached to the topo
 			List<Integer> topoSitesIds = new ArrayList<Integer>();
-			for ( Site siteEntry : this.topo.getSites() ) {
-				topoSitesIds.add(siteEntry.getId());
+			if ( topo.getSites() != null ) {
+				// when it's a new topo , getSites will return null, so we check it before
+				for ( Site site : this.topo.getSites() ) {
+					// If sites list contains a site which is now not selected we remove it
+					boolean removing = ( ! this.selectedIds.containsKey( String.valueOf(site.getId())) );
+					if ( removing )
+						topo.removeSite(site);
+					else 
+						topoSitesIds.add(site.getId());
+					DLOG.log(Level.DEBUG, "Removing - Site lié au topo ( id : " + site.getId() + " ->  " + String.valueOf(removing) + ")");					
+				}
 			}
 			for (Entry<String,String> entry : this.selectedIds.entrySet()) {
+				// Defaut adding to false
+				boolean adding = false;
+				// get SelectedIds key
 				key = entry.getKey();
-				boolean adding = ( ! topoSitesIds.contains(Integer.valueOf(entry.getKey())) );
-				// if linkedSite (from formular) is not attached to topo, we add it
+				// If integer value of key is -1 site is not yet linked, so adding = true
+				if ( key.matches("^[0-9]{1,}$") )
+					adding = ( topoSitesIds.indexOf(Integer.valueOf(entry.getKey())) == -1 );
+				// if adding is true , adding site to list in topo
 				if ( adding) {
 					Site linkedSite = siteDao.get(Integer.valueOf(entry.getKey()));
 					topo.addSite(linkedSite);
 				}
-				DLOG.log(Level.DEBUG, "Site lié au topo - id :" + entry.getKey() + " ->  " + String.valueOf(adding));
 			}			
 		} catch (Exception e) {
-			DLOG.log(Level.DEBUG, "AddingSite error (id :" + key + ") - " + e.getMessage() );
+			DLOG.log(Level.DEBUG, "AddingSite error (id :" + key + ")");
 		}
 	}
-
+	
 	/**
 	 * Validate Image file
 	 * 
