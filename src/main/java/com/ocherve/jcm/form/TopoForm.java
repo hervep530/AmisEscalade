@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -31,6 +33,7 @@ public class TopoForm extends Form {
 	private SiteDao siteDao;
 	private Topo topo;
 	private String slug;
+	private boolean updatingName = false;
 	private Part uploadFile;
 	private Map<String,String> selectedIds;
 
@@ -74,6 +77,7 @@ public class TopoForm extends Form {
 			// Getting field necessary to build site object
 			this.topo.setTitle(getInputTextValue("title"));
 			if ( topoId > 0 ) this.slug = this.topo.getSlug();
+			if ( ! topo.getName().contentEquals(topo.getTitle()) ) this.updatingName = true;
 			this.topo.setName(getInputTextValue("title"));
 			this.topo.setWriter(getInputTextValue("writer"));
 			this.topo.setWritedAt(getInputTextValue("writedAt"));
@@ -163,7 +167,6 @@ public class TopoForm extends Form {
 	 * @return site instanciate from formular
 	 */
 	public Topo updateTopo() {
-		Map<String,Object> fields = new HashMap<>();
 		//try { validateName(); } catch (FormException e ) { this.errors.put("name",e.getMessage()); }
 		try { validateTitle() ; } catch (FormException e) { this.errors.put("title", e.getMessage()); }
 		try { validateWriter() ; } catch (FormException e) { this.errors.put("writer", e.getMessage()); }
@@ -172,18 +175,11 @@ public class TopoForm extends Form {
 		try { validateSummary() ; } catch (FormException e) { this.errors.put("summary", e.getMessage()); }
 		try { validateContent() ; } catch (FormException e) { this.errors.put("content", e.getMessage()); }
 		if ( ! this.errors.isEmpty() ) return topo;
-		//try { validateSites() ; } catch (FormException e) { this.errors.put("sites", e.getMessage()); }
+		try { validateSites() ; } catch (FormException e) { this.errors.put("sites", e.getMessage()); }
 		if ( ! this.errors.isEmpty() ) return topo;
 		Integer controlId = 0;
 		try { 
-			
-			fields.put("title", this.topo.getTitle());
-			fields.put("name", this.topo.getName());
-			fields.put("writer", this.topo.getWriter());
-			fields.put("writedAt", this.topo.getWritedAt());
-			fields.put("summary", this.topo.getSummary());
-			fields.put("content", this.topo.getContent());
-			controlId = this.topoDao.update(this.topo.getId(), fields).getId();
+			controlId = this.topoDao.update(this.topo).getId();
 			//if ( controlId > 0 ) this.topoDao.refresh(Topo.class, topoId);
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "SiteDao : creating site failed");
@@ -294,16 +290,25 @@ public class TopoForm extends Form {
 				// when it's a new topo , getSites will return null, so we check it before
 				for ( Site site : topo.getSites() ) {
 					// If sites list contains a site which is now not selected we remove it
-					if ( ! this.selectedIds.containsKey( String.valueOf(site.getId())) ) topo.removeSite(site);
+					boolean removing = ( ! this.selectedIds.containsKey( String.valueOf(site.getId())) );
+					if ( removing ) topo.removeSite(site);
+					DLOG.log(Level.DEBUG, "Site lié au topo - id :" + site.getId() + " ->  " + String.valueOf(removing));					
 				}
 			}
 			// Adding site in formular to the list attached to the topo
+			List<Integer> topoSitesIds = new ArrayList<Integer>();
+			for ( Site siteEntry : this.topo.getSites() ) {
+				topoSitesIds.add(siteEntry.getId());
+			}
 			for (Entry<String,String> entry : this.selectedIds.entrySet()) {
 				key = entry.getKey();
-				DLOG.log(Level.DEBUG, "Site lié au topo - id :" + entry.getKey() + " / " + entry.getValue());
-				Site linkedSite = siteDao.get(Integer.valueOf(entry.getKey()));
+				boolean adding = ( ! topoSitesIds.contains(Integer.valueOf(entry.getKey())) );
 				// if linkedSite (from formular) is not attached to topo, we add it
-				if (! topo.getSites().contains(linkedSite) ) topo.addSite(linkedSite);
+				if ( adding) {
+					Site linkedSite = siteDao.get(Integer.valueOf(entry.getKey()));
+					topo.addSite(linkedSite);
+				}
+				DLOG.log(Level.DEBUG, "Site lié au topo - id :" + entry.getKey() + " ->  " + String.valueOf(adding));
 			}			
 		} catch (Exception e) {
 			DLOG.log(Level.DEBUG, "AddingSite error (id :" + key + ") - " + e.getMessage() );
