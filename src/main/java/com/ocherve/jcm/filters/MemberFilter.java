@@ -20,7 +20,10 @@ import org.apache.logging.log4j.Level;
 	"/site/utf/*",
 	"/site/d/*",
 	"/comment/d/*",
-	"/topo/c/*"
+	"/topo/c/*",
+	"/topo/uaf/*",
+	"/topo/uat/*",
+	"/topo/d/*"
 })
 public class MemberFilter extends JcmFilter {
 
@@ -97,7 +100,7 @@ public class MemberFilter extends JcmFilter {
 		} else {
 			String getActions = "(comment/d";
 			getActions += "|site/d|site/utt|site/utf";
-			getActions += "|topo/d|topo/c)";
+			getActions += "|topo/d|topo/c|topo/uat|topo/uaf)";
 			return uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$");
 		}	
 	}

@@ -18,12 +18,7 @@ $('#confirmModal').on('show.bs.modal', function (event) {
 	  console.log('url de l action : ' + newActionLocation)
 	  console.log('url sur laquelle pointe le bouton : ' + actionLocation )
 	  modal.find('.modal-title').text(title)
-	  modal.find('.modal-body p').text(
-			  'data-title : ' + title + '<br>' +
-			  'data-body : ' + body + '<br>' +
-			  'data-location : ' + location + '<br>' +
-			  'data-actionLabel : ' + action + '<br>'
-			  ) 
+	  modal.find('.modal-body p').text(body) 
 	  document.getElementById('modalAction').innerHTML = action
 	  document.getElementById('modalAction').onclick = function() {
 		  window.location = newActionLocation

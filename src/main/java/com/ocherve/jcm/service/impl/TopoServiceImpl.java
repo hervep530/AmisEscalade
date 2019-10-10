@@ -188,8 +188,27 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 
 	@Override
 	public Delivry delete(Parameters parameters) {
-		// TODO Auto-generated method stub
 		this.delivry = new Delivry();
+		Boolean deleted = false;
+		String topoName = "";
+		// default failure notification
+		Notification notification = new Notification(NotificationType.ERROR, 
+				"Une erreur interne s'est produite. Le topo n'a pas pu être supprimé.");
+		// Trying to delete
+		try {
+			Integer topoId = 0;
+			// Get topo and topo id
+			topoId = Integer.valueOf(parameters.getParsedUrl().getId());
+			topoName = topoDao.get(topoId).getName();
+			// delete comment and refresh lazy parent (site)... more than lazy...
+			deleted = topoDao.delete(topoId);
+			// topoDao.refresh(Site.class, siteId);
+		} catch (Exception ignore) {/* Already traced in Dao */}
+		// If deleting successfull, notification is modified
+		if ( deleted ) notification = new Notification(NotificationType.SUCCESS, "Le topo " + topoName + " est supprimé.");
+		// Append deferred notification, redirection and mandatory attributes from parameters to delivry
+		this.delivry.appendSessionNotification("Suppression d'un Topo", notification);
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/topo/l/1");
 		this.appendMandatoryAttributesToDelivry(parameters);
 		return this.delivry;
 	}

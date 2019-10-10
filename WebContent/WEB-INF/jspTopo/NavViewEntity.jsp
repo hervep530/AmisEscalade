@@ -15,7 +15,11 @@
 							  </button>
 </c:if>
 <c:if test="${ roleId > 2 }">
-							  <button type="button" class="btn btn-default">
+							  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#confirmModal" 
+							  			data-location="${contextPath}/topo/d/${topo.id}/${token}"
+							  			data-title="Confirmer la suppression du topo"
+							  			data-action="Supprimer"
+							  			data-body="Souhaitez-vous supprimer le topo ${topo.name}">
 									<img alt="Icone Supprimer" src="${contextPath}/images/remove.png" 
 										title="Supprimer le topo sélectionné" width="20" height="20">
 							  </button>
