@@ -12,7 +12,7 @@
 		<div id="container">
 			<div class="row">
 				<section id="main" class="col-xl-9">
-<%@ include file="jspTopo/ModalExample.jsp" %>
+<%@ include file="jspCommon/ModalBox.jsp" %>
 <%@ include file="jspCommon/Header.jsp" %>
 <%@ include file="jspCommon/NavBar.jsp" %>
 <c:if test="${ not empty delivry.notifications }">

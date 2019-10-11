@@ -227,8 +227,29 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	
 	@Override
 	public Delivry delete(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		this.delivry = new Delivry();
+		Boolean deleted = false;
+		String siteName = "";
+		// default failure notification
+		Notification notification = new Notification(NotificationType.ERROR, 
+				"Une erreur interne s'est produite. Le site n'a pas pu être supprimé.");
+		// Trying to delete
+		try {
+			// Get site and site id
+			Integer siteId = 0;
+			siteId = Integer.valueOf(parameters.getParsedUrl().getId());
+			siteName = siteDao.get(siteId).getName();
+			// delete comment and refresh lazy parent (site)... more than lazy...
+			deleted = siteDao.delete(siteId);
+			// siteDao.refresh(Site.class, siteId);
+		} catch (Exception ignore) {/* Already traced in Dao */}
+		// If deleting successfull, notification is modified
+		if ( deleted ) notification = new Notification(NotificationType.SUCCESS, "Le site " + siteName + " est supprimé.");
+		// Append deferred notification, redirection and mandatory attributes from parameters to delivry
+		this.delivry.appendSessionNotification("Suppression d'un Site", notification);
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/site/l/1");
+		this.appendMandatoryAttributesToDelivry(parameters);
+		return this.delivry;
 	}
 
 

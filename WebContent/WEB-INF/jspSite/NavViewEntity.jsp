@@ -21,7 +21,7 @@
 							  			data-action="Supprimer"
 							  			data-body="Souhaitez-vous supprimer le site ${site.name}">
 									<img alt="Icone Supprimer" src="${contextPath}/images/remove.png" 
-										title="Supprimer le topo sélectionné" width="20" height="20">
+										title="Supprimer le site sélectionné" width="20" height="20">
 							  </button>
 </c:if>
 <c:if test="${ roleId > 10 }">
