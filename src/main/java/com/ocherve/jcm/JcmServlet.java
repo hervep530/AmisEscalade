@@ -71,31 +71,31 @@ abstract class JcmServlet extends HttpServlet {
 		
 		// we set service parameters from request and execute "GET" action. Result is return with delivry.
 		try {		
-			parameters = service.setParameters(request);
-			delivry = this.doGetAction(parameters);
+			this.parameters = this.service.setParameters(request);
+			this.delivry = this.doGetAction(parameters);
 		} catch (ServiceException e) {
 			DLOG.log(Level.ERROR, "Aborting service - " + e.getMessage());
-			delivry = service.abort(parameters);
+			this.delivry = this.service.abort(parameters);
 		}
-		request.setAttribute("delivry", delivry);
+		request.setAttribute("delivry", this.delivry);
 
 		// Deferred notification (if exists) copied from delivry to session (heriting jcmServlet)
 		this.setSessionNotification();
 
 		// Forwarding to Session jsp or error
-		if ( ! delivry.getErrors().isEmpty() ) {
-			DLOG.log(Level.DEBUG, "Forward on errors : " + delivry.getErrors().keySet().toString());
+		if ( ! this.delivry.getErrors().isEmpty() ) {
+			DLOG.log(Level.DEBUG, "Forward on errors : " + this.delivry.getErrors().keySet().toString());
 			this.getServletContext().getRequestDispatcher(this.errorPage).forward(request, response);
 			return;
 		}
 
 		this.setSessionNotification();
-		if ( ! delivry.getAttributes().containsKey("redirect") ) {
+		if ( ! this.delivry.getAttributes().containsKey("redirect") ) {
 			DLOG.log(Level.DEBUG, "Forward to view : " + this.layout);
 			this.getServletContext().getRequestDispatcher(this.layout).forward(request, response);
 		} else {
-			DLOG.log(Level.DEBUG, "Redirection : " + delivry.getAttributes().get("redirect"));
-			DLOG.log(Level.DEBUG, "Redirection : " + delivry.getAttribute("redirect").toString());
+			DLOG.log(Level.DEBUG, "Redirection : " + this.delivry.getAttributes().get("redirect"));
+			DLOG.log(Level.DEBUG, "Redirection : " + this.delivry.getAttribute("redirect").toString());
 			response.sendRedirect((String) delivry.getAttributes().get("redirect"));
 		}
 
@@ -118,21 +118,21 @@ abstract class JcmServlet extends HttpServlet {
 		
 		// we set service parameters from request and execute "POST" action. Result is return with delivry.
 		try {		
-			parameters = service.setParameters(request);
-			delivry = this.doPostAction(parameters);
+			this.parameters = this.service.setParameters(request);
+			this.delivry = this.doPostAction(this.parameters);
 		} catch (ServiceException e) {
-			delivry = service.abort(parameters);
+			this.delivry = this.service.abort(this.parameters);
 		}
 
-		request.setAttribute("delivry", delivry);
+		request.setAttribute("delivry", this.delivry);
 
 		// Forwarding to Site jsp, redirect,  or forwarding error
-		if ( ! delivry.getErrors().isEmpty() ) {
+		if ( ! this.delivry.getErrors().isEmpty() ) {
 			this.getServletContext().getRequestDispatcher(this.errorPage).forward(request, response);
 		} else {
-			if (delivry.getAttributes().containsKey("redirect") ) {
+			if (this.delivry.getAttributes().containsKey("redirect") ) {
 				this.setSessionNotification();
-				response.sendRedirect((String) delivry.getAttributes().get("redirect")); 
+				response.sendRedirect((String) this.delivry.getAttributes().get("redirect")); 
 			} else {
 				this.getServletContext().getRequestDispatcher(this.layout).forward(request, response);
 			}
@@ -145,18 +145,18 @@ abstract class JcmServlet extends HttpServlet {
 	 * @param request
 	 */
 	protected void startSession(HttpServletRequest request) {
-		session = request.getSession();
-		if ( session.getAttribute("sessionUser") == null ) 
-			session.setAttribute("sessionUser", service.openAnonymousSession());
-		if ( session.getAttribute("notifications") == null ) {
+		this.session = request.getSession();
+		if ( this.session.getAttribute("sessionUser") == null ) 
+			this.session.setAttribute("sessionUser", this.service.openAnonymousSession());
+		if ( this.session.getAttribute("notifications") == null ) {
 			Map<String,Notification> notifications = new HashMap<>();
-			session.setAttribute("notifications", notifications);
+			this.session.setAttribute("notifications", notifications);
 		}
 		// Security from filter is passed, so for each request, we generate a new token
 		try {
-			session.setAttribute("token", DatatypeConverter.printHexBinary(RandomString.make(16).getBytes()));
+			this.session.setAttribute("token", DatatypeConverter.printHexBinary(RandomString.make(16).getBytes()));
 		} catch (Exception ignore) {}
-		session.setAttribute("redirectionCount", 0);
+		this.session.setAttribute("redirectionCount", 0);
 
     }
  
@@ -164,8 +164,8 @@ abstract class JcmServlet extends HttpServlet {
 	 * Reset session when user requests deconnection
 	 */
     protected void resetSession() {
-    	session.setAttribute("sessionUser", getAnonymous());
-    	session.removeAttribute("notifications");
+    	this.session.setAttribute("sessionUser", getAnonymous());
+    	this.session.removeAttribute("notifications");
     }
 
     /**
@@ -174,7 +174,7 @@ abstract class JcmServlet extends HttpServlet {
      * @return delivry which is result of actions from service
      */
     protected Delivry doGetAction(Parameters parameters) {
-    	return service.doPostAction(parameters);
+    	return this.service.doPostAction(parameters);
     }
 
     /**
@@ -184,7 +184,7 @@ abstract class JcmServlet extends HttpServlet {
      * @return delivry which is result of actions from service
      */
     protected Delivry doPostAction(Parameters parameters) {
-    	return service.doPostAction(parameters);
+    	return this.service.doPostAction(parameters);
     }
     
     /**
@@ -195,18 +195,18 @@ abstract class JcmServlet extends HttpServlet {
     @SuppressWarnings("unchecked")
 	protected Map<String,Notification> getSessionNotifications() {
     	// Probably never null because we excecute startSession before...
-    	if ( session == null ) return new HashMap<String,Notification>();
-    	if ( session.getAttribute("notifications") == null ) return new HashMap<String,Notification>();
+    	if ( this.session == null ) return new HashMap<String,Notification>();
+    	if ( this.session.getAttribute("notifications") == null ) return new HashMap<String,Notification>();
     	// Get notifications ... or not... if error
     	Map<String,Notification> notifications;
     	try {
-        	notifications = (Map<String,Notification>) session.getAttribute("notifications");
+        	notifications = (Map<String,Notification>) this.session.getAttribute("notifications");
     	} catch (Exception e ) {
     		notifications = new HashMap<String,Notification>();
     		DLOG.log(Level.ERROR, e.getMessage());
     	}
     	// Reset notifications session attribute
-    	session.setAttribute("notifications", new HashMap<String,Notification>());
+    	this.session.setAttribute("notifications", new HashMap<String,Notification>());
     	// ... and return notifications
     	return notifications;
     }
@@ -217,17 +217,17 @@ abstract class JcmServlet extends HttpServlet {
     @SuppressWarnings("unchecked")
 	protected void setSessionNotification() {
     	// Do nothing if delivry doesn't content notifications
-    	if ( ! delivry.getSession().containsKey("notifications") ) return;
+    	if ( ! this.delivry.getSession().containsKey("notifications") ) return;
     	// Get delivry notifications or set empty if errors
     	Map<String,Notification> notifications = new HashMap<>();
     	try {
-    		notifications = (Map<String,Notification>) delivry.getSession().get("notifications");
+    		notifications = (Map<String,Notification>) this.delivry.getSession().get("notifications");
     	} catch ( Exception e ) {
     		notifications = new HashMap<String,Notification>();
     		DLOG.log(Level.ERROR, e.getMessage());    		
     	}
     	// Set session attribute
-   		if ( ! notifications.isEmpty() ) session.setAttribute("notifications", notifications);
+   		if ( ! notifications.isEmpty() ) this.session.setAttribute("notifications", notifications);
     }
 
     /**
