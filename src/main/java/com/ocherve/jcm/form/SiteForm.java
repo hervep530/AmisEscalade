@@ -28,6 +28,7 @@ public class SiteForm extends Form {
 	private SiteDao siteDao;
 	private Site site;
 	private String slug;
+	private boolean updatingName = false;
 	private Part uploadFile;
 
 	
@@ -43,7 +44,7 @@ public class SiteForm extends Form {
 	 * 
 	 * @param request
 	 */
-	public SiteForm(HttpServletRequest request) {
+	public SiteForm(HttpServletRequest request, boolean updating) {
 		super();
 		this.request = request;
 		this.slug = "";
@@ -53,13 +54,28 @@ public class SiteForm extends Form {
 		nullCotation.setId(0);
 		nullCotation.setLabel("null");
 		
-		this.site = new Site();
 		
 		try {
 			// Hidden field createSiteControl tell us if it's possible to use getParameter with multipart or not
 			if ( this.request.getParameter("partMethod") == null ) partMethod = true;
-			// Setting author from session
-			this.site.setAuthor((User) request.getSession().getAttribute("sessionUser"));
+			if ( ! updating) {
+				this.site = new Site();
+				// Setting author from session
+				this.site.setAuthor((User) request.getSession().getAttribute("sessionUser"));
+				this.site.setPublished(true);
+				this.site.setFriendTag(false);
+				this.site.setType("SITE");
+				this.site.setTsCreated(Timestamp.from(Instant.now()));
+			} else {
+				Integer siteId = 0;
+				if ( getInputTextValue("siteId").matches("^[0-9]{1,}$") ) 
+					siteId = Integer.valueOf(getInputTextValue("siteId"));
+				// Before all when updating, we get site from id, set this.slug from topo, and trace name updating
+				this.site = siteDao.get(siteId);
+				this.slug = this.site.getSlug();
+				if ( ! getInputTextValue("name").contentEquals(this.site.getName()) ) 
+					this.updatingName = true;
+			}
 			// Getting field necessary to build site object
 			this.site.setName(getInputTextValue("name"));
 			this.site.setCountry(getInputTextValue("country"));
@@ -87,16 +103,34 @@ public class SiteForm extends Form {
 			this.site.setSummary(getInputTextValue("summary"));
 			this.site.setContent(getInputTextValue("content"));
 			// Giving default value for other site attributes
-			this.site.setPublished(true);
-			this.site.setFriendTag(false);
-			this.site.setType("SITE");
-			this.site.setTsCreated(Timestamp.from(Instant.now()));
 			this.site.setTsModified(Timestamp.from(Instant.now()));
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "Site can not be instanciated from Formular");
 			DLOG.log(Level.ERROR, e.getMessage());
 		}
 		this.request = null;
+	}
+
+	/**
+	 * Constructor using site id to instanciate class
+	 * 
+	 * @param siteId
+	 */
+	public SiteForm(Integer siteId) {
+		super();
+		if (siteId == null) {
+			DLOG.log(Level.ERROR, "Topo form can not be instanciated - siteId is null.");
+			return;
+		}
+		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
+		// Getting site from id, then setting site form
+		try {
+			this.site = siteDao.get(siteId);
+			this.slug = site.getSlug();
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, "Site form can not be instanciated - siteId : " + siteId);
+			DLOG.log(Level.ERROR, e.getMessage());
+		}
 	}
 	
 	/**
@@ -123,6 +157,42 @@ public class SiteForm extends Form {
 		try { 
 			siteId = this.siteDao.create(this.site).getId(); 
 			this.siteDao.refresh(Site.class, siteId);
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, "SiteDao : creating site failed");
+			this.errors.put("creationSite","La création du site a échoué.");
+		}
+		try {
+			if ( siteId < 1 ) removeFile();
+		} catch (FormException e) {
+			errors.put("file", e.getMessage());
+		}
+		return site;
+	}
+
+	/**
+	 * @return site instanciate from formular
+	 */
+	public Site updateSite() {
+		try { 
+			if ( this.updatingName ) validateName(); 
+		} catch (FormException e ) { this.errors.put("name",e.getMessage()); }
+		try { validateCountry() ; } catch (FormException e) { this.errors.put("country", e.getMessage()); }
+		try { validateDepartment() ; } catch (FormException e) { this.errors.put("department", e.getMessage()); }
+		try { validatePathsNumber() ; } catch (FormException e) { this.errors.put("pathsNumber", e.getMessage()); }
+		try { validateOrientation() ; } catch (FormException e) { this.errors.put("orientation", e.getMessage()); }
+		try { validateType() ; } catch (FormException e) { this.errors.put("type", e.getMessage()); }
+		try { validateMinHeight() ; } catch (FormException e) { this.errors.put("minHeight", e.getMessage()); }
+		try { validateMaxHeight() ; } catch (FormException e) { this.errors.put("maxHeight", e.getMessage()); }
+		try { validateCotationMin() ; } catch (FormException e) { this.errors.put("cotationMin", e.getMessage()); }
+		try { validateCotationMax() ; } catch (FormException e) { this.errors.put("cotationMax", e.getMessage()); }
+		// try { validateFile() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
+		try { validateSummary() ; } catch (FormException e) { this.errors.put("summary", e.getMessage()); }
+		try { validateContent() ; } catch (FormException e) { this.errors.put("content", e.getMessage()); }
+		if ( ! this.errors.isEmpty() ) return this.site;
+		Integer siteId = 0;
+		try { 
+			siteId = this.siteDao.update(this.site).getId(); 
+			// this.siteDao.refresh(Site.class, siteId);
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "SiteDao : creating site failed");
 			this.errors.put("creationSite","La création du site a échoué.");

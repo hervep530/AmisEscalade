@@ -3,6 +3,7 @@ package com.ocherve.jcm.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,7 +15,6 @@ import com.ocherve.jcm.form.CommentForm;
 import com.ocherve.jcm.form.SiteForm;
 import com.ocherve.jcm.form.SearchForm;
 import com.ocherve.jcm.model.Comment;
-import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Notification;
@@ -67,10 +67,10 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 					parameters.setForm(new SearchForm(request));
 					break;
 				case  "c" :
-					parameters.setForm(new SiteForm(request));
+					parameters.setForm(new SiteForm(request, false));
 					break;
 				case  "u" :
-					parameters.setForm(new SiteForm(request));
+					parameters.setForm(new SiteForm(request, true));
 					break;
 				case  "uac" :
 					parameters.setForm(new CommentForm(request));
@@ -156,12 +156,16 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	@Override
 	public Delivry getSiteForm(Parameters parameters) {
 		this.delivry = new Delivry();
-		List<Cotation> cotations = null;
 		
-		// Getting cotation (needed by form), and append it to delivry
-		cotations = siteDao.getCotations();
 		try {
-			this.delivry.appendattribute("cotations", cotations);
+			// When preparing SiteForm for update, get SiteForm instanciate from siteId
+			if ( parameters.getParsedUrl().getAction().contentEquals("u") ) {
+				Integer siteId = Integer.valueOf(parameters.getParsedUrl().getId());
+				SiteForm siteForm = new SiteForm(siteId);
+				this.delivry.appendattribute("siteForm", siteForm);
+			}
+			// Getting cotation (needed by form), and append it to delivry
+			this.delivry.appendattribute("cotations", siteDao.getCotations());
 		} catch (Exception e ) {
 			this.delivry.appendError("Site search", "Error on displaying search site formular.");
 			DLOG.log(Level.ERROR, "Error on displaying search site formular Cotation references can not be reached.");
@@ -261,8 +265,35 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 
 	@Override
 	public Delivry postUpdateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		this.delivry = new Delivry();
+		// Getting form and apply createTopo method
+		SiteForm siteForm = (SiteForm) parameters.getForm();
+		@SuppressWarnings("unused")
+		Site updatedSite = siteForm.updateSite();
+		// if errors we forward form (containing errors) and sites list in delivry to display form again
+		if ( ! siteForm.getErrors().isEmpty() ) {
+			for ( Entry<String,String> error : siteForm.getErrors().entrySet() ) {
+				DLOG.log(Level.ERROR, error.getKey() + " : " + error.getValue());
+			}
+			try {
+				this.delivry.appendattribute("siteForm", siteForm);
+				this.delivry.appendattribute("cotations", siteDao.getCotations());
+			} catch (Exception ignore) {}
+			this.appendMandatoryAttributesToDelivry(parameters);
+			return this.delivry;
+		} 
+		// Else...
+		String notificationLabel = "Mise à jour du site " + updatedSite.getName();
+		String message = "Le site vient d'être modifié avec succès.";
+		// Append notifications to delivry
+		Notification notification = new Notification(NotificationType.SUCCESS, message);
+		Map<String,Notification> notifications = new HashMap<>();
+		notifications.put(notificationLabel, notification);
+		this.delivry.appendSession("notifications", notifications);
+		// Append redirection and mandatory attributes from parameters to delivry
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/site/l/1");
+		this.appendMandatoryAttributesToDelivry(parameters);
+		return this.delivry;
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<c:set var="postAction" scope="page" value="${contextPath}/site/c/0/${token}"></c:set>
+<c:set var="postAction" scope="page" value="${contextPath}/site/${action}/${id ? id : 0}/${token}"></c:set>
+<c:set var="labelAction" scope="page" value="${action == 'u' ? 'Mettre à jour' : 'Créer'}"></c:set>
 <c:set var="nameError" value="${delivry.attributes.siteForm.errors.name}" scope="page"></c:set>
 <c:set var="countryError" value="${delivry.attributes.siteForm.errors.country}" scope="page"></c:set>
 <c:set var="departmentError" value="${delivry.attributes.siteForm.errors.department}" scope="page"></c:set>
@@ -28,10 +29,11 @@
     
 					<form id="siteForm" class="text-center border border-light p-3" 
 							action="${postAction}" method="POST" enctype="multipart/form-data">
+							<input type="hidden" name="siteId" value="${delivry.attributes.siteForm.site.id}"/>
 							<div class="form-row mb-3">
 								<div class="col-md-9"><p class="h4">Nouveau site d'escalade</p></div>
 								<div class="col-md-3">
-							  		<button type="submit" class="btn btn-primary">Créer</button>
+							  		<button type="submit" class="btn btn-primary">${labelAction}</button>
 								</div>
 								
 							</div>
