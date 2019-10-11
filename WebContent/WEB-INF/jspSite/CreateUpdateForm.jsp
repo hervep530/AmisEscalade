@@ -1,21 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <c:set var="postAction" scope="page" value="${contextPath}/site/c/0/${token}"></c:set>
-<c:set var="nameError" value="${delivry.attributes.createSiteForm.errors.name}" scope="page"></c:set>
-<c:set var="countryError" value="${delivry.attributes.createSiteForm.errors.country}" scope="page"></c:set>
-<c:set var="departmentError" value="${delivry.attributes.createSiteForm.errors.department}" scope="page"></c:set>
-<c:set var="pathsNumberError" value="${delivry.attributes.createSiteForm.errors.pathsNumber}" scope="page"></c:set>
-<c:set var="orientationError" value="${delivry.attributes.createSiteForm.errors.orientation}" scope="page"></c:set>
-<c:set var="typeError" value="${delivry.attributes.createSiteForm.errors.type}" scope="page"></c:set>
-<c:set var="minHeightError" value="${delivry.attributes.createSiteForm.errors.minHeight}" scope="page"></c:set>
-<c:set var="maxHeightError" value="${delivry.attributes.createSiteForm.errors.maxHeight}" scope="page"></c:set>
-<c:set var="cotationMinError" value="${delivry.attributes.createSiteForm.errors.cotationMin}" scope="page"></c:set>
-<c:set var="cotationMaxError" value="${delivry.attributes.createSiteForm.errors.cotationMax}" scope="page"></c:set>
-<c:set var="fileError" value="${delivry.attributes.createSiteForm.errors.file}" scope="page"></c:set>
-<c:set var="summaryError" value="${delivry.attributes.createSiteForm.errors.summary}" scope="page"></c:set>
-<c:set var="mediaError" value="${delivry.attributes.createSiteForm.errors.media}" scope="page"></c:set>
-<c:set var="contentError" value="${delivry.attributes.createSiteForm.errors.content}" scope="page"></c:set>
-<c:set var="publishedError" value="${delivry.attributes.createSiteForm.errors.published}" scope="page"></c:set>
+<c:set var="nameError" value="${delivry.attributes.siteForm.errors.name}" scope="page"></c:set>
+<c:set var="countryError" value="${delivry.attributes.siteForm.errors.country}" scope="page"></c:set>
+<c:set var="departmentError" value="${delivry.attributes.siteForm.errors.department}" scope="page"></c:set>
+<c:set var="pathsNumberError" value="${delivry.attributes.siteForm.errors.pathsNumber}" scope="page"></c:set>
+<c:set var="orientationError" value="${delivry.attributes.siteForm.errors.orientation}" scope="page"></c:set>
+<c:set var="typeError" value="${delivry.attributes.siteForm.errors.type}" scope="page"></c:set>
+<c:set var="minHeightError" value="${delivry.attributes.siteForm.errors.minHeight}" scope="page"></c:set>
+<c:set var="maxHeightError" value="${delivry.attributes.siteForm.errors.maxHeight}" scope="page"></c:set>
+<c:set var="cotationMinError" value="${delivry.attributes.siteForm.errors.cotationMin}" scope="page"></c:set>
+<c:set var="cotationMaxError" value="${delivry.attributes.siteForm.errors.cotationMax}" scope="page"></c:set>
+<c:set var="fileError" value="${delivry.attributes.siteForm.errors.file}" scope="page"></c:set>
+<c:set var="summaryError" value="${delivry.attributes.siteForm.errors.summary}" scope="page"></c:set>
+<c:set var="mediaError" value="${delivry.attributes.siteForm.errors.media}" scope="page"></c:set>
+<c:set var="contentError" value="${delivry.attributes.siteForm.errors.content}" scope="page"></c:set>
+<c:set var="publishedError" value="${delivry.attributes.siteForm.errors.published}" scope="page"></c:set>
 <c:set var="siteInformationError" scope="page"
 	value="${ empty nameError && empty countryError && empty departmentError && empty pathsNumberError &&
 		empty typeError && empty minHeightError && empty maxHeightError && empty cotationMinError && 
@@ -26,7 +26,7 @@
 	value="${ empty contentError && empty summaryError ? '' : 'tab-error'}">
 </c:set>
     
-					<form id="createSiteForm" class="text-center border border-light p-3" 
+					<form id="siteForm" class="text-center border border-light p-3" 
 							action="${postAction}" method="POST" enctype="multipart/form-data">
 							<div class="form-row mb-3">
 								<div class="col-md-9"><p class="h4">Nouveau site d'escalade</p></div>
@@ -64,7 +64,7 @@
 										class="form-control${empty nameError?'':' is-invalid'}" 
 										aria-label="Name" aria-describedby="labelName"
 										placeholder="Saisir le nom du site..."
-										value="<c:out value='${delivry.attributes.createSiteForm.site.name}'></c:out>">
+										value="<c:out value='${delivry.attributes.siteForm.site.name}'></c:out>">
 								<div class="invalid-feedback${empty nameError?' invisible':''}"
 									id="nameError">${nameError}</div>
 					    	</div>
@@ -76,7 +76,7 @@
 										class="form-control${empty countryError?'':' is-invalid'}" 
 										aria-label="Country" aria-describedby="labelCountry"
 										placeholder="Saisir le pays..."
-										value="<c:out value='${delivry.attributes.createSiteForm.site.country}'></c:out>">
+										value="<c:out value='${delivry.attributes.siteForm.site.country}'></c:out>">
 								<div class="invalid-feedback${empty countryError?' invisible':''}"
 									id="countryError">${countryError}</div>
 					    	</div>
@@ -88,7 +88,7 @@
 										class="form-control${empty departmentError?'':' is-invalid'}" 
 										aria-label="Department" aria-describedby="labelDepartment"
 										placeholder="Saisir le department..."
-										value="<c:out value='${delivry.attributes.createSiteForm.site.department}'></c:out>">
+										value="<c:out value='${delivry.attributes.siteForm.site.department}'></c:out>">
 								<div class="invalid-feedback${empty departmentError?' invisible':''}"
 									id="departmentError">${departmentError}</div>
 					    	</div>
@@ -102,7 +102,7 @@
 										class="form-control${empty pathsNumberError?'':' is-invalid'}" 
 										aria-label="pathsNumber" aria-describedby="labelpathsNumber"
 										placeholder="Saisir le nombre"
-										value="<c:out value='${delivry.attributes.createSiteForm.site.pathsNumber}'></c:out>">
+										value="<c:out value='${delivry.attributes.siteForm.site.pathsNumber}'></c:out>">
 								<div class="invalid-feedback${empty pathsNumberError?' invisible':''}"
 									id="pathsNumberError">${pathsNumberError}</div>
 					    	</div>
@@ -114,7 +114,7 @@
 										class="form-control${empty orientationError?'':' is-invalid'}" 
 										aria-label="Orientation" aria-describedby="labelOrientation"
 										placeholder="Indiquez l'orientation..."
-										value="<c:out value='${delivry.attributes.createSiteForm.site.orientation}'></c:out>">
+										value="<c:out value='${delivry.attributes.siteForm.site.orientation}'></c:out>">
 								<div class="invalid-feedback${empty orientationError?' invisible':''}"
 									id="orientationError">${orientationError}</div>
 					    	</div>
@@ -126,19 +126,19 @@
 								<div class="form-check form-check-inline">
 									<input type="checkbox" id="block" name="block"
 										class="form-check-input" value="true"
-										${delivry.attributes.createSiteForm.site.block ? 'checked' : ''}>
+										${delivry.attributes.siteForm.site.block ? 'checked' : ''}>
 									<label class="form-check-label" for="block">Bloc</label>
 								</div>
 								<div class="form-check form-check-inline">
 									<input type="checkbox" id="cliff" name="cliff"
 										class="form-check-input" value="true"
-										${delivry.attributes.createSiteForm.site.cliff ? 'checked' : ''}>
+										${delivry.attributes.siteForm.site.cliff ? 'checked' : ''}>
 									<label class="form-check-label" for="cliff">Falaise</label>
 								</div>
 								<div class="form-check form-check-inline">
 									<input type="checkbox" id="wall" name="wall"
 										class="form-check-input" value="true"
-										${delivry.attributes.createSiteForm.site.wall ? 'checked' : ''}>
+										${delivry.attributes.siteForm.site.wall ? 'checked' : ''}>
 									<label class="form-check-label" for="wall">Mur</label>
 								</div>
 					    		</div>
@@ -155,7 +155,7 @@
 										class="form-control${empty minHeightError?'':' is-invalid'}" 
 										aria-label="MinHeight" aria-describedby="labelMinHeight"
 										placeholder="Indiquez le minimum..."
-										value="<c:out value='${delivry.attributes.createSiteForm.site.minHeight}'></c:out>">
+										value="<c:out value='${delivry.attributes.siteForm.site.minHeight}'></c:out>">
 								<div class="invalid-feedback${empty minHeightError?' invisible':''}"
 									id="minHeightError">${minHeightError}</div>
 					    	</div>
@@ -167,7 +167,7 @@
 										class="form-control${empty maxHeightError?'':' is-invalid'}" 
 										aria-label="MaxHeight" aria-describedby="labelMaxHeight"
 										placeholder="Indiquez le maximum..."
-										value="<c:out value='${delivry.attributes.createSiteForm.site.maxHeight}'></c:out>">
+										value="<c:out value='${delivry.attributes.siteForm.site.maxHeight}'></c:out>">
 								<div class="invalid-feedback${empty maxHeightError?' invisible':''}"
 									id="maxHeightError">${maxHeightError}</div>
 					    	</div>
@@ -178,10 +178,10 @@
 					    		<select id="cotationMin" name="cotationMin"
 										class="custom-select${empty cotationMinError?'':' is-invalid'}" 
 										aria-label="CotationMin" aria-describedby="labelCotationMin">
-									<option value="0"${delivry.attributes.createSiteForm.site.cotationMin.id == 0 ? ' selected' : ''}>Choisir le minimum...</option>
+									<option value="0"${delivry.attributes.siteForm.site.cotationMin.id == 0 ? ' selected' : ''}>Choisir le minimum...</option>
 <c:if test="${ fn:length(delivry.attributes.cotations) gt 0 }">
 	<c:forEach items="${ delivry.attributes.cotations }" var="cotation">
-									<option value="${ cotation.id }"${delivry.attributes.createSiteForm.site.cotationMin.id == cotation.id ? ' selected' : ''}>${ cotation.label }</option>
+									<option value="${ cotation.id }"${delivry.attributes.siteForm.site.cotationMin.id == cotation.id ? ' selected' : ''}>${ cotation.label }</option>
 	</c:forEach>
 </c:if>								
 								</select>
@@ -195,10 +195,10 @@
 					    		<select id="cotationMax" name="cotationMax"
 										class="custom-select${empty cotationMaxError?'':' is-invalid'}" 
 										aria-label="CotationMax" aria-describedby="labelCotationMax">
-									<option value="0"${delivry.attributes.createSiteForm.site.cotationMax.id == 0 ? ' selected' : ''}>Choisir le maximum...</option>
+									<option value="0"${delivry.attributes.siteForm.site.cotationMax.id == 0 ? ' selected' : ''}>Choisir le maximum...</option>
 <c:if test="${ fn:length(delivry.attributes.cotations) gt 0 }">
 	<c:forEach items="${ delivry.attributes.cotations }" var="cotation">
-									<option value="${ cotation.id }"${delivry.attributes.createSiteForm.site.cotationMax.id == cotation.id ? ' selected' : ''}>${ cotation.label }</option>
+									<option value="${ cotation.id }"${delivry.attributes.siteForm.site.cotationMax.id == cotation.id ? ' selected' : ''}>${ cotation.label }</option>
 	</c:forEach>
 </c:if>								
 								</select>
@@ -223,7 +223,7 @@
 							<label class="basic-top-label" for="summary">Résumé</label>
 							<textarea id="summary" name="summary" rows="1"
 								 class="form-control${empty summaryError?'':' is-invalid'}"
-								 ><c:out value='${delivry.attributes.createSiteForm.site.summary}'></c:out></textarea>
+								 ><c:out value='${delivry.attributes.siteForm.site.summary}'></c:out></textarea>
 							<div class="invalid-feedback${empty summaryError?' invisible':''}"
 								id="summaryError">${summaryError}</div>
 						</div>
@@ -231,7 +231,7 @@
 							<label class="basic-top-label" for="content">Contenu</label>
 							<textarea id="content" name="content" rows="6"
 								 class="form-control${empty contentError?'':' is-invalid'}"
-								 ><c:out value='${delivry.attributes.createSiteForm.site.content}'></c:out></textarea>
+								 ><c:out value='${delivry.attributes.siteForm.site.content}'></c:out></textarea>
 							<div class="invalid-feedback${empty contentError?' invisible':''}"
 								id="contentError">${contentError}</div>
 						</div>

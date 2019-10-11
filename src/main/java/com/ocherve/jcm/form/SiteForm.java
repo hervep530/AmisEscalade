@@ -23,7 +23,7 @@ import com.ocherve.jcm.model.Site;
  * @author herve_dev
  *
  */
-public class CreateSiteForm extends Form {
+public class SiteForm extends Form {
 	
 	private SiteDao siteDao;
 	private Site site;
@@ -34,7 +34,7 @@ public class CreateSiteForm extends Form {
 	/**
 	 * Constructor without arguments
 	 */
-	public CreateSiteForm() {
+	public SiteForm() {
 		super();
 	}
 	
@@ -43,7 +43,7 @@ public class CreateSiteForm extends Form {
 	 * 
 	 * @param request
 	 */
-	public CreateSiteForm(HttpServletRequest request) {
+	public SiteForm(HttpServletRequest request) {
 		super();
 		this.request = request;
 		this.slug = "";

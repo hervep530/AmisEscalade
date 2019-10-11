@@ -24,25 +24,13 @@ public interface SiteService extends Service {
 	Delivry getSite(Parameters parameters);
 	
 	/**
-	 *  requesting formular to create new Site
+	 * Getting data for formular to create update or search Site
+	 * 
 	 * @param parameters 
 	 * @return delivry
 	 */
-	Delivry getCreateForm(Parameters parameters);
-
-	/**
-	 * requesting formular to update Site
-	 * @param parameters 
-	 * @return delivry
-	 */
-	Delivry getUpdateForm(Parameters parameters);
-	
-	/**
-	 * @param parameters 
-	 * @return Site List from request send to dao with form with post method
-	 */
-	Delivry getFindForm(Parameters parameters);
-	
+	Delivry getSiteForm(Parameters parameters);
+		
 	
 
 	/**

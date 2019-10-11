@@ -28,8 +28,7 @@
     	<%@ include file="jspDebug/TestForm.jsp" %>
     </c:when>
     <c:when test="${action == 'r' || action == 'uac'}"><%@ include file="jspSite/Content.jsp" %></c:when>
-    <c:when test="${action == 'c'}"><%@ include file="jspSite/CreateForm.jsp" %></c:when>
-    <c:when test="${action == 'u'}"><%@ include file="jspSite/UpdateForm.jsp" %></c:when>
+    <c:when test="${action == 'c' || action == 'u'}"><%@ include file="jspSite/CreateUpdateForm.jsp" %></c:when>
     <c:otherwise><%@ include file="jspSite/Content.jsp" %></c:otherwise>
 </c:choose>
 <c:if test="${action == 'r' || action == 'uac'}">

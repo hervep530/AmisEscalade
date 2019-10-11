@@ -3,7 +3,6 @@ package com.ocherve.jcm.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,7 +11,7 @@ import org.apache.logging.log4j.Level;
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.SiteDao;
 import com.ocherve.jcm.form.CommentForm;
-import com.ocherve.jcm.form.CreateSiteForm;
+import com.ocherve.jcm.form.SiteForm;
 import com.ocherve.jcm.form.SearchForm;
 import com.ocherve.jcm.model.Comment;
 import com.ocherve.jcm.model.Cotation;
@@ -68,7 +67,10 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 					parameters.setForm(new SearchForm(request));
 					break;
 				case  "c" :
-					parameters.setForm(new CreateSiteForm(request));
+					parameters.setForm(new SiteForm(request));
+					break;
+				case  "u" :
+					parameters.setForm(new SiteForm(request));
 					break;
 				case  "uac" :
 					parameters.setForm(new CommentForm(request));
@@ -152,23 +154,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	}
 
 	@Override
-	public Delivry getCreateForm(Parameters parameters) {
-		return getSiteForm(parameters);
-	}
-	
-	@Override
-	public Delivry getUpdateForm(Parameters parameters) {
-		this.delivry = new Delivry();
-		this.appendMandatoryAttributesToDelivry(parameters);
-		return this.delivry;
-	}
-
-	@Override
-	public Delivry getFindForm(Parameters parameters) {
-		return getSiteForm(parameters);
-	}
-
-	private Delivry getSiteForm(Parameters parameters) {
+	public Delivry getSiteForm(Parameters parameters) {
 		this.delivry = new Delivry();
 		List<Cotation> cotations = null;
 		
@@ -248,13 +234,13 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		this.delivry = new Delivry();
 
 		//Getting form and calling createSite
-		CreateSiteForm createSiteForm = (CreateSiteForm) parameters.getForm();
+		SiteForm siteForm = (SiteForm) parameters.getForm();
 		@SuppressWarnings("unused")
-		Site createSite = createSiteForm.createSite();
+		Site createSite = siteForm.createSite();
 		// If errors we set result values and return it
-		if ( ! createSiteForm.getErrors().isEmpty() ) {
+		if ( ! siteForm.getErrors().isEmpty() ) {
 			// If errors return form and cotations do display form containing data and errors
-			this.delivry.appendattribute("createSiteForm", createSiteForm);
+			this.delivry.appendattribute("siteForm", siteForm);
 			this.delivry.appendattribute("cotations", siteDao.getCotations());
 			this.appendMandatoryAttributesToDelivry(parameters);
 			DLOG.log(Level.TRACE, "CreateSiteFom - Errors on createSite() : delivry return form, cotations and parameters.");

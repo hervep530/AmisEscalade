@@ -69,13 +69,9 @@ public class Site extends JcmServlet {
 					delivry = ((SiteService) service).getSite(parameters);
 					break;
 				case "c" :
-					delivry = ((SiteService) service).getCreateForm(parameters);
-					break;
 				case "u" :
-					delivry = ((SiteService) service).getUpdateForm(parameters);
-					break;
 				case "f" :
-					delivry = ((SiteService) service).getFindForm(parameters);
+					delivry = ((SiteService) service).getSiteForm(parameters);
 					break;
 				case "upt" : 
 				case "upf" :
