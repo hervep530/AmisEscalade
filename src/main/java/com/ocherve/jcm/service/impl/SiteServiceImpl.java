@@ -3,6 +3,7 @@ package com.ocherve.jcm.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -77,98 +78,14 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		return parameters;
 	}
 	
-	@Override
-	public Delivry doGetAction(Parameters parameters) {
-		Delivry delivry = null;
-		try {
-			switch (parameters.getParsedUrl().getAction()) {
-				case "l" :
-					delivry = getList(parameters);
-					break;
-				case "f" :
-					Delivry resultGetFind = getFindForm(parameters);
-					if ( resultGetFind != null ) delivry = resultGetFind;
-					break;
-				case "r" :
-					delivry = getSite(parameters);
-					break;
-				case "c" :
-					Delivry resultGetCreate = getFindForm(parameters);
-					if ( resultGetCreate != null ) delivry = resultGetCreate;
-					break;
-				case "u" :
-					break;
-				case "uac" :
-					break;
-				case "umc" :
-					break;
-				case "ut" :
-					break;
-				case "utt" :
-				case "utf" :
-					Delivry resultPutFriendTag = putFriendTag(parameters);
-					if ( resultPutFriendTag != null ) delivry = resultPutFriendTag;
-					break;
-				case "upt" : 
-					break;
-				case "upf" :
-					break;
-				case "d" :
-					break;
-				default :
-			}			
-		} catch (UrlException e ) {
-			DLOG.log(Level.ERROR , e.getMessage());
-			delivry = new Delivry();
-			delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), e.getMessage());
-		}
-		if ( delivry == null ) delivry = new Delivry();
-		delivry.setParameters(parameters);
-		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
-		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
-		String info = "Service" + this.serviceName + ".doGetAction is done.";
-		DLOG.log(Level.DEBUG , info);
-		return delivry;
-	}
-
-	@Override
-	public Delivry doPostAction(Parameters parameters) {
-		Delivry delivry = null;
-		try {
-			switch (parameters.getParsedUrl().getAction()) {
-				case "f" :
-					if ( getFindForm(parameters) != null ) delivry = postFindForm(parameters);
-					break;
-				case "c" :
-					if ( getCreateForm(parameters) != null ) delivry = postCreateForm(parameters);
-					break;
-				case "uac" :
-					delivry = postAddCommentForm(parameters);
-					break;
-				default :
-			}			
-		} catch (UrlException e ) {
-			DLOG.log(Level.ERROR , e.getMessage());
-			delivry = new Delivry();
-			delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), e.getMessage());
-		}
-		if ( delivry == null ) delivry = new Delivry();
-		delivry.setParameters(parameters);
-		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
-		if ( ! parameters.getErrors().isEmpty() ) delivry.appendErrors(parameters.getErrors());
-		String info = "Service " + this.serviceName + " do PostAction.";
-		DLOG.log(Level.DEBUG , info);
-		return delivry;
-	}
-
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public Delivry getList(Parameters parameters) {
-		Delivry result = new Delivry();
+		this.delivry = new Delivry();
 		List<Site> sites = null;
 		long sitesCount = 0;
 		long listsCount = 0;
+		
 		// Calculating the count of sites lists in database, regarding the limit LIST_LIMIT to display a list
 		try {
 			sitesCount = siteDao.getCountFromNamedQuery(Site.class, "Site.countAll", null);
@@ -179,6 +96,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			listsCount = sitesCount / LIST_LIMIT ;
 			if ( sitesCount % LIST_LIMIT > 0 ) listsCount = Math.round(listsCount) + 1;
 		}
+		
 		// Calculating offset to extract a sublist matching with id from all sites lists regarding given list id
 		long listId = 1;
 		try {
@@ -191,6 +109,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		Map<String,Object> queryParameters = new HashMap<>();
 		queryParameters.put("limit", LIST_LIMIT);
 		queryParameters.put("offset", offset);
+		
 		// Getting query result
 		try {
 			sites = (List<Site>) siteDao.getListFromNamedQuery(Site.class, queryName, queryParameters);
@@ -198,19 +117,173 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			throw new UrlException("Echec de la requete " + queryName);
 		}
 		if (sites == null) throw new UrlException("Aucun resultat pour la requete " + queryName);
-		// debug
-		if ( sites.isEmpty() ) throw new UrlException("Aucun resultat pour la requete " + queryName);
+
 		// Appending data to result and return it
-		result.appendattribute("sites", sites);
-		result.appendattribute("listsCount", listsCount);
-		return result;
+		this.delivry.appendattribute("sites", sites);
+		this.delivry.appendattribute("listsCount", listsCount);
+		this.appendMandatoryAttributesToDelivry(parameters);
+
+		return this.delivry;
 	}
 
+	@Override
+	public Delivry getSite(Parameters parameters) {
+		this.delivry = new Delivry();
+		Site site = null;
+		
+		// Getting site from dao
+		try {
+			site = siteDao.get(Integer.valueOf(parameters.getParsedUrl().getId()));
+		} catch (Exception e ) {
+			throw new UrlException("Echec de la requete sur la base");
+		}
+		
+		// Testing if url (slug), and site is valid
+		if (site == null) throw new UrlException("Aucun site trouvé avec cet id.");
+		if ( site.getSlug() == null ) throw new UrlException("Ce site n'a pas de slug associé");
+		if ( ! site.getSlug().contentEquals(parameters.getParsedUrl().getSlug()) )
+			throw new UrlException("L'id et le slug fourni par l'url ne correspondent pas.");
+		
+		// Appending data to delivry and return it
+		this.delivry.appendattribute("site", site);
+		this.appendMandatoryAttributesToDelivry(parameters);
+
+		return this.delivry;
+	}
+
+	@Override
+	public Delivry getCreateForm(Parameters parameters) {
+		return getSiteForm(parameters);
+	}
+	
+	@Override
+	public Delivry getUpdateForm(Parameters parameters) {
+		this.delivry = new Delivry();
+		this.appendMandatoryAttributesToDelivry(parameters);
+		return this.delivry;
+	}
+
+	@Override
+	public Delivry getFindForm(Parameters parameters) {
+		return getSiteForm(parameters);
+	}
+
+	private Delivry getSiteForm(Parameters parameters) {
+		this.delivry = new Delivry();
+		List<Cotation> cotations = null;
+		
+		// Getting cotation (needed by form), and append it to delivry
+		cotations = siteDao.getCotations();
+		try {
+			this.delivry.appendattribute("cotations", cotations);
+		} catch (Exception e ) {
+			this.delivry.appendError("Site search", "Error on displaying search site formular.");
+			DLOG.log(Level.ERROR, "Error on displaying search site formular Cotation references can not be reached.");
+		}
+		
+		// Finalize delivry and return it
+		this.appendMandatoryAttributesToDelivry(parameters);
+		return this.delivry;
+	}
+
+
+	
+	@Override
+	public Delivry putFriendTag(Parameters parameters) {
+		// Initializing variables
+		this.delivry = new Delivry();
+		Map<String,Object> fields = new HashMap<>();
+		Boolean friendTag = false;
+		String notificationLabel = "Tag ami";
+		Site updatedSite = null;
+
+		// Updating Site with dao
+		try {
+			// set flag regarding url and call UserDao to update tag
+			if ( parameters.getParsedUrl().getAction().contentEquals("utt") ) friendTag = true;
+			fields.put("friendTag", friendTag);
+			updatedSite = siteDao.update(Integer.valueOf(parameters.getParsedUrl().getId()), fields);			
+		} catch (Exception e) {
+			// Append deferred error notification and redirect on sites list
+			String message = "Echec lors de l'attribution du tag ami";
+			Notification notification = new Notification(NotificationType.ERROR, message);
+			this.delivry.appendSessionNotification(notificationLabel, notification);
+			this.delivry.appendattribute("redirect", parameters.getContextPath() + "site/l/1");
+			return this.delivry;		
+		}
+		
+		// append site in delivry
+		this.delivry.appendattribute("site", updatedSite);
+		// append deferred notification in delivry
+		String message = "Vous avez attribué le tag Ami à ce site.";
+		if ( ! friendTag ) message = "Vous avez retiré le tag Ami à ce site";
+		Notification notification = new Notification(NotificationType.SUCCESS, message);
+		this.delivry.appendSessionNotification(notificationLabel, notification);
+		// Set Redirection
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/site/r/" + updatedSite.getId() +
+				"/" + updatedSite.getSlug());
+		// Finalizing delivry and return it
+		this.appendMandatoryAttributesToDelivry(parameters);
+		return this.delivry;
+	}
+	
+	@Override
+	public Delivry putPublishedStatus(Parameters parameters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	
+	@Override
+	public Delivry delete(Parameters parameters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	
+	@Override
+	public Delivry postCreateForm(Parameters parameters) {
+		this.delivry = new Delivry();
+
+		//Getting form and calling createSite
+		CreateSiteForm createSiteForm = (CreateSiteForm) parameters.getForm();
+		@SuppressWarnings("unused")
+		Site createSite = createSiteForm.createSite();
+		// If errors we set result values and return it
+		if ( ! createSiteForm.getErrors().isEmpty() ) {
+			// If errors return form and cotations do display form containing data and errors
+			this.delivry.appendattribute("createSiteForm", createSiteForm);
+			this.delivry.appendattribute("cotations", siteDao.getCotations());
+			this.appendMandatoryAttributesToDelivry(parameters);
+			DLOG.log(Level.TRACE, "CreateSiteFom - Errors on createSite() : delivry return form, cotations and parameters.");
+			return this.delivry;
+		} 
+
+		// Appending deferred notification
+		String notificationLabel = "Ajout d'un nouveau site";
+		String message = "Le site vient d'être créé avec succès.";
+		Notification notification = new Notification(NotificationType.SUCCESS, message);
+		this.delivry.appendSessionNotification(notificationLabel, notification);
+		// Appending redirection and finalizing delivry
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/site/l/1");
+		this.appendMandatoryAttributesToDelivry(parameters);
+		
+		return this.delivry;
+	}
+
+	@Override
+	public Delivry postUpdateForm(Parameters parameters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Delivry postFindForm(Parameters parameters) {
 		// variables
-		Delivry result = new Delivry();
+		this.delivry = new Delivry();
 		List<Site> sites = null;
 		String queryString = "";
 		Map<String,Object> queryParameters = null;
@@ -238,82 +311,17 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		if ( sites.isEmpty() ) throw new UrlException("Aucun resultat pour la requete");
 		*/
 		
-		// Appending data to result and return it
-		result.appendattribute("sites", sites);
-		result.appendattribute("query", form.getQuery());
+		// Appending data to delivry and return it
+		this.delivry.appendattribute("sites", sites);
+		this.delivry.appendattribute("query", form.getQuery());
+		this.appendMandatoryAttributesToDelivry(parameters);
 
-		return result;
-	}
-
-	@Override
-	public Delivry getFindForm(Parameters parameters) {
-		return getSiteForm(parameters);
-	}
-
-	private Delivry getSiteForm(Parameters parameters) {
-		Delivry result = new Delivry();
-		List<Cotation> cotations = null;
-		cotations = siteDao.getCotations();
-		try {
-			result.appendattribute("cotations", cotations);
-		} catch (Exception e ) {
-			result.appendError("Site search", "Error on displaying search site formular.");
-			DLOG.log(Level.ERROR, "Error on displaying search site formular Cotation references can not be reached.");
-		}
-		return result;
-	}
-
-	@Override
-	public Delivry getSite(Parameters parameters) {
-		Delivry result = new Delivry();
-		Site site = null;
-		try {
-			site = siteDao.get(Integer.valueOf(parameters.getParsedUrl().getId()));
-		} catch (Exception e ) {
-			throw new UrlException("Echec de la requete sur la base");
-		}
-		if (site == null) throw new UrlException("Aucun site trouvé avec cet id.");
-		//debugSite(site);
-		if ( site.getSlug() == null ) throw new UrlException("Ce site n'a pas de slug associé");
-		if ( ! site.getSlug().contentEquals(parameters.getParsedUrl().getSlug()) )
-			throw new UrlException("L'id et le slug fourni par l'url ne correspondent pas.");
-		result.appendattribute("site", site);
-		return result;
-	}
-
-	@Override
-	public Delivry getCreateForm(Parameters parameters) {
-		return getSiteForm(parameters);
-	}
-
-	@Override
-	public Delivry postCreateForm(Parameters parameters) {
-		Delivry result = new Delivry();
-		CreateSiteForm createSiteForm = (CreateSiteForm) parameters.getForm();
-		@SuppressWarnings("unused")
-		Site createSite = createSiteForm.createSite();
-		// If errors we set result values and return it
-		if ( ! createSiteForm.getErrors().isEmpty() ) {
-			result.appendattribute("createSiteForm", createSiteForm);
-			result.appendattribute("cotations", this.getSiteForm(parameters).getAttribute("cotations"));
-			return result;
-		} 
-		// Else we set redirection and notification(s) to display after redirection
-		String notificationLabel = "Ajout d'un nouveau site";
-		String message = "Le site vient d'être créé avec succès.";
-		Notification notification = new Notification(NotificationType.SUCCESS, message);
-		Map<String,Notification> notifications = new HashMap<>();
-		notifications.put(notificationLabel, notification);
-		result.appendSession("notifications", notifications);
-		/*result.appendattribute("redirect", parameters.getContextPath() + "/site/r/" +
-				createSite.getId() + "/" + createSite.getSlug());*/
-		result.appendattribute("redirect", parameters.getContextPath() + "/site/l/1");
-		return result;
+		return this.delivry;
 	}
 
 	@Override
 	public Delivry postAddCommentForm(Parameters parameters) {
-		Delivry result = new Delivry();
+		this.delivry = new Delivry();
 		CommentForm commentForm = (CommentForm) parameters.getForm();
 		Comment comment = commentForm.createComment();
 		String redirection = parameters.getContextPath();
@@ -324,105 +332,30 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 				// Internal error - we redirect with notification
 				Notification notification = new Notification(NotificationType.ERROR, 
 					"Une erreur interne s'est produite. Le commentaire n'a pas pu être créé.");
-				result.appendSessionNotification("Nouveau commentaire", notification);
+				this.delivry.appendSessionNotification("Nouveau commentaire", notification);
 				redirection += "/site/l/1";
-				result.appendattribute("redirect", redirection);
+				this.delivry.appendattribute("redirect", redirection);
 			} else {
 				// content error - we forward error toward formular inside site content
 				Notification notification = new Notification(NotificationType.ERROR, 
 						"Le commentaire n'a pas pu être créé car le contenu n'est pas valide.");
-				result.appendNotification("Nouveau commentaire", notification);
-				result.appendattribute("commentForm", commentForm);
-				result.appendattribute("site", (Site) commentForm.getReference());
+				this.delivry.appendNotification("Nouveau commentaire", notification);
+				this.delivry.appendattribute("commentForm", commentForm);
+				this.delivry.appendattribute("site", (Site) commentForm.getReference());
 			}
-			return result;				
+			this.appendMandatoryAttributesToDelivry(parameters);
+			return this.delivry;				
 		} 
 		// Else we set redirection and notification(s) to display after redirection
-		Notification notification = new Notification(NotificationType.SUCCESS, 
-				"Votre commentaire est ajouté.");
-		result.appendSessionNotification("Nouveau commentaire", notification);
+		Notification notification = new Notification(NotificationType.SUCCESS, "Votre commentaire est ajouté.");
+		this.delivry.appendSessionNotification("Nouveau commentaire", notification);
 		redirection += "/site/r/" + comment.getReference().getId() + "/" + comment.getReference().getSlug();
-		// We redirect except if errors only contains "content" key
-		//if ( ! commentForm.getErrors().containsKey("content") || commentForm.getErrors().size() > 1 ) 
-			result.appendattribute("redirect", redirection);
-		DLOG.log(Level.DEBUG, result.getAttribute("redirect").toString());
-		return result;
-	}
-	
-	@Override
-	public Delivry getUpdateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Delivry postUpdateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private Delivry putFriendTag(Parameters parameters) {
-		Delivry result = new Delivry();
-		Map<String,Object> fields = new HashMap<>();
-		Boolean friendTag = false;
-		String notificationLabel = "Tag ami";
-		Site updatedSite = null;
-
-		try {
-			// set flag regarding url and call UserDao to update tag
-			if ( parameters.getParsedUrl().getAction().contentEquals("utt") ) friendTag = true;
-			fields.put("friendTag", friendTag);
-			updatedSite = siteDao.update(Integer.valueOf(parameters.getParsedUrl().getId()), fields);			
-		} catch (Exception e) {
-			// Append deferred error notification and redirect on sites list
-			String message = "Echec lors de l'attribution du tag ami";
-			Notification notification = new Notification(NotificationType.ERROR, message);
-			result.appendSessionNotification(notificationLabel, notification);
-			result.appendattribute("redirect", parameters.getContextPath() + "site/l/1");
-			return result;		
-		}
-		// append site from Dao (after update) in result (Delivry)
-		result.appendattribute("site", updatedSite);
-		// append deferred notification in delivry
-		String message = "Vous avez attribué le tag Ami à ce site.";
-		if ( ! friendTag ) message = "Vous avez retiré le tag Ami à ce site";
-		Notification notification = new Notification(NotificationType.SUCCESS, message);
-		result.appendSessionNotification(notificationLabel, notification);
-		// Set Redirection
-		result.appendattribute("redirect", parameters.getContextPath() + "/site/r/" + updatedSite.getId() +
-				"/" + updatedSite.getSlug());
-		// And return result
-		return result;
-	}
-	
-	@Override
-	public Delivry postAddComment(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Delivry postUpdateComment(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Delivry getUpdatePublishedStatus(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Delivry getUpdateTag(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Delivry getDelete(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		this.delivry.appendattribute("redirect", redirection);
+		DLOG.log(Level.DEBUG, this.delivry.getAttribute("redirect").toString());
+		
+		// Finalize delivry and return it
+		this.appendMandatoryAttributesToDelivry(parameters);
+		return this.delivry;
 	}
 
 	/**

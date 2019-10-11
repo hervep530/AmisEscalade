@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
@@ -117,6 +118,7 @@ public class Site extends JcmServlet {
 			}			
 		} catch (UrlException e ) {
 			delivry = service.abort(parameters);
+			DLOG.log(Level.DEBUG, "DoPostAction failure : Site service aborted.");
 		}
 		return delivry;
 	}

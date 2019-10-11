@@ -129,11 +129,14 @@ abstract class JcmServlet extends HttpServlet {
 		// Forwarding to Site jsp, redirect,  or forwarding error
 		if ( ! this.delivry.getErrors().isEmpty() ) {
 			this.getServletContext().getRequestDispatcher(this.errorPage).forward(request, response);
+			DLOG.log(Level.DEBUG, "Forward to view : " + this.errorPage);
 		} else {
 			if (this.delivry.getAttributes().containsKey("redirect") ) {
 				this.setSessionNotification();
 				response.sendRedirect((String) this.delivry.getAttributes().get("redirect")); 
+				DLOG.log(Level.DEBUG, "Redirection : " + this.delivry.getAttributes().get("redirect"));
 			} else {
+				DLOG.log(Level.DEBUG, "Forward to view : " + this.layout);
 				this.getServletContext().getRequestDispatcher(this.layout).forward(request, response);
 			}
 		}	
@@ -174,7 +177,7 @@ abstract class JcmServlet extends HttpServlet {
      * @return delivry which is result of actions from service
      */
     protected Delivry doGetAction(Parameters parameters) {
-    	return this.service.doPostAction(parameters);
+    	return this.service.doGetAction(parameters);
     }
 
     /**
