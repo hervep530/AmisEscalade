@@ -15,7 +15,7 @@
 										title="Créer un nouveau topo" width="20" height="20">
 							  </button>
 </c:if>
-<c:if test="${ roleId > 5 }">
+<c:if test="${ roleId > 10 }">
 							  <!-- Button trigger modal -->
 							  <button type="button" class="btn" data-toggle="modal" data-target="#confirmModal" 
 							  	data-location="${contextPath}/session/d/0/${token}"
