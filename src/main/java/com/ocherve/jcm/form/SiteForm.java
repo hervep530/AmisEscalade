@@ -1,6 +1,5 @@
 package com.ocherve.jcm.form;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.Normalizer;
@@ -28,11 +27,6 @@ public class SiteForm extends Form {
 	private SiteDao siteDao;
 	private Site site;
 	private String slug;
-	private String filename = "";
-	private String tmpFilename = "";
-	private String image = "";
-	private boolean updatingName = false;
-	private boolean updatingFile = false;
 	private Part uploadFile;
 
 	
@@ -41,12 +35,14 @@ public class SiteForm extends Form {
 	 */
 	public SiteForm() {
 		super();
+		filepath = UPLOAD_PATH + "/site" ;
 	}
 	
 	/**
 	 * Constructor using request to instanciate class
 	 * 
 	 * @param request
+	 * @param updating 
 	 */
 	public SiteForm(HttpServletRequest request, boolean updating) {
 		super();
@@ -361,49 +357,6 @@ public class SiteForm extends Form {
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, e.getMessage());
 			throw new FormException("L'envoie du fichier a échoué.");
-		}
-	}
-
-	private void updateImage() {
-		if ( this.updatingFile ) {
-			// Posting an image, we remove the old one and published the new one
-			try {
-				this.removeFile(this.image, false);
-				this.publishFile(this.tmpFilename);
-			} catch (FormException ignore) {
-				DLOG.log(Level.ERROR, "Changing image and filename : Error on publishing image");
-			}
-		} else {
-			if (this.updatingName ) try { 
-				// No change on image, but filename changed
-				this.publishFile(this.image); 
-			} catch (FormException ignore) {
-				DLOG.log(Level.ERROR, "No change on image, but filename changed : Error on re-publishing image");				
-			}
-		}		
-		
-	}
-	
-	private void removeFile(String filename, boolean fallback) throws FormException {
-		// this.tmpFilename
-		String filePath = UPLOAD_PATH + "/site";
-		try {
-			File file = new File(filePath + "/" + filename);
-			file.delete();
-		} catch (Exception ignore) {
-			DLOG.log(Level.ERROR, "Removing file : " + filename + "removing failed.");
-		}
-		if ( fallback ) throw new FormException("L'envoi du formulaire à échoué. Il faut ré-envoyer le fichier.");			
-	}
-
-	private void publishFile(String filename) throws FormException {
-		String filePath = UPLOAD_PATH + "/site";
-		try {
-			DLOG.log(Level.ERROR, "Renaming file : " + filePath + "/" + filename + " to " + filePath + "/" + this.filename);
-			File file = new File(filePath + "/" + filename);
-			file.renameTo(new File(filePath + "/" + this.filename));
-		} catch (Exception ignore) {
-			DLOG.log(Level.ERROR, "Publishing file : " + this.tmpFilename + "uploaded but publishing failed.");
 		}
 	}
 

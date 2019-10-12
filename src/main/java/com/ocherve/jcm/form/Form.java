@@ -34,6 +34,13 @@ public abstract class Form {
 	protected Map<String,String> errors;
 	protected HttpServletRequest request;
 	protected Boolean partMethod;
+	protected String filepath = "";
+	protected String filename = "";
+	protected String tmpFilename = "";
+	protected String image = "";
+	protected boolean updatingName = false;
+	protected boolean updatingFile = false;
+
 	
 	Form(){
 		Configurator.setLevel(DLOG.getName(), DLOGLEVEL);
@@ -243,6 +250,48 @@ public abstract class Form {
             }
         }
     }
+
+	protected void updateImage() {
+		if ( this.updatingFile ) {
+			// Posting an image, we remove the old one and published the new one
+			try {
+				this.removeFile(this.image, false);
+				this.publishFile(this.tmpFilename);
+			} catch (FormException ignore) {
+				DLOG.log(Level.ERROR, "Changing image and filename : Error on publishing image");
+			}
+		} else {
+			if (this.updatingName ) try { 
+				// No change on image, but filename changed
+				this.publishFile(this.image); 
+			} catch (FormException ignore) {
+				DLOG.log(Level.ERROR, "No change on image, but filename changed : Error on re-publishing image");				
+			}
+		}		
+	}
+	
+	protected void removeFile(String filename, boolean fallback) throws FormException {
+		// this.tmpFilename
+		String filePath = UPLOAD_PATH + "/site";
+		try {
+			File file = new File(filePath + "/" + filename);
+			file.delete();
+		} catch (Exception ignore) {
+			DLOG.log(Level.ERROR, "Removing file : " + filename + "removing failed.");
+		}
+		if ( fallback ) throw new FormException("L'envoi du formulaire à échoué. Il faut ré-envoyer le fichier.");			
+	}
+
+	protected void publishFile(String filename) throws FormException {
+		String filePath = UPLOAD_PATH + "/site";
+		try {
+			DLOG.log(Level.ERROR, "Renaming file : " + filePath + "/" + filename + " to " + filePath + "/" + this.filename);
+			File file = new File(filePath + "/" + filename);
+			file.renameTo(new File(filePath + "/" + this.filename));
+		} catch (Exception ignore) {
+			DLOG.log(Level.ERROR, "Publishing file : " + this.tmpFilename + "uploaded but publishing failed.");
+		}
+	}
 
 
     /**
