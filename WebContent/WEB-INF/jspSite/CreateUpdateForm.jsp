@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <c:set var="postAction" scope="page" value="${contextPath}/site/${action}/${id ? id : 0}/${token}"></c:set>
 <c:set var="labelAction" scope="page" value="${action == 'u' ? 'Mettre à jour' : 'Créer'}"></c:set>
+<c:set var="image" value="${delivry.attributes.siteForm.image}" scope="page"></c:set>
 <c:set var="nameError" value="${delivry.attributes.siteForm.errors.name}" scope="page"></c:set>
 <c:set var="countryError" value="${delivry.attributes.siteForm.errors.country}" scope="page"></c:set>
 <c:set var="departmentError" value="${delivry.attributes.siteForm.errors.department}" scope="page"></c:set>
@@ -210,15 +211,31 @@
 					    </div>
   </div>
   <div class="tab-pane fade" id="siteMedia" role="tabpanel" aria-labelledby="siteMedia-tab">
-			<div class="form-group">
-				<label class="basic-top-label" for="uploadFile">Photo(s)</label>
-				<input type="file" id="uploadFile" name="uploadFile"
-				 class="form-control-file${empty fileError?'':' is-invalid'}">
-				<div class="invalid-feedback${empty fileError?' invisible':''}" id="fileError">
-					${fileError}
+  
+  			<div class="file-panel">
+  				<input type="hidden" id="filename" name="filename" value=${ image }/>
+<c:if test="${ ! empty image }">
+				<div class="input-group">
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="displayFileName">Nom du Fichier</span>
+						</div>
+						<input type="text" class="form-control" 
+							value="${ image }"
+							aria-label="displayFileName" aria-describedby="displayFileName" readonly>
+					</div>
 				</div>
-			</div>
-			<input type="hidden" id="partMethod" name="partMethod" value="false">
+</c:if>
+				<div class="form-group">
+					<label class="basic-top-label" for="uploadFile">Photo(s)</label>
+					<input type="file" id="uploadFile" name="uploadFile"
+					 class="form-control-file${empty fileError?'':' is-invalid'}">
+					<div class="invalid-feedback${empty fileError?' invisible':''}" id="fileError">
+						${fileError}
+					</div>
+				</div>
+				<input type="hidden" id="partMethod" name="partMethod" value="false">
+  			</div>
   </div>
   <div class="tab-pane fade" id="siteContent" role="tabpanel" aria-labelledby="siteContent-tab">
 						<div class="form-group">

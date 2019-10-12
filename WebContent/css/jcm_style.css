@@ -16,7 +16,8 @@
 #testSearchForm,
 #searchForm,
 #InscriptionForm,
-#connexionForm {
+#connexionForm,
+.file-panel {
 	width: 60%;
 	margin : 15px 20% 15px auto;
 }

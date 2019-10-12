@@ -1,5 +1,6 @@
 package com.ocherve.jcm.service.impl;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -230,6 +231,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		this.delivry = new Delivry();
 		Boolean deleted = false;
 		String siteName = "";
+		String imagePath = "";
 		// default failure notification
 		Notification notification = new Notification(NotificationType.ERROR, 
 				"Une erreur interne s'est produite. Le site n'a pas pu être supprimé.");
@@ -238,9 +240,13 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			// Get site and site id
 			Integer siteId = 0;
 			siteId = Integer.valueOf(parameters.getParsedUrl().getId());
-			siteName = siteDao.get(siteId).getName();
+			Site site = siteDao.get(siteId);
+			siteName = site.getName();
+			imagePath = SiteForm.UPLOAD_PATH + "/site/" + site.getSlug() + ".jpg";
 			// delete comment and refresh lazy parent (site)... more than lazy...
 			deleted = siteDao.delete(siteId);
+			File file = new File(imagePath);
+			file.delete();
 			// siteDao.refresh(Site.class, siteId);
 		} catch (Exception ignore) {/* Already traced in Dao */}
 		// If deleting successfull, notification is modified

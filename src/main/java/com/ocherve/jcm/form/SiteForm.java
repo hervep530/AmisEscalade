@@ -28,7 +28,11 @@ public class SiteForm extends Form {
 	private SiteDao siteDao;
 	private Site site;
 	private String slug;
+	private String filename = "";
+	private String tmpFilename = "";
+	private String image = "";
 	private boolean updatingName = false;
+	private boolean updatingFile = false;
 	private Part uploadFile;
 
 	
@@ -73,6 +77,7 @@ public class SiteForm extends Form {
 				// Before all when updating, we get site from id, set this.slug from topo, and trace name updating
 				this.site = siteDao.get(siteId);
 				this.slug = this.site.getSlug();
+				this.image = this.slug + ".jpg";
 				if ( ! getInputTextValue("name").contentEquals(this.site.getName()) ) 
 					this.updatingName = true;
 			}
@@ -127,6 +132,7 @@ public class SiteForm extends Form {
 		try {
 			this.site = siteDao.get(siteId);
 			this.slug = site.getSlug();
+			this.image = site.getSlug() + ".jpg";
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "Site form can not be instanciated - siteId : " + siteId);
 			DLOG.log(Level.ERROR, e.getMessage());
@@ -139,6 +145,8 @@ public class SiteForm extends Form {
 	public Site createSite() {
 		try { validateName(); } catch (FormException e ) { this.errors.put("name",e.getMessage()); }
 		DLOG.log(Level.DEBUG, "Author : " + this.site.getAuthor().getUsername());
+		this.filename = this.slug + ".jpg";
+		this.tmpFilename = this.slug + "-tmp.jpg";
 		// validate country
 		try { validateCountry() ; } catch (FormException e) { this.errors.put("country", e.getMessage()); }
 		try { validateDepartment() ; } catch (FormException e) { this.errors.put("department", e.getMessage()); }
@@ -149,23 +157,28 @@ public class SiteForm extends Form {
 		try { validateMaxHeight() ; } catch (FormException e) { this.errors.put("maxHeight", e.getMessage()); }
 		try { validateCotationMin() ; } catch (FormException e) { this.errors.put("cotationMin", e.getMessage()); }
 		try { validateCotationMax() ; } catch (FormException e) { this.errors.put("cotationMax", e.getMessage()); }
-		try { validateFile() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
+		try { validateFileWhenCreatingSite() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
 		try { validateSummary() ; } catch (FormException e) { this.errors.put("summary", e.getMessage()); }
 		try { validateContent() ; } catch (FormException e) { this.errors.put("content", e.getMessage()); }
-		if ( ! this.errors.isEmpty() ) return this.site;
+		if ( ! this.errors.isEmpty() ) {
+			// On Validation Errors we stop and remove tmp file. Form with errors will be forward to formular...
+			try { this.removeFile(this.tmpFilename, true); } catch (FormException e) { errors.put("file", e.getMessage()); }
+			return this.site;
+		}
+		// If formular is validated, we call dao to create sit
 		Integer siteId = 0;
 		try { 
 			siteId = this.siteDao.create(this.site).getId(); 
 			this.siteDao.refresh(Site.class, siteId);
 		} catch (Exception e) {
+			// On dao error, we delete file, write log add error to formular and forward it at the end of servlet
 			DLOG.log(Level.ERROR, "SiteDao : creating site failed");
 			this.errors.put("creationSite","La création du site a échoué.");
+			try { this.removeFile(this.tmpFilename, true); } catch (FormException e1) { errors.put("file", e1.getMessage()); }
+			return site;
 		}
-		try {
-			if ( siteId < 1 ) removeFile();
-		} catch (FormException e) {
-			errors.put("file", e.getMessage());
-		}
+		// If no error, we definitly publish image : tmpFilename -> filename
+		try { this.publishFile(this.tmpFilename); } catch (FormException ignore) { }
 		return site;
 	}
 
@@ -176,6 +189,8 @@ public class SiteForm extends Form {
 		try { 
 			if ( this.updatingName ) validateName(); 
 		} catch (FormException e ) { this.errors.put("name",e.getMessage()); }
+		this.filename = this.slug + ".jpg";
+		this.tmpFilename = this.slug + "-tmp.jpg";
 		try { validateCountry() ; } catch (FormException e) { this.errors.put("country", e.getMessage()); }
 		try { validateDepartment() ; } catch (FormException e) { this.errors.put("department", e.getMessage()); }
 		try { validatePathsNumber() ; } catch (FormException e) { this.errors.put("pathsNumber", e.getMessage()); }
@@ -185,23 +200,23 @@ public class SiteForm extends Form {
 		try { validateMaxHeight() ; } catch (FormException e) { this.errors.put("maxHeight", e.getMessage()); }
 		try { validateCotationMin() ; } catch (FormException e) { this.errors.put("cotationMin", e.getMessage()); }
 		try { validateCotationMax() ; } catch (FormException e) { this.errors.put("cotationMax", e.getMessage()); }
-		// try { validateFile() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
+		try { validateFileWhenUpdatingSite() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
 		try { validateSummary() ; } catch (FormException e) { this.errors.put("summary", e.getMessage()); }
 		try { validateContent() ; } catch (FormException e) { this.errors.put("content", e.getMessage()); }
-		if ( ! this.errors.isEmpty() ) return this.site;
-		Integer siteId = 0;
+		if ( ! this.errors.isEmpty() ) {
+			try { this.removeFile(this.tmpFilename, true); } catch (FormException e) { errors.put("file", e.getMessage()); }
+			return this.site;
+		}
 		try { 
-			siteId = this.siteDao.update(this.site).getId(); 
+			this.siteDao.update(this.site); 
 			// this.siteDao.refresh(Site.class, siteId);
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "SiteDao : creating site failed");
 			this.errors.put("creationSite","La création du site a échoué.");
+			try { this.removeFile(this.tmpFilename, true); } catch (FormException e1) { errors.put("file", e1.getMessage()); }
+			return site;
 		}
-		try {
-			if ( siteId < 1 ) removeFile();
-		} catch (FormException e) {
-			errors.put("file", e.getMessage());
-		}
+		if ( this.updatingFile || this.updatingName ) this.updateImage(); 		
 		return site;
 	}
 	
@@ -292,15 +307,15 @@ public class SiteForm extends Form {
 			throw new FormException("La cotation maximum doit être supérieure à la cotation minimum.");
 	}
 
-	private void validateFile() throws FormException {
+	private void validateFileWhenCreatingSite() throws FormException {
 		String rawName = "";
 		String rawType = "jpg";
 		String filePath = UPLOAD_PATH + "/site";
-		String fileName = this.slug + ".jpg";
+		// Test Slug because filename and slug must match 
 		if ( this.slug.isEmpty() ) 
 			throw new FormException("Le fichier ne peut pas être sauvagardé car le nom du site est invalide.");
+		// Test uploded file
 		try {
-	        // On vérifie qu'on a bien reçu un fichier
 			rawName = getFileName(uploadFile);
 		} catch (IOException e) {
 			DLOG.log(Level.ERROR, e.getMessage());
@@ -309,25 +324,87 @@ public class SiteForm extends Form {
 		if ( rawName == null ) throw new FormException("Le fichier est invalide.");
 		DLOG.log(Level.ERROR, "Nom de fichier dans le part : " + rawName);
 		if ( rawName.isEmpty() ) throw new FormException("Le fichier est invalide.");
-		//if ( rawType == null ) throw new FormException("Ce type de fichier n'est pas reconnu.");
+		// Test file type
 		if ( ! rawType.matches("^[jJ][pP][eE]?[gG]$") )  throw new FormException("Ce type de fichier est invalide.");
+		// Writing file as tmpfile
 		try {
-	    	// On écrit définitivement le fichier sur le disque
-	    	writeUploadFile(uploadFile, filePath, fileName, UPLOAD_BUFFER_SIZE);			
+	    	writeUploadFile(uploadFile, filePath, this.tmpFilename, UPLOAD_BUFFER_SIZE);			
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, e.getMessage());
+			throw new FormException("L'envoi du fichier a échoué.");
+		}
+	}
+
+	private void validateFileWhenUpdatingSite() throws FormException {
+		String rawName = "";
+		String rawType = "jpg";
+		String filePath = UPLOAD_PATH + "/site";
+		// Test Slug because filename and slug must match 
+		if ( this.slug.isEmpty() ) 
+			throw new FormException("Le fichier ne peut pas être sauvagardé car le nom du site est invalide.");
+		// Test uploded file
+		try {
+			rawName = getFileName(uploadFile);
+		} catch (IOException e) {
+			DLOG.log(Level.ERROR, e.getMessage());
+			return;
+		}
+		if ( rawName == null ) return;
+		DLOG.log(Level.DEBUG, "Nom de fichier dans le part : " + rawName);
+		if ( rawName.isEmpty() ) return;
+		this.updatingFile = true;
+		// Test file type
+		if ( ! rawType.matches("^[jJ][pP][eE]?[gG]$") )  throw new FormException("Ce type de fichier est invalide.");
+		// Writing file as tmpfile
+		try {
+	    	writeUploadFile(uploadFile, filePath, this.tmpFilename, UPLOAD_BUFFER_SIZE);			
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, e.getMessage());
 			throw new FormException("L'envoie du fichier a échoué.");
 		}
 	}
 
-	private void removeFile() throws FormException {
+	private void updateImage() {
+		if ( this.updatingFile ) {
+			// Posting an image, we remove the old one and published the new one
+			try {
+				this.removeFile(this.image, false);
+				this.publishFile(this.tmpFilename);
+			} catch (FormException ignore) {
+				DLOG.log(Level.ERROR, "Changing image and filename : Error on publishing image");
+			}
+		} else {
+			if (this.updatingName ) try { 
+				// No change on image, but filename changed
+				this.publishFile(this.image); 
+			} catch (FormException ignore) {
+				DLOG.log(Level.ERROR, "No change on image, but filename changed : Error on re-publishing image");				
+			}
+		}		
+		
+	}
+	
+	private void removeFile(String filename, boolean fallback) throws FormException {
+		// this.tmpFilename
 		String filePath = UPLOAD_PATH + "/site";
-		String fileName = this.slug + ".jpg";
 		try {
-			File file = new File(filePath + "/" + fileName);
+			File file = new File(filePath + "/" + filename);
 			file.delete();
-		} catch (Exception ignore) {}
-		throw new FormException("La création de site à échoué. Il faut ré-envoyer le fichier.");			
+		} catch (Exception ignore) {
+			DLOG.log(Level.ERROR, "Removing file : " + filename + "removing failed.");
+		}
+		if ( fallback ) throw new FormException("L'envoi du formulaire à échoué. Il faut ré-envoyer le fichier.");			
+	}
+
+	private void publishFile(String filename) throws FormException {
+		String filePath = UPLOAD_PATH + "/site";
+		try {
+			DLOG.log(Level.ERROR, "Renaming file : " + filePath + "/" + filename + " to " + filePath + "/" + this.filename);
+			File file = new File(filePath + "/" + filename);
+			file.renameTo(new File(filePath + "/" + this.filename));
+		} catch (Exception ignore) {
+			DLOG.log(Level.ERROR, "Publishing file : " + this.tmpFilename + "uploaded but publishing failed.");
+		}
 	}
 
 	private void validateSummary() throws FormException {
@@ -358,6 +435,13 @@ public class SiteForm extends Form {
 	 */
 	public Site getSite() {
 		return this.site;
+	}
+
+	/**
+	 * @return the filename
+	 */
+	public String getImage() {
+		return this.image;
 	}
 	
 	
