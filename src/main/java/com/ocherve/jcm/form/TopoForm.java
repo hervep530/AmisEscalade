@@ -34,7 +34,6 @@ public class TopoForm extends Form {
 	private SiteDao siteDao;
 	private Topo topo;
 	private String slug;
-	private boolean updatingName = false;
 	private Part uploadFile;
 	private Map<String,String> selectedIds;
 
@@ -58,6 +57,7 @@ public class TopoForm extends Form {
 		this.selectedIds = new HashMap<>();
 		this.slug = "";
 		
+		this.filepath = UPLOAD_PATH + "/topo";
 		this.topoDao = (TopoDao) DaoProxy.getInstance().getTopoDao();
 		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 		
@@ -65,21 +65,23 @@ public class TopoForm extends Form {
 			// Hidden field createSiteControl tell us if it's possible to use getParameter with multipart or not
 			if ( this.request.getParameter("partMethod") == null ) this.partMethod = true;
 			// instanciating topo or getting it for update
-			if ( updating ) {
-				Integer topoId = 0;
-				if ( getInputTextValue("topoId").matches("^[0-9]{1,}$") ) 
-					topoId = Integer.valueOf(getInputTextValue("topoId"));
-				// Before all when updating, we get topo from id, set this.slug from topo, and trace name updating
-				this.topo = topoDao.get(topoId);
-				this.slug = this.topo.getSlug();
-				if ( ! topo.getName().contentEquals(topo.getTitle()) ) this.updatingName = true;
-			} else {	
+			if ( ! updating ) {
 				// Before all when creating topo instanciate new topo, set author from session, type and dates
 				this.topo = new Topo();
 				this.topo.setAuthor((User) request.getSession().getAttribute("sessionUser"));
 				this.topo.setPublished(true);
 				this.topo.setType("TOPO");
 				this.topo.setTsCreated(Timestamp.from(Instant.now()));
+			} else {	
+				Integer topoId = 0;
+				if ( getInputTextValue("topoId").matches("^[0-9]{1,}$") ) 
+					topoId = Integer.valueOf(getInputTextValue("topoId"));
+				// Before all when updating, we get topo from id, set this.slug from topo, and trace name updating
+				this.topo = topoDao.get(topoId);
+				this.slug = this.topo.getSlug();
+				this.image = this.slug + ".jpg";
+				if ( ! getInputTextValue("name").contentEquals(this.topo.getName()) ) 
+					this.updatingName = true;
 			}
 			this.topo.setTitle(getInputTextValue("title"));
 			this.topo.setName(getInputTextValue("title"));
@@ -115,12 +117,15 @@ public class TopoForm extends Form {
 			return;
 		}
 		this.selectedIds = new HashMap<>();
+
+		this.filepath = UPLOAD_PATH + "/topo";
 		this.topoDao = (TopoDao) DaoProxy.getInstance().getTopoDao();
 		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 		// Getting topo from id, then setting Topo form and selectedId
 		try {
 			this.topo = topoDao.get(topoId);
 			this.slug = topo.getSlug();
+			this.image = topo.getSlug() + ".jpg";
 			if ( this.topo.getSites() != null ) {
 				for (Site site : this.topo.getSites()) {
 					this.selectedIds.put(String.valueOf(site.getId()), " selected");
@@ -137,13 +142,14 @@ public class TopoForm extends Form {
 	 * @return site instanciate from formular
 	 */
 	public Topo createTopo() {
-		try { validateName(); } catch (FormException e ) { this.errors.put("name",e.getMessage()); }
+		try { validateName(); } catch (FormException e ) { this.errors.put("title",e.getMessage()); }
 		DLOG.log(Level.DEBUG, "Author : " + this.topo.getAuthor().getUsername());
-		// validate country
+		this.filename = this.slug + ".jpg";
+		this.tmpFilename = this.slug + "-tmp.jpg";
 		try { validateCreateTitle() ; } catch (FormException e) { this.errors.put("title", e.getMessage()); }
 		try { validateWriter() ; } catch (FormException e) { this.errors.put("writer", e.getMessage()); }
 		try { validateWritedAt() ; } catch (FormException e) { this.errors.put("writedAt", e.getMessage()); }
-		try { validateFile() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
+		try { validateFileWhenCreatingTopo() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
 		try { validateSummary() ; } catch (FormException e) { this.errors.put("summary", e.getMessage()); }
 		try { validateContent() ; } catch (FormException e) { this.errors.put("content", e.getMessage()); }
 		if ( ! this.errors.isEmpty() ) return topo;
@@ -155,13 +161,11 @@ public class TopoForm extends Form {
 			this.topoDao.refresh(Topo.class, topoId);
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "SiteDao : creating site failed");
-			this.errors.put("creationSite","La création du site a échoué.");
+			this.errors.put("creationSite","La création du topo a échoué.");
+			try { this.removeFile(this.tmpFilename, true); } catch (FormException e1) { errors.put("file", e1.getMessage()); }
+			return this.topo;
 		}
-		try {
-			if ( topoId < 1 ) removeFile();
-		} catch (FormException e) {
-			this.errors.put("file", e.getMessage());
-		}
+		try { this.publishFile(this.tmpFilename); } catch (FormException ignore) { }
 		return this.topo;
 	}
 
@@ -169,29 +173,32 @@ public class TopoForm extends Form {
 	 * @return site instanciate from formular
 	 */
 	public Topo updateTopo() {
-		//try { validateName(); } catch (FormException e ) { this.errors.put("name",e.getMessage()); }
-		try { validateUpdateTitle() ; } catch (FormException e) { this.errors.put("title", e.getMessage()); }
+		try { 
+			if ( this.updatingName ) validateName(); 
+		} catch (FormException e ) { this.errors.put("title",e.getMessage()); }
+		this.filename = this.slug + ".jpg";
+		this.tmpFilename = this.slug + "-tmp.jpg";
+		try { validateCreateTitle() ; } catch (FormException e) { this.errors.put("title", e.getMessage()); }
 		try { validateWriter() ; } catch (FormException e) { this.errors.put("writer", e.getMessage()); }
 		try { validateWritedAt() ; } catch (FormException e) { this.errors.put("writedAt", e.getMessage()); }
-		//try { validateFile() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
+		try { validateFileWhenUpdatingTopo() ; } catch (FormException e) { this.errors.put("file", e.getMessage()); }
 		try { validateSummary() ; } catch (FormException e) { this.errors.put("summary", e.getMessage()); }
 		try { validateContent() ; } catch (FormException e) { this.errors.put("content", e.getMessage()); }
 		if ( ! this.errors.isEmpty() ) return topo;
 		try { validateSites() ; } catch (FormException e) { this.errors.put("sites", e.getMessage()); }
-		if ( ! this.errors.isEmpty() ) return topo;
-		Integer controlId = 0;
+		if ( ! this.errors.isEmpty() ) {
+			try { this.removeFile(this.tmpFilename, true); } catch (FormException e) { errors.put("file", e.getMessage()); }
+			return this.topo;
+		}
 		try { 
-			controlId = this.topoDao.update(this.topo).getId();
-			//if ( controlId > 0 ) this.topoDao.refresh(Topo.class, topoId);
+			this.topoDao.update(this.topo).getId();
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "SiteDao : creating site failed");
 			this.errors.put("creationSite","La création du site a échoué.");
+			try { this.removeFile(this.tmpFilename, true); } catch (FormException e1) { errors.put("file", e1.getMessage()); }
+			return this.topo;
 		}
-		try {
-			if ( controlId < 1 ) removeFile();
-		} catch (FormException e) {
-			this.errors.put("file", e.getMessage());
-		}
+		if ( this.updatingFile || this.updatingName ) this.updateImage(); 		
 		return this.topo;
 	}
 
@@ -337,15 +344,14 @@ public class TopoForm extends Form {
 	 * 
 	 * @throws FormException
 	 */
-	private void validateFile() throws FormException {
+	private void validateFileWhenCreatingTopo() throws FormException {
 		String rawName = "";
 		String rawType = "jpg";
-		String filePath = UPLOAD_PATH + "/topo";
-		String fileName = this.slug + ".jpg";
-		if ( this.slug.isEmpty() ) 
-			throw new FormException("Le fichier ne peut pas être sauvagardé car le nom du topo est invalide.");
+		// checking filename
+		if ( this.slug.isEmpty() || ! this.filename.contentEquals(this.slug + ".jpg") ) 
+			throw new FormException("Erreur technique : nom de topo / nom de fichier invalide.");
+        // Checking uploaded file
 		try {
-	        // On vérifie qu'on a bien reçu un fichier
 			rawName = getFileName(uploadFile);
 		} catch (IOException e) {
 			DLOG.log(Level.ERROR, e.getMessage());
@@ -354,32 +360,51 @@ public class TopoForm extends Form {
 		if ( rawName == null ) throw new FormException("Le fichier est invalide.");
 		DLOG.log(Level.DEBUG, "Nom de fichier dans le part : " + rawName);
 		if ( rawName.isEmpty() ) throw new FormException("Le fichier est invalide.");
-		//if ( rawType == null ) throw new FormException("Ce type de fichier n'est pas reconnu.");
+		// Checking uploaded file type
 		if ( ! rawType.matches("^[jJ][pP][eE]?[gG]$") )  throw new FormException("Ce type de fichier est invalide.");
 		try {
-	    	// On écrit définitivement le fichier sur le disque
-	    	writeUploadFile(uploadFile, filePath, fileName, UPLOAD_BUFFER_SIZE);			
+	    	// Writing file on disk with tmpfilename
+	    	writeUploadFile(uploadFile, this.filepath, this.tmpFilename, UPLOAD_BUFFER_SIZE);			
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, e.getMessage());
 			throw new FormException("L'envoie du fichier a échoué.");
 		}
 	}
-
+	
 	/**
-	 * Remove file (needed if topo creation fails)
+	 * Validate Image file
 	 * 
 	 * @throws FormException
 	 */
-	private void removeFile() throws FormException {
-		String filePath = UPLOAD_PATH + "/topo";
-		String fileName = this.slug + ".jpg";
+	private void validateFileWhenUpdatingTopo() throws FormException {
+		String rawName = "";
+		String rawType = "jpg";
+		// checking filename
+		if ( this.slug.isEmpty() || ! this.filename.contentEquals(this.slug + ".jpg") ) 
+			throw new FormException("Erreur technique : nom de topo / nom de fichier invalide.");
+        // Checking uploaded file - if no file was received, we just keep old image without taking care of upload
 		try {
-			File file = new File(filePath + "/" + fileName);
-			file.delete();
-		} catch (Exception ignore) {}
-		throw new FormException("La création de site à échoué. Il faut ré-envoyer le fichier.");			
+			rawName = getFileName(uploadFile);
+		} catch (IOException e) {
+			DLOG.log(Level.ERROR, e.getMessage());
+			return;
+		}
+		if ( rawName == null ) return;
+		DLOG.log(Level.DEBUG, "Nom de fichier dans le part : " + rawName);
+		if ( rawName.isEmpty() ) return;
+		// If rawName is not null and not empty, it means that we're uploading new image
+		this.updatingFile = true;
+		// so exceptions will be throwed for next checking failure
+		if ( ! rawType.matches("^[jJ][pP][eE]?[gG]$") )  throw new FormException("Ce type de fichier est invalide.");
+		try {
+	    	// Writing file on disk with tmpfilename
+	    	writeUploadFile(uploadFile, this.filepath, this.tmpFilename, UPLOAD_BUFFER_SIZE);			
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, e.getMessage());
+			throw new FormException("L'envoie du fichier a échoué.");
+		}
 	}
-
+	
 	/**
 	 * Validate topo summary
 	 * 
@@ -428,5 +453,5 @@ public class TopoForm extends Form {
 	public Map<String,String> getSelectedIds() {
 		return this.selectedIds;
 	}
-	
+
 }

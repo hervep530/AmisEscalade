@@ -272,9 +272,8 @@ public abstract class Form {
 	
 	protected void removeFile(String filename, boolean fallback) throws FormException {
 		// this.tmpFilename
-		String filePath = UPLOAD_PATH + "/site";
 		try {
-			File file = new File(filePath + "/" + filename);
+			File file = new File(this.filepath + "/" + filename);
 			file.delete();
 		} catch (Exception ignore) {
 			DLOG.log(Level.ERROR, "Removing file : " + filename + "removing failed.");
@@ -283,11 +282,9 @@ public abstract class Form {
 	}
 
 	protected void publishFile(String filename) throws FormException {
-		String filePath = UPLOAD_PATH + "/site";
 		try {
-			DLOG.log(Level.ERROR, "Renaming file : " + filePath + "/" + filename + " to " + filePath + "/" + this.filename);
-			File file = new File(filePath + "/" + filename);
-			file.renameTo(new File(filePath + "/" + this.filename));
+			File file = new File(this.filepath + "/" + filename);
+			file.renameTo(new File(this.filepath + "/" + this.filename));
 		} catch (Exception ignore) {
 			DLOG.log(Level.ERROR, "Publishing file : " + this.tmpFilename + "uploaded but publishing failed.");
 		}
@@ -300,5 +297,14 @@ public abstract class Form {
     public Map<String,String> getErrors() {
     	return errors;
     }
+
+	/**
+	 * @return the image
+	 */
+	public String getImage() {
+		return image;
+	}
+    
+    
 
 }

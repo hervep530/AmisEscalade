@@ -388,15 +388,7 @@ public class SiteForm extends Form {
 	 */
 	public Site getSite() {
 		return this.site;
-	}
-
-	/**
-	 * @return the filename
-	 */
-	public String getImage() {
-		return this.image;
-	}
-	
+	}	
 	
 
 }
