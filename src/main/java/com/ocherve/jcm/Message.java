@@ -9,59 +9,91 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Parameters;
-import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.ServiceProxy;
+import com.ocherve.jcm.service.UrlException;
+import com.ocherve.jcm.service.factory.MessageService;
 
 /**
  * Servlet implementation class Message
  */
 @WebServlet("/message/*")
-public class Message extends HttpServlet {
+public class Message extends JcmServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String VUE = "/WEB-INF/MessageLayout.jsp";
-	private static final String PAGE_ERROR = "/WEB-INF/ErrorLayout.jsp";
+	private static final String LAYOUT = "/WEB-INF/MessageLayout.jsp";
+	private static final String ERROR_PAGE = "/WEB-INF/ErrorLayout.jsp";
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public Message() {
         super();
-        // TODO Auto-generated constructor stub
+        layout = LAYOUT;
+        errorPage = ERROR_PAGE;
+        service = (MessageService) ServiceProxy.getInstance().getMessageService();
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		request.setAttribute("uri", request.getRequestURI());
-		Parameters parameters = null;
-		Delivry delivry = null;
-		
-		try {		
-			parameters = ServiceProxy.getInstance().getMessageService().setParameters(request);
-			delivry = ServiceProxy.getInstance().getMessageService().doGetAction(parameters);
-		} catch (ServiceException e) {
-			delivry = ServiceProxy.getInstance().getMessageService().abort(parameters);
-		}
-
-		request.setAttribute("delivry", delivry);
-
-		if ( delivry.getErrors().isEmpty() )
-			this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
-		else
-			this.getServletContext().getRequestDispatcher(PAGE_ERROR).forward(request, response);
-
+		super.doGet(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		super.doPost(request, response);
 	}
+	
+	@Override
+	protected Delivry doGetAction(Parameters parameters) {
+		Delivry delivry = null;
+		try {
+			switch (parameters.getParsedUrl().getAction()) {
+				case "l" :
+					// Get list of all messages
+					delivry = ((MessageService) service).getList(parameters);
+					break;
+				case "lmd" :
+					// Get list of messages owned by user from session
+					delivry = ((MessageService) service).getMyDiscussions(parameters);
+					break;
+				case "lfd" :
+					// Get list of messages owned by user from session
+					delivry = ((MessageService) service).getFocusOnDiscussion(parameters);
+					break;
+				case "r" :
+					delivry = ((MessageService) service).getMessage(parameters);
+					break;
+				case "c" :
+					delivry = ((MessageService) service).getCreateForm(parameters);
+					break;
+				case "d" :
+					delivry = ((MessageService) service).delete(parameters);
+					break;
+				default :
+			}			
+		} catch (UrlException e ) {
+			delivry = service.abort(parameters);
+		}
+		return delivry;
+	}
+	
+	@Override
+	protected Delivry doPostAction(Parameters parameters) {
+		Delivry delivry = null;
+		try {
+			if (parameters.getParsedUrl().getAction().contentEquals("c")) {
+					delivry = ((MessageService) service).postCreateForm(parameters);
+			}			
+		} catch (UrlException e ) {
+			delivry = service.abort(parameters);
+		}
+		return delivry;
+	}
+	
 
 }

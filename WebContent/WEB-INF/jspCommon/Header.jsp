@@ -26,12 +26,12 @@
 									width="32" height="32">
 								</a>
 							</li>
-							<!-- li class="nav-item">
-								<a href="#" class="p-2">
-								<img alt="Menu" src=""
+							<li class="nav-item">
+								<a href="${contextPath}/message/lmd/1/${token}" class="p-2">
+								<img alt="Messagerie" src="${contextPath}/images/mailbox.png"
 									width="32" height="32">
 								</a>
-							</li -->
+							</li>
 						</ul>
 					</nav>
 </c:if>

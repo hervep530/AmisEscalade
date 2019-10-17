@@ -86,5 +86,24 @@ form .required {
 #comment-group{
 	width: 88%;
 	margin-left: 6%;
-	font-size: 0.8em
+	font-size: 0.8em;
+}
+
+.message-box {
+	width :90%;
+	margin-left: 5%;
+	font-size: 0.8em;
+}
+
+.masked-message {
+	display: none;	
+}
+
+.active-message-link {
+	background-color: #DDCCFF;	
+}
+
+#navMessage .nav-mailbox {
+	margin: 0;
+	padding: 0;
 }

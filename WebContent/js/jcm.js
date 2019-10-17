@@ -25,3 +25,53 @@ $('#confirmModal').on('show.bs.modal', function (event) {
 	  }
 	  console.log('url sur laquelle pointe le bouton : ' + document.getElementById('modalAction').onclick )
 	})
+
+function readContent(contentId){
+	// set active message (in order to display all content)
+	setActiveContent(contentId);
+	// set active link on displayed message (background is modified, for example)
+	setActiveLink(contentId);
+}
+
+	
+function setActiveContent(contentId){
+	// masking all contents
+	var c = 0;
+	var content = document.getElementById("content-" + c );
+	while ( content != null ) {
+		if ( ! content.className.includes(' masked-message')) { 
+			content.className = content.className + " masked-message";
+		}
+		c++;
+		content = document.getElementById("content-" + c);
+	}
+	// and unmasking readable content 
+	console.log("content-" + contentId)
+	content = document.getElementById("content-" + contentId);
+	var contentClasses = content.className;
+	if ( contentClasses.includes(' masked-message')) { 
+		content.className = contentClasses.replace( / masked-message/g , ''); 
+	}
+}
+
+function setActiveLink(contentId){
+	// unlighting old active link
+	var c = 0;
+	var link = document.getElementById("message-link-" + c );
+	while ( link != null ) {
+		if ( link.className.includes(' active-message-link') ) { 
+			link.className = link.className.replace( / active-message-link/g , '');
+		}
+		c++;
+		link = document.getElementById("message-link-" + c);
+	}
+	// lighting active link
+	link = document.getElementById("message-link-" + contentId );
+	console.log("message-link-" + contentId);
+	var linkClasses = " active-message-link";
+	if ( link != null) linkClasses = link.className;
+	if ( ! linkClasses.includes(" active-message-link") ) link.className = linkClasses + " active-message-link";
+}
+
+	
+	

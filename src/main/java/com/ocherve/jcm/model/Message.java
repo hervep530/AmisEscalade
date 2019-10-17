@@ -2,6 +2,7 @@ package com.ocherve.jcm.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -26,7 +28,30 @@ import javax.persistence.Table;
 @Table(name = "jcm_message")
 @NamedQueries({
 	@NamedQuery(name="Message.findAll", query="SELECT m FROM Message m"),
-	@NamedQuery(name="Message.findAllOrderByIdAsc", query="SELECT m FROM Message m ORDER BY m.id ASC"),
+	@NamedQuery(name="Message.findMyDiscussionsOrderByIdDESC", 
+		query="SELECT m FROM Message m "
+				+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
+					+ "AND ( m.id = m.discussionId OR m.discussionId = 0 ) "
+				+ "ORDER BY m.id DESC"),
+	@NamedQuery(name="Message.countAllMyDiscussions", 
+		query="SELECT COUNT(0) FROM Message m "
+				+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
+					+ "AND ( m.id = m.discussionId OR discussionId = 0 )"),
+	@NamedQuery(name="Message.countPreviousDiscussionsOrderByIdDESC", 
+		query="SELECT COUNT(0) FROM Message m "
+				+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
+					+ "AND ( m.id = m.discussionId OR m.discussionId = 0 ) "
+					+ "AND m.id > :discussionId "
+				+ "ORDER BY m.id DESC"),
+	@NamedQuery(name="Message.findMinesByDiscussionOrderByIdDESC", 
+		query="SELECT m FROM Message m "
+				+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
+					+ "AND m.discussionId = :discussionId "
+				+ "ORDER BY m.id DESC"),
+	@NamedQuery(name="Message.findDiscussionMessagesOrderByIdDESC", 
+		query="SELECT m FROM Message m "
+				+ "WHERE m.discussionId = :discussionId "
+				+ "ORDER BY m.id DESC"),
 	@NamedQuery(name="Message.findAllOrderByIdDesc", query="SELECT m FROM Message m ORDER BY m.id DESC")
 })
 public class Message implements Serializable{
@@ -66,6 +91,9 @@ public class Message implements Serializable{
 	
 	@OneToMany(mappedBy = "parent")
 	private List<Message> responses;
+	
+	@Transient
+	private boolean lastDiscussionMessage = false;
 
 	/**
 	 * 
@@ -267,7 +295,46 @@ public class Message implements Serializable{
 		}
 	}
 
-	
-	
+	/**
+	 * Getting partial content (substring of content
+	 * 
+	 * @return reduced content
+	 */
+	public String getReducedContent() {
+		int lastStringIndex = 69;
+		String reducedContent = this.content;
+		if (this.content.length() > 70) {
+			reducedContent = this.content.substring(0, lastStringIndex);
+		} 
+		return reducedContent;
+	}
 
+	/**
+	 * @return the lastDiscussionMessage
+	 */
+	public boolean isLastDiscussionMessage() {
+		return lastDiscussionMessage;
+	}
+
+	/**
+	 * @param lastDiscussionMessage the lastDiscussionMessage to set
+	 */
+	public void setLastDiscussionMessage(boolean lastDiscussionMessage) {
+		this.lastDiscussionMessage = lastDiscussionMessage;
+	}
+	
+	/**
+	 * @return tsSent under DateTime format
+	 */
+	public String getDisplayDtSent() {
+		return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(this.tsSent);
+	}
+	
+	/**
+	 * @return tsRead under DateTime format
+	 */
+	public String getDisplayDtRead() {
+		return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(this.tsRead);
+	}
+	
 }

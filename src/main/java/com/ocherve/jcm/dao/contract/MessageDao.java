@@ -50,6 +50,12 @@ public interface MessageDao extends Dao{
 	 */
 	List<Message> getListFromNamedQueryAndIdParameter(String namedQuery, Integer id);
 	
+	/**
+	 * @param queryName 
+	 * @param fields 
+	 * @return message list
+	 */
+	List<Message> getListFromNamedQueryWithParameters(String queryName, Map<String,Object> fields);	
 	
 	/**
 	 * @param id

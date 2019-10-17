@@ -54,6 +54,16 @@ class MessageDaoImpl extends DaoImpl implements MessageDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	public List<Message> getListFromNamedQueryWithParameters(String queryName, Map<String, Object> fields) {
+		try {
+			return (List<Message>) getListFromNamedQuery(Message.class, queryName, fields);			
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<Message> getListFromNamedQueryAndIdParameter(String namedQuery, Integer id) {
 		try {
 			return (List<Message>) getListFromNamedQueryAndIdParameter(Message.class, namedQuery, id);			

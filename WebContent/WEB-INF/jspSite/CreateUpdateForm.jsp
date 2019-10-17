@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<c:set var="postAction" scope="page" value="${contextPath}/site/${action}/${id ? id : 0}/${token}"></c:set>
+<c:set var="siteId" scope="page" value="${delivry.attributes.siteForm.site.id}"></c:set>
+<c:set var="postAction" scope="page" value="${contextPath}/site/${action}/${siteId gt 0 ? siteId : (id ? id : 0)}/${token}"></c:set>
 <c:set var="labelAction" scope="page" value="${action == 'u' ? 'Mettre à jour' : 'Créer'}"></c:set>
 <c:set var="image" value="${delivry.attributes.siteForm.image}" scope="page"></c:set>
 <c:set var="nameError" value="${delivry.attributes.siteForm.errors.name}" scope="page"></c:set>
