@@ -59,10 +59,11 @@ public class MemberFilter extends JcmFilter {
 			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
 		}
 
-		setFilterVariables();
+		this.setFilterVariables();
+		this.setNotStaticToken();
 
 		try {
-			if ( ! validateToken() ) return;
+			if ( ! validateToken(this.isStaticToken) ) return;
 		} catch (FilterException e) {
 			setRequestError("TokenError", e.getMessage());
 			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);

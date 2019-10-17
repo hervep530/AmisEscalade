@@ -7,7 +7,7 @@ public class JcmException {
 		for (int t = 0; t < e.getStackTrace().length; t++) {
 			trace += "%n" + e.getStackTrace()[t].toString();
 		}
-		return trace;
+		return String.format(trace);
 	}
 
 

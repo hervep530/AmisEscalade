@@ -158,6 +158,9 @@ abstract class JcmServlet extends HttpServlet {
 		// Security from filter is passed, so for each request, we generate a new token
 		try {
 			this.session.setAttribute("token", DatatypeConverter.printHexBinary(RandomString.make(16).getBytes()));
+			if ( session.getAttribute("staticToken") == null) {
+				this.session.setAttribute("staticToken", DatatypeConverter.printHexBinary(RandomString.make(16).getBytes()));
+			}
 		} catch (Exception ignore) {}
 		this.session.setAttribute("redirectionCount", 0);
 

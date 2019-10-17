@@ -18,6 +18,10 @@ import org.apache.logging.log4j.Level;
 @WebFilter(filterName = "UserFilter", urlPatterns = {
 	"/site/c/*",
 	"/site/uac/*",
+	"/message/lmd/*",
+	"/message/lfd/*",
+	"/message/r/*",
+	"/message/c/*",
 	"/session/deconnexion/*",
 	"/session/d/*",
 	"/session/pass/*"
@@ -56,10 +60,11 @@ public class UserFilter extends JcmFilter {
 			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
 		}
 
-		setFilterVariables();
+		this.setFilterVariables();
+		this.setNotStaticToken();
 
 		try {
-			if ( ! validateToken() ) return;
+			if ( ! validateToken(this.isStaticToken) ) return;
 		} catch (FilterException e) {
 			setRequestError("TokenError", e.getMessage());
 			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
@@ -86,10 +91,12 @@ public class UserFilter extends JcmFilter {
 	@Override
 	protected Boolean isValidUrl() {
 		if ( method.contentEquals("POST") ) {
-			String postActions = "(session/pass|site/c|site/uac)";
+			String postActions = "(session/pass|site/c|site/uac|message/c)";
 			return uri.matches("^/" + postActions + "/[0-9]{1,16}/\\w{1,32}$");
 		} else {
-			String getActions = "(session/deconnexion|session/pass|session/d|site/c)";
+			String getActions = "(session/deconnexion|session/pass|session/d|"
+								+ "site/c|"
+								+ "message/lmd|message/lfd|message/r)";
 			return uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$");
 		}	
 	}

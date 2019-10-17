@@ -42,7 +42,9 @@ abstract class JcmFilter implements Filter {
     protected String method;
     protected HttpSession session;
     protected String sessionToken;
+    protected String sessionStaticToken;
     protected String urlToken;
+    protected boolean isStaticToken;
     protected String uri;
     protected String referer;
     protected Integer userId; 
@@ -100,6 +102,8 @@ abstract class JcmFilter implements Filter {
 		Configurator.setLevel(DLOG.getName(), DLOGLEVEL);
 		// Default miss access issue - user is not connected
 		this.sessionToken = "";
+		this.sessionStaticToken = "";
+		this.isStaticToken = true;
 		this.urlToken = "";
 		this.message = "Vous devez vous connecter pour accéder à cette fonctionnalité.";
 		this.redirection = "";
@@ -136,7 +140,8 @@ abstract class JcmFilter implements Filter {
 		} catch (Exception ignore) { /* uri was already checked - no need to log*/ }
 		// Getting token in session if exists
 		try {
-			this.sessionToken = (String) this.session.getAttribute("token");			
+			this.sessionToken = (String) this.session.getAttribute("token");	
+			this.sessionStaticToken = (String) this.session.getAttribute("staticToken");	
 		} catch (Exception ignore) {}
 		// url_connexion only used on GET method, so there's no control on token and we don't need to generate it randomly
 		this.url_connexion = this.request.getContextPath() + "/session/connexion/0/786775566A7674776D7541724E58766B";
@@ -150,10 +155,10 @@ abstract class JcmFilter implements Filter {
 	 * @return true if validated
 	 * @throws FilterException
 	 */
-	protected boolean validateToken() throws FilterException {
+	protected boolean validateToken(boolean isStaticToken) throws FilterException {
 		if ( skipTokenChecking() ) return true;
 		try {
-			if ( this.urlToken == null || this.sessionToken == null ) {
+			if ( this.urlToken == null || this.sessionToken == null || this.sessionStaticToken == null ) {
 				this.message = "Votre session est expirée.";
 				// null token means expired session or CSRF attempt, so we redirect to previous page or welcome page
 				this.setDeferredNotification();
@@ -162,13 +167,15 @@ abstract class JcmFilter implements Filter {
 				// return false to quit filter after redirection
 				return false;
 			}
-			if ( ! this.urlToken.contentEquals(this.sessionToken) ) {
+			String effectiveToken = this.sessionStaticToken;
+			if ( ! isStaticToken ) effectiveToken = this.sessionToken;
+			if ( ! this.urlToken.contentEquals(effectiveToken) ) {
 				// we redirect to previous page or welcome page
 				if ( ! this.referer.isEmpty() && this.redirection.contentEquals(referer) ) 
 					this.message = "Erreur de navigation. La page est maintenant rechargée, vous devriez ré-essayer.";
 				this.setDeferredNotification();
 				this.executeRedirection();
-				DLOG.log(Level.DEBUG, "Token error : session = "+ this.sessionToken + " : url = " + this.urlToken);
+				DLOG.log(Level.DEBUG, "Token error : session = " + effectiveToken + " : url = " + this.urlToken);
 				// return false to quit filter after redirection
 				return false;
 			}
@@ -412,6 +419,9 @@ abstract class JcmFilter implements Filter {
 		this.session.setAttribute("redirectionCount", String.valueOf(count));
 	}
 
-
+	// Override it in specific filter to use it with conditionnal expression based on action, http mode,...
+	protected void setNotStaticToken() {
+		this.isStaticToken = false;
+	}
 	
 }

@@ -52,11 +52,12 @@ public class AnonymousFilter extends JcmFilter {
 			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
 		}
 
-		setFilterVariables();
+		this.setFilterVariables();
+		this.setNotStaticToken();
 
 		// skip token checking if request isn't in POST method
 		try {
-			if ( ! validateToken() ) return;
+			if ( ! validateToken(this.isStaticToken) ) return;
 		} catch (FilterException e) {
 			setRequestError("TokenError", e.getMessage());
 			request.getRequestDispatcher(PAGE_ERROR).forward(request, response);
