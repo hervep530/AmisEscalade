@@ -22,6 +22,8 @@ import org.apache.logging.log4j.Level;
 	"/message/lfd/*",
 	"/message/r/*",
 	"/message/c/*",
+	"/message/ca/*",
+	"/message/cft/*",
 	"/session/deconnexion/*",
 	"/session/d/*",
 	"/session/pass/*"
@@ -96,7 +98,7 @@ public class UserFilter extends JcmFilter {
 		} else {
 			String getActions = "(session/deconnexion|session/pass|session/d|"
 								+ "site/c|"
-								+ "message/lmd|message/lfd|message/r)";
+								+ "message/lmd|message/lfd|message/r|message/ca|message/cft)";
 			return uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$");
 		}	
 	}

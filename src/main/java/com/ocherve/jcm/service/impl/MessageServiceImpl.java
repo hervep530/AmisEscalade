@@ -6,9 +6,14 @@ import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.MessageDao;
+import com.ocherve.jcm.dao.contract.TopoDao;
 import com.ocherve.jcm.form.MessageForm;
+import com.ocherve.jcm.model.Message;
 import com.ocherve.jcm.model.MessageBox;
+import com.ocherve.jcm.model.Topo;
 import com.ocherve.jcm.service.Delivry;
+import com.ocherve.jcm.service.Notification;
+import com.ocherve.jcm.service.NotificationType;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.factory.MessageService;
 import com.ocherve.jcm.utils.JcmException;
@@ -27,13 +32,19 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 	 * lmd : listing my discussions
 	 * lfd : listing my discussions and focusing on discussion where id is in url
 	 * r : display message and list discussion with focusing on discussion containing message
+	 * c : create
+	 * ca : create with answering other message (parent)
+	 * cft : create from topo (request = new discussion)
+	 * d : delete
 	 */
 	protected final static String[][] SVC_ACTIONS = {
 			{"la","/message/la/$id/$slug"},
 			{"lmd","/message/lmd/$id/$slug"},
-			{"lfd","/message/lmd/$id/$slug"},
+			{"lfd","/message/lfd/$id/$slug"},
 			{"r","/message/r/$id/$slug"},
 			{"c","/message/c/$id/$slug"},
+			{"ca","/message/ca/$id/$slug"},
+			{"cft","/message/cft/$id/$slug"},
 			{"d","/message/d/$id/$slug"}
 	};
 
@@ -70,23 +81,14 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 		try {
 			int userId = Integer.valueOf(parameters.getSessionUser().getId());
 			int pageId = Integer.valueOf(parameters.getParsedUrl().getId());
-		
-			
-			
 			DLOG.log(Level.DEBUG, "Getting message box with userId " + userId + " and pageId " + pageId);
-			
 			messageBox = new MessageBox(userId, pageId, "DiscussionsPage");			
-			
 			DLOG.log(Level.DEBUG, "Message box contains " + messageBox.getDiscussionsCount() + " discussions");
 		} catch (Exception e) {
 			messageBox = new MessageBox();
 			DLOG.log(Level.ERROR, JcmException.formatStackTrace(e));
 			DLOG.log(Level.DEBUG, "Error when creating message box.");
 		}
-
-		
-		
-		
 		// Appending data to result and return it
 		this.delivry.appendattribute("messageBox", messageBox);
 		this.appendMandatoryAttributesToDelivry(parameters);
@@ -134,8 +136,41 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 
 	@Override
 	public Delivry getCreateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		this.delivry = new Delivry();
+		MessageBox messageBox = null;
+		MessageForm form = null;
+		Topo topo = null;
+		try {
+			if ( parameters.getParsedUrl().getAction().contentEquals("ca") ) {
+				// Getting form to create answer, we first get MessageBox with focused message and build form from it
+				int userId = Integer.valueOf(parameters.getSessionUser().getId());
+				int messageId = Integer.valueOf(parameters.getParsedUrl().getId());
+				messageBox = new MessageBox(userId, messageId, "MessageFocus");	
+				DLOG.log(Level.DEBUG, "Focused message id : " + messageBox.getFocusedMessage().getId());
+				form = new MessageForm(messageBox.getFocusedMessage());
+				DLOG.log(Level.DEBUG, "Form message id : " + form.getMessage().getId());
+				// Appending messageBox to delivry
+				this.delivry.appendattribute("messageBox", messageBox);
+			} else if ( parameters.getParsedUrl().getAction().contentEquals("cft") ) {
+				// Getting form for topo request, we first get topo and build messageForm from it
+				int topoId = Integer.valueOf(parameters.getParsedUrl().getId());
+				topo = ((TopoDao) DaoProxy.getInstance().getTopoDao()).get(topoId);
+				form = new MessageForm(topo);
+			}
+		} catch (Exception e ) {
+			// Error on getting form from topo or messageBox suggests an internal error already logged - deferred notification
+			DLOG.log(Level.ERROR, JcmException.formatStackTrace(e));
+			String message = "Une erreur interne s'est produite, le formulaire n'a pas pu s'afficher";
+			Notification notification = new Notification(NotificationType.ERROR, message);
+			this.delivry.appendSessionNotification("Creation Message", notification);
+			this.delivry.appendattribute("redirect", parameters.getContextPath() + "message/lmd/1/" + parameters.getToken());
+			return this.delivry;		
+		}
+		// Appending data to delivry and return it
+		this.delivry.appendattribute("messageForm", form);
+		this.appendMandatoryAttributesToDelivry(parameters);
+		
+		return this.delivry;
 	}
 
 	@Override
@@ -146,8 +181,46 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 
 	@Override
 	public Delivry postCreateForm(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		this.delivry = new Delivry();
+		// Defaut value
+		String notificationLabel = "Envoi de message";
+		String message = "Votre message est envoyé avec succès.";
+		Notification notification = new Notification(NotificationType.SUCCESS, message);
+		int discussionId = 0;
+		String action = "lfd";
+
+		//Getting form, creating message and getting discussionId if success
+		MessageForm messageForm = (MessageForm) parameters.getForm();
+		@SuppressWarnings("unused")
+		Message createMessage = messageForm.create();
+		if (createMessage != null) discussionId = createMessage.getDiscussionId();
+		// If errors (not internal error)we set result values and return it
+		if (  ! messageForm.getErrors().isEmpty() && ! messageForm.getErrors().containsKey("internal") ) {
+			this.delivry.appendattribute("siteForm", messageForm);
+			this.appendMandatoryAttributesToDelivry(parameters);
+			DLOG.log(Level.TRACE, "CreateMessageFom - Errors when creating message");
+			return this.delivry;
+		} 
+
+		if ( messageForm.getErrors().containsKey("internal") ) {
+			// Of course, changing default value if internal error 
+			message = "L'envoi du message a échoué à cause d'une erreur interne.";
+			notification = new Notification(NotificationType.ERROR, message);
+		}
+		// Appending deferred notification
+		this.delivry.appendSessionNotification(notificationLabel, notification);
+		// Appending redirection and finalizing delivry
+		
+		if ( discussionId == 0 ) {
+			discussionId = 1;
+			action = "lmd";
+		}
+		String redirection = parameters.getContextPath() + "/message/"; 
+		redirection += action + "/" + discussionId + "/" + parameters.getToken();
+		this.delivry.appendattribute("redirect", redirection);
+		this.appendMandatoryAttributesToDelivry(parameters);
+		
+		return this.delivry;
 	}
 
 	public Long getListLimit() {

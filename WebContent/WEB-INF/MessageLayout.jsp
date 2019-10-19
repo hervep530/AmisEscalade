@@ -22,7 +22,7 @@
 <%@ include file="jspMessage/Title.jsp" %>
 <c:choose>
     <c:when test="${action == 'r' || action == 'lfd' }"><%@ include file="jspMessage/Content.jsp" %></c:when>
-    <c:when test="${action == 'c'}"><%@ include file="jspMessage/CreateForm.jsp" %></c:when>
+    <c:when test="${action == 'c' || action == 'ca' || action == 'cft'}"><%@ include file="jspMessage/CreateForm.jsp" %></c:when>
 </c:choose>
 <%@ include file="jspMessage/View.jsp" %>
 						</div>

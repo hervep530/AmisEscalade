@@ -68,7 +68,8 @@ public class Message extends JcmServlet {
 				case "r" :
 					delivry = ((MessageService) service).getMessage(parameters);
 					break;
-				case "c" :
+				case "ca" :
+				case "cft" :
 					delivry = ((MessageService) service).getCreateForm(parameters);
 					break;
 				case "d" :

@@ -20,6 +20,8 @@ public class Parameters {
 	private String contextPath;
 	private String referer;
 	private User sessionUser;
+	private String token;
+	private String staticToken;
 	private Map<String,Notification> notifications;
 
 	/**
@@ -174,6 +176,34 @@ public class Parameters {
 	 */
 	public void setReferer(String referer) {
 		this.referer = referer;
+	}
+
+	/**
+	 * @return the token
+	 */
+	public String getToken() {
+		return token;
+	}
+
+	/**
+	 * @param token the token to set
+	 */
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	/**
+	 * @return the staticToken
+	 */
+	public String getStaticToken() {
+		return staticToken;
+	}
+
+	/**
+	 * @param staticToken the staticToken to set
+	 */
+	public void setStaticToken(String staticToken) {
+		this.staticToken = staticToken;
 	}
 	
 	

@@ -7,7 +7,7 @@
 							  </button>
 <c:if test="${ message.lastDiscussionMessage && message.receiver.id == userId }">
 							  <button type="button" class="btn btn-default"
-							  			onclick="location='${contextPath}/message/c/${message.id}/${token}'">
+							  			onclick="location='${contextPath}/message/ca/${message.id}/${token}'">
 									<img alt="Icone Répondre" src="${contextPath}/images/mail-write.png" 
 										title="Répondre au message" width="20" height="20">
 							  </button>

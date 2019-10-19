@@ -109,6 +109,8 @@ public abstract class ServiceImpl implements Service {
 		try {
 			sessionUser = (User) request.getSession().getAttribute("sessionUser");
 			parameters.setSessionUser(sessionUser);
+			parameters.setToken((String) request.getSession().getAttribute("token"));
+			parameters.setStaticToken((String) request.getSession().getAttribute("staticToken"));
 		} catch (Exception e) {
 			DLOG.log(Level.FATAL, serviceName + " - user not found in session" + e.getMessage());			
 			sessionUser = openAnonymousSession();		

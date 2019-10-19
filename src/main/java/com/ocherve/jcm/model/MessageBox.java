@@ -169,6 +169,9 @@ public class MessageBox {
 		this.fields.put("userId", userId.intValue());
 		this.fields.put("discussionId", discussionId.intValue());
 		this.focusedDiscussion = messageDao.getListFromNamedQueryWithParameters(queryName, fields);
+		if ( this.focusedDiscussion.size() == 0 ) {
+			try { this.focusedDiscussion.add(messageDao.get(discussionId.intValue())); } catch (Exception ignore) {}
+		}
 		this.focusedDiscussionCount = this.focusedDiscussion.size();
 		if (this.focusedDiscussionCount > 0)
 			this.focusedDiscussion.get(0).setLastDiscussionMessage(true);

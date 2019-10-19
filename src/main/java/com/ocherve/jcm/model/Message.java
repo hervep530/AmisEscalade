@@ -89,11 +89,15 @@ public class Message implements Serializable{
 	@Column(name = "discussion_id", columnDefinition = "BIGINT DEFAULT  0")
 	private Integer discussionId = 0;
 	
+	@Column(name = "discussion_masked")
+	private Integer discussionMasked = 0;
+	
+	@Column(name = "last_discussion_message")
+	private boolean lastDiscussionMessage = false;
+
 	@OneToMany(mappedBy = "parent")
 	private List<Message> responses;
 	
-	@Transient
-	private boolean lastDiscussionMessage = false;
 
 	/**
 	 * 
@@ -117,6 +121,7 @@ public class Message implements Serializable{
 		this.content = content;
 		this.parent = parent;
 		this.discussionId = 0;
+		this.discussionMasked = 0;
 		synchronizeDiscussionIdFromParent(parent);
 	}
 
@@ -285,7 +290,9 @@ public class Message implements Serializable{
 	}
 
 	private void synchronizeDiscussionIdFromParent(Message parent) {
+		this.lastDiscussionMessage = true;
 		if (parent != null) {
+			this.parent.lastDiscussionMessage = false;
 			if (parent.getDiscussionId() == 0) {
 				this.discussionId = parent.id;
 				this.parent.discussionId = parent.id;
@@ -323,6 +330,22 @@ public class Message implements Serializable{
 		this.lastDiscussionMessage = lastDiscussionMessage;
 	}
 	
+	/**
+	 * @return the discussionMasked
+	 */
+	public Integer getDiscussionMasked() {
+		return discussionMasked;
+	}
+	
+
+	/**
+	 * @param discussionMasked the discussionMasked to set
+	 */
+	public void setDiscussionMasked(Integer discussionMasked) {
+		this.discussionMasked = discussionMasked;
+	}
+	
+
 	/**
 	 * @return tsSent under DateTime format
 	 */
