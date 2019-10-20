@@ -9,7 +9,7 @@
 </c:if>
 <c:if test="${ roleId > 1 }">
 							  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#confirmModal" 
-							  			data-location="${contextPath}/message/d/${site.id}/${token}"
+							  			data-location="${contextPath}/message/d/${discussion.id}/${token}"
 							  			data-title="Confirmer la suppression de la discussion"
 							  			data-action="Supprimer"
 							  			data-body="Souhaitez-vous supprimer la discussion ${discussion.title}">

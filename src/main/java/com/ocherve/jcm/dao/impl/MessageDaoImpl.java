@@ -3,8 +3,13 @@ package com.ocherve.jcm.dao.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+
 import com.ocherve.jcm.dao.contract.MessageDao;
+import com.ocherve.jcm.model.Comment;
+import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Message;
+import com.ocherve.jcm.model.Site;
 
 /**
  * @author herve_dev
@@ -75,6 +80,22 @@ class MessageDaoImpl extends DaoImpl implements MessageDao {
 	@Override
 	public boolean delete(Integer id) {
 		return delete(Message.class, id);
+	}
+
+	@Override
+	protected void setUpdateAttributes(Map<String,Object> fields) {
+		for (String field : fields.keySet()) {
+			switch (field) {
+				case "content":
+					((Message) object).setContent((String)fields.get(field));
+					break;
+				case "discussionMasked":
+					((Message) object).setDiscussionMasked((Integer)fields.get(field));
+					break;
+				default :
+					DLOG.log(Level.ERROR, "Field " + field + " is not defined in method setUpdateAttributes.");
+			}
+		}
 	}
 
 }

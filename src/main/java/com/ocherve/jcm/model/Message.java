@@ -28,30 +28,32 @@ import javax.persistence.Transient;
 @Table(name = "jcm_message")
 @NamedQueries({
 	@NamedQuery(name="Message.findAll", query="SELECT m FROM Message m"),
-	@NamedQuery(name="Message.findMyDiscussionsOrderByIdDESC", 
-		query="SELECT m FROM Message m "
-				+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
-					+ "AND ( m.id = m.discussionId OR m.discussionId = 0 ) "
-				+ "ORDER BY m.id DESC"),
 	@NamedQuery(name="Message.countAllMyDiscussions", 
-		query="SELECT COUNT(0) FROM Message m "
-				+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
-					+ "AND ( m.id = m.discussionId OR discussionId = 0 )"),
+				query="SELECT COUNT(0) FROM Message m "
+						+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
+							+ "AND ( m.id = m.discussionId OR discussionId = 0 )"
+							+ "AND NOT m.discussionMasked = :userId " ),
+	@NamedQuery(name="Message.findMyDiscussionsOrderByIdDESC", 
+				query="SELECT m FROM Message m "
+						+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
+							+ "AND ( m.id = m.discussionId OR m.discussionId = 0 ) "
+							+ "AND NOT m.discussionMasked = :userId "
+						+ "ORDER BY m.id DESC"),
 	@NamedQuery(name="Message.countPreviousDiscussionsOrderByIdDESC", 
-		query="SELECT COUNT(0) FROM Message m "
-				+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
-					+ "AND ( m.id = m.discussionId OR m.discussionId = 0 ) "
-					+ "AND m.id > :discussionId "
-				+ "ORDER BY m.id DESC"),
+				query="SELECT COUNT(0) FROM Message m "
+						+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
+							+ "AND ( m.id = m.discussionId OR m.discussionId = 0 ) "
+							+ "AND m.id > :discussionId "
+							+ "AND NOT m.discussionMasked = :userId "),
 	@NamedQuery(name="Message.findMinesByDiscussionOrderByIdDESC", 
-		query="SELECT m FROM Message m "
-				+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
-					+ "AND m.discussionId = :discussionId "
-				+ "ORDER BY m.id DESC"),
+				query="SELECT m FROM Message m "
+						+ "WHERE ( m.sender.id = :userId OR m.receiver.id = :userId ) "
+							+ "AND m.discussionId = :discussionId "
+						+ "ORDER BY m.id DESC"),
 	@NamedQuery(name="Message.findDiscussionMessagesOrderByIdDESC", 
-		query="SELECT m FROM Message m "
-				+ "WHERE m.discussionId = :discussionId "
-				+ "ORDER BY m.id DESC"),
+				query="SELECT m FROM Message m "
+						+ "WHERE m.discussionId = :discussionId "
+						+ "ORDER BY m.id DESC"),
 	@NamedQuery(name="Message.findAllOrderByIdDesc", query="SELECT m FROM Message m ORDER BY m.id DESC")
 })
 public class Message implements Serializable{

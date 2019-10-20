@@ -175,8 +175,41 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 
 	@Override
 	public Delivry delete(Parameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		this.delivry = new Delivry();
+		MessageBox messageBox = null;
+		Boolean deleted = false;
+		// default failure notification
+		Notification notification = new Notification(NotificationType.ERROR, 
+				"Une erreur interne s'est produite. Le message n'a pas pu être supprimé.");
+
+		try {
+			// Instanciating message box
+			int userId = Integer.valueOf(parameters.getSessionUser().getId());
+			int messageId = Integer.valueOf(parameters.getParsedUrl().getId());
+			messageBox = new MessageBox(userId, messageId, "DiscussionFocus");	
+			DLOG.log(Level.DEBUG, "Focused message id : " + messageBox.getFocusedDiscussionId());
+			// Delete or mask
+			if ( messageBox.isFocusedDiscussionMasked() ) {
+				DLOG.log(Level.DEBUG, "Deleting discussion...");
+				messageBox.deleteFocusDiscussion();
+			} else {
+				DLOG.log(Level.DEBUG, "Masking discussion...");
+				messageBox.maskFocusDiscussion();
+			}
+			// No error, setting deleted to true
+			deleted = true;
+		} catch (Exception ignore) { 
+			DLOG.log(Level.DEBUG, JcmException.formatStackTrace(ignore));
+			deleted = false; 
+		}
+
+		// If deleting successfull, notification is modified
+		if ( deleted ) notification = new Notification(NotificationType.SUCCESS, "Le message " + "" + " est supprimé.");
+		// Append deferred notification, redirection and mandatory attributes from parameters to delivry
+		this.delivry.appendSessionNotification("Suppression d'un Message", notification);
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/message/lmd/1/" + parameters.getToken());
+		this.appendMandatoryAttributesToDelivry(parameters);
+		return this.delivry;
 	}
 
 	@Override
