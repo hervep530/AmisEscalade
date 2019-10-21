@@ -52,6 +52,8 @@ public class Topo extends Reference implements Serializable {
 	private String writedAt;
 
 	private String writer;
+	
+	private boolean available = true;
 
 /*
 	//bi-directional many-to-one association to JcmBooking
@@ -262,6 +264,20 @@ public class Topo extends Reference implements Serializable {
 		for (Site site : sites) {
 			this.addSite(site);
 		}
+	}
+
+	/**
+	 * @return the available
+	 */
+	public boolean isAvailable() {
+		return available;
+	}
+
+	/**
+	 * @param available the available to set
+	 */
+	public void setAvailable(boolean available) {
+		this.available = available;
 	}
 	
 }

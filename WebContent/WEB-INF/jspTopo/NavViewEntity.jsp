@@ -8,6 +8,17 @@
 										title="Modifier le topo" width="20" height="20">
 							  </button>
 </c:if>
+<c:if test="${ (userId == topo.author.id) || roleId > 2 }">
+	<c:set var="uaAction" value="${ topo.available ? 'uaf' : 'uat' }" scope="page"></c:set>
+	<c:set var="uaIcon" value="${ topo.available ? 'unavailable' : 'available' }" scope="page"></c:set>
+	<c:set var="uaDisplayStatus" value="${ topo.available ? 'réservé' : 'disponible' }" scope="page"></c:set>
+	
+							  <button type="button" class="btn btn-default"
+							  			onclick="location='${contextPath}/topo/${uaAction}/${topo.id}/${token}'">
+									<img alt="Icon ${uaIcon}" src="${contextPath}/images/make_${uaIcon}.png" 
+										title="Rendre le topo ${uaDisplayStatus}" width="20" height="20">
+							  </button>
+</c:if>
 <c:if test="${ (userId == topo.author.id) }">
 							  <button type="button" class="btn btn-default">
 									<img alt="Icone Dé-publier" src="${contextPath}/images/unpublish.png" 

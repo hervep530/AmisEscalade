@@ -142,6 +142,9 @@ class TopoDaoImpl extends DaoImpl implements TopoDao {
 				case "published":
 					((Topo) object).setPublished((Boolean)fields.get(field));
 					break;
+				case "available":
+					((Topo) object).setAvailable((Boolean)fields.get(field));
+					break;
 				default :
 			}
 		}

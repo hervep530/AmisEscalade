@@ -174,8 +174,41 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 
 	@Override
 	public Delivry putAvailability(Parameters parameters) {
-		// TODO Auto-generated method stub
+		DLOG.log(Level.DEBUG, "Putting availability property...");
+		// Initializing variables
 		this.delivry = new Delivry();
+		Map<String,Object> fields = new HashMap<>();
+		Boolean available = true;
+		String notificationLabel = "Disponibilite Topo";
+		Topo updatedTopo = null;
+
+		// Updating Site with dao
+		try {
+			// set flag regarding url and call UserDao to update tag
+			if ( parameters.getParsedUrl().getAction().contentEquals("uaf") ) available = false;
+			fields.put("available", available);
+			DLOG.log(Level.DEBUG, "Updating available to " + (available ? "disponible" : "réservé"));
+			updatedTopo = topoDao.update(Integer.valueOf(parameters.getParsedUrl().getId()), fields);			
+		} catch (Exception e) {
+			// Append deferred error notification and redirect on sites list
+			String message = "Echec lors de la modification de disponibilité du topo";
+			Notification notification = new Notification(NotificationType.ERROR, message);
+			this.delivry.appendSessionNotification(notificationLabel, notification);
+			this.delivry.appendattribute("redirect", parameters.getContextPath() + "topo/l/1");
+			return this.delivry;		
+		}
+		
+		// append site in delivry
+		this.delivry.appendattribute("topo", updatedTopo);
+		// append deferred notification in delivry
+		String message = "Vous avez changé le statut du topo : " + (available ? "disponible" : "réservé") + ".";
+		DLOG.log(Level.DEBUG, "Appending deferred notification : " + message);
+		Notification notification = new Notification(NotificationType.SUCCESS, message);
+		this.delivry.appendSessionNotification(notificationLabel, notification);
+		// Set Redirection
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/topo/r/" + updatedTopo.getId() +
+				"/" + updatedTopo.getSlug());
+		// Finalizing delivry and return it
 		this.appendMandatoryAttributesToDelivry(parameters);
 		return this.delivry;
 	}
