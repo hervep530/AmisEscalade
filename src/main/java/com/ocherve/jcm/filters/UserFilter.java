@@ -102,6 +102,20 @@ public class UserFilter extends JcmFilter {
 			return uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$");
 		}	
 	}
+	
+	@Override
+	protected void setNotStaticToken() {
+		this.isStaticToken = false;
+		if ( method.contentEquals("GET") ) {
+			String getActions = "(session/deconnexion|session/pass)";
+			if ( uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$") ) this.isStaticToken = true;
+			/* A rajouter en static token...
+|"
+								+ "site/c|"
+								+ "message/lmd|message/lfd|message/r|message/ca|message/cft
+			 */
+		}	
+	}
 
 
 }

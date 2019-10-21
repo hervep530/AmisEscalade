@@ -17,7 +17,7 @@
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/connexion/0/786775566A7674776D7541724E58766B">Connexion</a>
-						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/deconnexion/0/${token}">Deconnexion</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/deconnexion/0/${staticToken}">Deconnexion</a>
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/inscription/0/786775566A7674776D7541724E58766B">Inscription</a>
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/d/0/${token}">Mon Compte</a>
 					</div>
