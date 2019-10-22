@@ -3,7 +3,7 @@
 <c:set var="authorId" value="${ site.author.id }" scope="page"></c:set>
 <c:if test="${ (userId == site.author.id) || roleId > 2 }">
 							  <button type="button" class="btn btn-default"
-							  			onclick="location='${contextPath}/site/u/${site.id}/${token}'">
+							  			onclick="location='${contextPath}/site/u/${site.id}/${staticToken}'">
 									<img alt="Icone Editer" src="${contextPath}/images/edit_1.png" 
 										title="Modifier le site" width="20" height="20">
 							  </button>

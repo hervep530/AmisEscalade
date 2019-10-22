@@ -223,7 +223,7 @@ abstract class JcmFilter implements Filter {
 			// If roleId < 2, user is not connected and anonymous
 			if ( this.roleId > 1 ) {
 				// modifying default redirection
-				this.redirection = this.request.getContextPath() + "/session/d/0/" + sessionToken;
+				this.redirection = this.request.getContextPath() + "/session/d/0/" + sessionStaticToken;
 				this.setDeferredNotification();
 				this.executeRedirection();
 				// return false to quit filter after redirection

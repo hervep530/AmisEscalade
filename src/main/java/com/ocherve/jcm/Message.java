@@ -53,10 +53,6 @@ public class Message extends JcmServlet {
 		Delivry delivry = null;
 		try {
 			switch (parameters.getParsedUrl().getAction()) {
-				case "l" :
-					// Get list of all messages
-					delivry = ((MessageService) service).getList(parameters);
-					break;
 				case "lmd" :
 					// Get list of messages owned by user from session
 					delivry = ((MessageService) service).getMyDiscussions(parameters);

@@ -175,7 +175,8 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		Map<String,Notification> notifications = new HashMap<>();
 		notifications.put(notificationLabel, notification);
 		delivry.appendSession("notifications", notifications);
-		delivry.appendattribute("redirect", parameters.getContextPath() + "/session/connexion");
+		String urlConnexion = "/session/connexion/0/786775566A7674776D7541724E58766B";
+		delivry.appendattribute("redirect", parameters.getContextPath() + urlConnexion);
 		
 		return delivry;
 		

@@ -5,9 +5,11 @@
 				<li class="nav-item active">
 					<a class="nav-link px-4 py-3" href="${contextPath}/site/l/1">Sites</a>
 				</li>
+<c:if test="${ userId  > 1 }">
 				<li class="nav-item">
 					<a class="nav-link px-4 py-3" href="${contextPath}/topo/l/1">Topos</a>
-					</li>
+				</li>
+</c:if>
 				<li class="nav-item">
 					<a class="nav-link px-4 py-3" href="${contextPath}/site/f">Recherche</a>
 				</li>
@@ -19,7 +21,9 @@
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/connexion/0/786775566A7674776D7541724E58766B">Connexion</a>
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/deconnexion/0/${staticToken}">Deconnexion</a>
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/inscription/0/786775566A7674776D7541724E58766B">Inscription</a>
-						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/d/0/${token}">Mon Compte</a>
+<c:if test="${ userId  > 1 }">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/session/d/0/${staticToken}">Mon Compte</a>
+</c:if>
 					</div>
 				</li>
 			</ul>

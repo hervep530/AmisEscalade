@@ -136,6 +136,8 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		if ( ! topo.getSlug().contentEquals(parameters.getParsedUrl().getSlug()) )
 			throw new UrlException("L'id et le slug fourni par l'url ne correspondent pas.");
 		delivry.appendattribute("topo", topo);
+		this.appendMandatoryAttributesToDelivry(parameters);
+
 		return delivry;
 	}
 

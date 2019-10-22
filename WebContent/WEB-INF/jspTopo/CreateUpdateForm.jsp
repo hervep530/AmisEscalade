@@ -3,9 +3,9 @@
 <c:set var="postAction" scope="page" 
 	value="${contextPath}/topo/${action}/${ action == 'u' ? id : '0'}/${token}">
 </c:set>
-<c:set var="cancelAction" scope="page" 
-	value="${contextPath}/topo/${action == 'c' ? 'l' : 'r'}/${ action == 'c' ? '1' : id}${action == 'c' ? '' : '/'}${action == 'c' ? '' : delivry.attributes.createTopoForm.topo.slug}">
-</c:set>
+<c:set var="cancelActionCreate" scope="page" value="${contextPath}/topo/l/1"></c:set>
+<c:set var="cancelActionUpdate" scope="page" value="${contextPath}/topo/r/${id}/${delivry.attributes.topoForm.topo.slug}"></c:set>
+<c:set var="cancelAction" scope="page" value="${action == 'c' ? cancelActionCreate : cancelActionUpdate}"></c:set>
 <c:set var="formTitle" scope="page"
 	value="${ action == 'c' ? 'Nouveau Topo' : 'Modifier le Topo'}"></c:set>
 <c:set var="buttonLabel" scope="page"

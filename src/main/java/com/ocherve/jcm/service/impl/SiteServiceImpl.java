@@ -41,8 +41,6 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			{"c","/site/c/$id/$slug"},
 			{"u","/site/u/$id/$slug"},
 			{"uac","/site/uac/$id/$slug"},
-			{"umc","/site/umc/$id/$slug"},
-			{"ut","/site/ut/$id/$slug"},
 			{"utt","/site/utt/$id/$slug"},
 			{"utf","/site/utf/$id/$slug"},
 			{"upt","/site/upt/$id/$slug"},
@@ -74,7 +72,9 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 					parameters.setForm(new SiteForm(request, true));
 					break;
 				case  "uac" :
+					DLOG.log(Level.DEBUG, "New comment - Instanciating form...");
 					parameters.setForm(new CommentForm(request));
+					DLOG.log(Level.DEBUG, "New comment - Form is now instanciated.");
 					break;
 			}
 		}
@@ -367,6 +367,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	public Delivry postAddCommentForm(Parameters parameters) {
 		this.delivry = new Delivry();
 		CommentForm commentForm = (CommentForm) parameters.getForm();
+		DLOG.log(Level.DEBUG, "Creating comment...");
 		Comment comment = commentForm.createComment();
 		String redirection = parameters.getContextPath();
 		// If errors we set result values and return it

@@ -38,10 +38,8 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 	 * d : delete
 	 */
 	protected final static String[][] SVC_ACTIONS = {
-			{"la","/message/la/$id/$slug"},
 			{"lmd","/message/lmd/$id/$slug"},
 			{"lfd","/message/lfd/$id/$slug"},
-			{"r","/message/r/$id/$slug"},
 			{"c","/message/c/$id/$slug"},
 			{"ca","/message/ca/$id/$slug"},
 			{"cft","/message/cft/$id/$slug"},
@@ -207,7 +205,7 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 		if ( deleted ) notification = new Notification(NotificationType.SUCCESS, "Le message " + "" + " est supprimé.");
 		// Append deferred notification, redirection and mandatory attributes from parameters to delivry
 		this.delivry.appendSessionNotification("Suppression d'un Message", notification);
-		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/message/lmd/1/" + parameters.getToken());
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + "/message/lmd/1/" + parameters.getStaticToken());
 		this.appendMandatoryAttributesToDelivry(parameters);
 		return this.delivry;
 	}
@@ -249,7 +247,7 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 			action = "lmd";
 		}
 		String redirection = parameters.getContextPath() + "/message/"; 
-		redirection += action + "/" + discussionId + "/" + parameters.getToken();
+		redirection += action + "/" + discussionId + "/" + parameters.getStaticToken();
 		this.delivry.appendattribute("redirect", redirection);
 		this.appendMandatoryAttributesToDelivry(parameters);
 		

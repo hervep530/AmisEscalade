@@ -3,8 +3,10 @@
 <c:set var="commentContentError" value="${delivry.attributes.commentForm.errors.content}" scope="page"></c:set>
     				<aside id="comment-group">
     					<div class="card-header my-1 py-0"><em>Commentaires</em></div>
+<c:if test="${ userId > 1 }">
 						<form id="commentSiteForm" class="text-center border border-light p-1 my-1" 
-								action="${contextPath}/site/uac/0/${token}" method="POST">
+								action="${contextPath}/site/uac/0/${staticToken}" method="POST">
+							<input type="hidden" id="partMethod" name="partMethod" value="false">
 							<input type="hidden" id="commentReferenceId" name="commentReferenceId" 
 								value="${delivry.attributes.site.id}">
 							<input type="hidden" id="commentReferenceType" name="commentReferenceType" 
@@ -25,6 +27,7 @@
 											id="summaryError">${commentContentError}</div>
 							</div>
 						</form>
+</c:if>
 <c:forEach items="${delivry.attributes.site.comments}" var="comment">
 						<div class="card mb-1">
 							<div class="row no-gutters">

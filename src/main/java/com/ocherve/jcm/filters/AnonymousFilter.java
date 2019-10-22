@@ -84,8 +84,8 @@ public class AnonymousFilter extends JcmFilter {
 	@Override
 	protected Boolean isValidUrl() {
 		// Defines allowed url for this filter
-		String postActions = "(session/connexion|session/inscription)";
-		return uri.matches("^/" + postActions + "/[0-9]{1,}/\\w{1,32}$");
+		String actions = "(session/connexion|session/inscription)";
+		return uri.matches("^/" + actions + "/[0-9]{1,}/\\w{1,32}$");
 	}
 	
 	@Override

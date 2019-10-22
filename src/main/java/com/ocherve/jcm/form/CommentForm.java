@@ -74,6 +74,7 @@ public class CommentForm extends Form {
 		this.request = request;
 		
 		try {
+			if ( this.request.getParameter("partMethod") == null ) partMethod = true;
 			author = userDao.get(((User) request.getSession().getAttribute("sessionUser")).getId());
 			commentId = getInputIntegerValue(COMMENT_ID_FIELD);
 			reference = (Reference) siteDao.get(getInputIntegerValue(REFERENCE_ID_FIELD));

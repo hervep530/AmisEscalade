@@ -5,7 +5,6 @@
 			<div id="summary" class="mx-4">
 				<div class="row">
 					<h1 class="h2 text-center col-md-9">
-						${ delivry.attributes.site.friendTag ? '<span class="badge badge-pill badge-warning">Ami !</span> ' : ''}
 						<c:out value="${ delivry.attributes.site.name }" />
 					</h1>
 					<div class="col-md-3">
@@ -26,6 +25,12 @@
 							width="96%" height="96%" />
 					</div>
 					<div id="technicalSheet" class="col-xl-4">
+<c:if test="${ delivry.attributes.site.friendTag }">
+						<p><span class="jcm-tag jcm-tag-warning text-warning">
+							<img alt="Icone certification" src="${pageContext.request.contextPath}/images/certifying.png"
+							 width="16" height="16"> Officiel : Ami de l'escalade
+						</span></p>
+</c:if>
 						<p><strong>$<c:out value="${ delivry.attributes.site.country }" /> - 
 							<c:out value="${ delivry.attributes.site.department }" /></strong></p>
 						<ul>

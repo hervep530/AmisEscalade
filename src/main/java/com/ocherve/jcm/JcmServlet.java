@@ -21,6 +21,7 @@ import com.ocherve.jcm.service.Notification;
 import com.ocherve.jcm.service.Parameters;
 import com.ocherve.jcm.service.ServiceException;
 import com.ocherve.jcm.service.factory.Service;
+import com.ocherve.jcm.utils.JcmException;
 
 import net.bytebuddy.utility.RandomString;
 
@@ -121,6 +122,7 @@ abstract class JcmServlet extends HttpServlet {
 			this.parameters = this.service.setParameters(request);
 			this.delivry = this.doPostAction(this.parameters);
 		} catch (ServiceException e) {
+			DLOG.log(Level.ERROR, JcmException.formatStackTrace(e));
 			this.delivry = this.service.abort(this.parameters);
 		}
 

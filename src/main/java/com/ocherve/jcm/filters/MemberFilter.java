@@ -19,11 +19,8 @@ import org.apache.logging.log4j.Level;
 	"/site/utt/*",
 	"/site/utf/*",
 	"/site/d/*",
-	"/comment/d/*",
-	"/topo/c/*",
-	"/topo/uaf/*",
-	"/topo/uat/*",
-	"/topo/d/*"
+	"/comment/u/*",
+	"/comment/d/*"
 })
 public class MemberFilter extends JcmFilter {
 
@@ -97,13 +94,21 @@ public class MemberFilter extends JcmFilter {
 	@Override
 	protected Boolean isValidUrl() {
 		if ( method.contentEquals("POST") ) {
-			return uri.matches("^/topo/c/[0-9]{1,16}/\\w{1,32}$");
-		} else {
-			String getActions = "(comment/d";
-			getActions += "|site/d|site/utt|site/utf";
-			getActions += "|topo/d|topo/c|topo/uat|topo/uaf)";
+			return uri.matches("^/comment/u/[0-9]{1,16}/\\w{1,32}$");
+		} else if ( method.contentEquals("GET") ) {
+			String getActions = "(comment/d|comment/u";
+			getActions += "|site/d|site/utt|site/utf)";
 			return uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$");
-		}	
+		}
+		return false;
+	}
+
+	@Override
+	protected void setNotStaticToken() {
+		this.isStaticToken = false;
+		if ( method.contentEquals("GET") ) {
+			if ( uri.matches("^/comment/u/[0-9]{1,16}/\\w{1,32}$") ) this.isStaticToken = true;
+		} 
 	}
 	
 }

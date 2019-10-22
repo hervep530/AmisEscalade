@@ -92,7 +92,7 @@ public abstract class Form {
 				value = Integer.valueOf(getStringValue(this.request.getPart(fieldName)));
 			}
 		} catch (Exception e) {
-			DLOG.log(Level.DEBUG, e.getMessage());							
+			DLOG.log(Level.DEBUG, "Form getIntegerValue for field " + fieldName + " : " + e.getMessage());							
 		}
 	    return value;
 	}

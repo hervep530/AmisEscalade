@@ -240,13 +240,13 @@ public class SiteForm extends Form {
 		
 	private void validateCountry() throws FormException {
 		if ( this.site.getCountry() == null ) throw new FormException("Ce nom de pays n'est pas valide.");
-		if ( ! this.site.getCountry().matches("[- \\w]{3,}") )
+		if ( ! this.site.getCountry().matches("[- éèêëàâùûôîï\\w]{3,}") )
 			throw new FormException("Ce nom de pays n'est pas valide.");
 	}
 
 	private void validateDepartment() throws FormException {
 		if ( this.site.getDepartment() == null ) throw new FormException("La saisie du département n'est pas valide.");
-		if ( ! this.site.getDepartment().matches("[- ()\\w]{3,}") )
+		if ( ! this.site.getDepartment().matches("[- éèêëàâùûôîï()\\w]{3,}") )
 			throw new FormException("La saisie du département n'est pas valide.");
 	}
 

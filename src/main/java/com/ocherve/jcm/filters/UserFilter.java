@@ -18,6 +18,9 @@ import org.apache.logging.log4j.Level;
 @WebFilter(filterName = "UserFilter", urlPatterns = {
 	"/site/c/*",
 	"/site/uac/*",
+	"/topo/l/*",
+	"/topo/r/*",
+	"/topo/c/*",
 	"/message/lmd/*",
 	"/message/lfd/*",
 	"/message/r/*",
@@ -93,27 +96,38 @@ public class UserFilter extends JcmFilter {
 	@Override
 	protected Boolean isValidUrl() {
 		if ( method.contentEquals("POST") ) {
-			String postActions = "(session/pass|site/c|site/uac|message/c)";
+			String postActions = "(session/pass|site/c|site/uac|topo/c|message/c)";
 			return uri.matches("^/" + postActions + "/[0-9]{1,16}/\\w{1,32}$");
 		} else {
 			String getActions = "(session/deconnexion|session/pass|session/d|"
 								+ "site/c|"
+								+ "topo/r|topo/c|"
 								+ "message/lmd|message/lfd|message/r|message/ca|message/cft)";
-			return uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$");
+			String topoListAction = "^/topo/l/[0-9]{1,16}$";
+			return uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$") || uri.matches(topoListAction);
 		}	
 	}
 	
 	@Override
+	protected boolean skipTokenChecking() {
+		// Defines request type / url allowed without checking token
+			String getActions = "^(/topo/l/[0-9]{1,16}|/topo/r/[0-9]{1,16}/\\w{1,32})$";
+		if ( method.contentEquals("GET") && uri.matches(getActions) ) return true;
+		return false;
+	}
+
+	@Override
 	protected void setNotStaticToken() {
 		this.isStaticToken = false;
 		if ( method.contentEquals("GET") ) {
-			String getActions = "(session/deconnexion|session/pass)";
-			if ( uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$") ) this.isStaticToken = true;
-			/* A rajouter en static token...
-|"
+			String getActions = "(session/deconnexion|session/pass|session/d|"
 								+ "site/c|"
-								+ "message/lmd|message/lfd|message/r|message/ca|message/cft
-			 */
+								+ "topo/c|"
+								+ "message/lmd|message/lfd|message/r|message/ca|message/cft)";
+			if ( uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$") ) this.isStaticToken = true;
+		} else if ( method.contentEquals("POST") ) {
+			String postActions = "(site/uac)";
+			if ( uri.matches("^/" + postActions + "/[0-9]{1,16}/\\w{1,32}$") ) this.isStaticToken = true;
 		}	
 	}
 

@@ -20,8 +20,10 @@ import org.apache.logging.log4j.Level;
 				"/site/u/*", 
 				"/site/upt/*",
 				"/site/upf/*",
-				"/site/umc/*",
-				"/comment/u/*"
+				"/topo/u/*",
+				"/topo/uaf/*",
+				"/topo/uat/*",
+				"/topo/d/*",
 			})
 public class AuthorFilter extends JcmFilter {
 
@@ -47,7 +49,7 @@ public class AuthorFilter extends JcmFilter {
 		 */
 		super.doFilter(inRequest, inResponse, chain);
 		
-		DLOG.log(Level.INFO , "Filter MemberFilter is active for url " + uri + " with method " + method);
+		DLOG.log(Level.INFO , "Filter AuthorFilter is active for url " + uri + " with method " + method);
 		
 		try {
 			if ( ! validateUrl() ) return;
@@ -94,14 +96,13 @@ public class AuthorFilter extends JcmFilter {
 	@Override
 	protected Boolean isValidUrl() {
 		if ( method.contentEquals("POST") ) {
-			String postActions = "(comment/u";
-			postActions += "|site/u|site/uac|site/umc";
-			postActions += "|topo/u|topo/uac|topo/umc)";
+			String postActions = "(site/u";
+			postActions += "|topo/u)";
 			return uri.matches("^/" + postActions + "/[0-9]{1,}/\\w{1,32}$");
 		} else {
-			String getActions = "(comment/u|comment/upt|comment/upf";
+			String getActions = "(comment/upt|comment/upf";
 			getActions += "|site/u|site/upt|site/upf";
-			getActions += "|topo/u|topo/upt|topo/upf)";
+			getActions += "|topo/d|topo/u|topo/uat|topo/uaf)";
 			return uri.matches("^/" + getActions + "/[0-9]{1,}/\\w{1,32}$");
 		}	
 	}
@@ -109,9 +110,20 @@ public class AuthorFilter extends JcmFilter {
 	@Override
 	protected boolean skipTokenChecking() {
 		// Defines request type / url allowed without checking token
+		/*
 		String getActions = "(comment/u|site/u|topo/u)";
 		if ( method.contentEquals("GET") && uri.matches("^/" + getActions + "/.*$") ) return true;
+		*/
 		return false;
+	}
+
+	@Override
+	protected void setNotStaticToken() {
+		this.isStaticToken = false;
+		if ( method.contentEquals("GET") ) {
+			String getActions = "(site/u|topo/u)";
+			if ( uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$") ) this.isStaticToken = true;
+		} 
 	}
 
 }

@@ -14,7 +14,7 @@
 					<nav id="condensedNav" class="navbar navbar-expand-lg col-xl-3">
 						<ul class="navbar-nav">
 							<li class="nav-item">
-								<a href="${contextPath}/session/d/0/${token}" class="p-2">
+								<a href="${contextPath}/session/d/0/${staticToken}" class="p-2">
 									<img alt="Mon compte" src="${contextPath}/images/user.png" 
 										title="<c:out value="${sessionScope.sessionUser.username}"></c:out>"
 										width="32" height="32">
@@ -27,7 +27,7 @@
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="${contextPath}/message/lmd/1/${token}" class="p-2">
+								<a href="${contextPath}/message/lmd/1/${staticToken}" class="p-2">
 								<img alt="Messagerie" src="${contextPath}/images/mailbox.png"
 									width="32" height="32">
 								</a>

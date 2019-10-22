@@ -103,12 +103,11 @@ public class Site extends JcmServlet {
 				case "u" :
 					delivry = ((SiteService) service).postUpdateForm(parameters);
 					break;
+				case "uac" :
+					delivry = ((SiteService) service).postAddCommentForm(parameters);
+					break;					
 				case "f" :
 					delivry = ((SiteService) service).postFindForm(parameters);
-					break;
-				case "utt" :
-				case "utf" :
-					delivry = ((SiteService) service).postAddCommentForm(parameters);
 					break;
 				default :
 			}			

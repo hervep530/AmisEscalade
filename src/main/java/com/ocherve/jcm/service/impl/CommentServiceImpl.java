@@ -28,7 +28,6 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 
 	protected final static String SVC_DEFAULT_URL = "";
 	protected final static String[][] SVC_ACTIONS = {
-			{"l","/comment/l/$id"},
 			{"u","/comment/u/$id/$slug"},
 			{"upt","/comment/upt/$id/$slug"},
 			{"upf","/comment/upf/$id/$slug"},
@@ -61,9 +60,6 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 		Delivry delivry = null;
 		try {
 			switch (parameters.getParsedUrl().getAction()) {
-				case "l" :
-					//delivry = getList(parameters);
-					break;
 				case "u" :
 					delivry = getCommentForm(parameters);
 					break;

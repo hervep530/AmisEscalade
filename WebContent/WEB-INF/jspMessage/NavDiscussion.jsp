@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <c:if test="${ roleId > 1}">
 							  <button type="button" class="btn btn-default"
-							  			onclick="location='${contextPath}/message/lfd/${discussion.id}/${token}'">
+							  			onclick="location='${contextPath}/message/lfd/${discussion.id}/${staticToken}'">
 									<img alt="Icon voir la discussion" src="${contextPath}/images/discussion_open.png" 
 										title="Afficher toute la discussion" width="20" height="20">
 							  </button>

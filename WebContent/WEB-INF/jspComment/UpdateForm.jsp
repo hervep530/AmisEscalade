@@ -7,6 +7,7 @@
 <c:set var="commentContentError" scope="page" value="${delivry.attributes.commentForm.errors.content}"></c:set>
 						<form method="POST" id="commentSiteForm" class="text-center border border-light p-1 my-1" 
 								action="${postAction}" >
+							<input type="hidden" id="partMethod" name="partMethod" value="false">
 							<input type="hidden" id="commentId" name="commentId" value="${commentId}">
 							<input type="hidden" id="commentReferenceId" name="commentReferenceId" value="${site.id}">
 							<input type="hidden" id="commentReferenceType" name="commentReferenceType" value="${site.type}">

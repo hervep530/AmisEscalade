@@ -3,7 +3,7 @@
 <c:set var="authorId" value="${ topo.author.id }" scope="page"></c:set>
 <c:if test="${ (userId == topo.author.id) || roleId > 2 }">
 							  <button type="button" class="btn btn-default"
-							  			onclick="location='${contextPath}/topo/u/${topo.id}/${token}'">
+							  			onclick="location='${contextPath}/topo/u/${topo.id}/${staticToken}'">
 									<img alt="Icone Editer" src="${contextPath}/images/edit_1.png" 
 										title="Modifier le topo" width="20" height="20">
 							  </button>
@@ -19,13 +19,13 @@
 										title="Rendre le topo ${uaDisplayStatus}" width="20" height="20">
 							  </button>
 </c:if>
-<c:if test="${ (userId == topo.author.id) }">
+<c:if test="${ roleId > 10 }">
 							  <button type="button" class="btn btn-default">
 									<img alt="Icone Dé-publier" src="${contextPath}/images/unpublish.png" 
 										title="Dé-publier le topo" width="20" height="20">
 							  </button>
 </c:if>
-<c:if test="${ roleId > 2 }">
+<c:if test="${ (userId == topo.author.id) || roleId > 2 }">
 							  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#confirmModal" 
 							  			data-location="${contextPath}/topo/d/${topo.id}/${token}"
 							  			data-title="Confirmer la suppression du topo"
@@ -37,7 +37,7 @@
 </c:if>
 <c:if test="${ roleId > 5 }">
 							<li class="nav-item">
-								<a href="${contextPath}/site/${action}/${topo.id}/${token}" class="p-2">
+								<a href="${contextPath}/site/${action}/${topo.id}/${staticToken}" class="p-2">
 									<img alt="Icon nom action" src="${contextPath}/images/${actionImage}" 
 										title="Nom de l'action" width="32" height="32">
 								</a>
