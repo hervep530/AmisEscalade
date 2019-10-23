@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.DaoProxy;
-import com.ocherve.jcm.dao.contract.MessageDao;
 import com.ocherve.jcm.dao.contract.TopoDao;
 import com.ocherve.jcm.form.MessageForm;
 import com.ocherve.jcm.model.Message;

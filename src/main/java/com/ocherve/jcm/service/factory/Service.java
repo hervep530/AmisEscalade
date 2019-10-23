@@ -55,10 +55,9 @@ public interface Service {
 	Delivry abort(Parameters parameters);
 	
 	/**
-	 * Build a generic delivry object from parameters
+	 * Building a generic delivry object from parameters
 	 * 
 	 * @param parameters
-	 * @return delivry 
 	 */
 	void appendMandatoryAttributesToDelivry(Parameters parameters);
 	
