@@ -1,6 +1,5 @@
 package com.ocherve.jcm.form;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.Normalizer;
@@ -22,7 +21,6 @@ import com.ocherve.jcm.dao.contract.TopoDao;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.model.Topo;
 import com.ocherve.jcm.model.User;
-import com.ocherve.jcm.utils.JcmException;
 
 /**
  * @author herve_dev
@@ -237,6 +235,7 @@ public class TopoForm extends Form {
 	 * 
 	 * @throws FormException
 	 */
+	@SuppressWarnings("unused")
 	private void validateUpdateTitle() throws FormException {
 		if ( this.topo.getTitle() == null ) throw new FormException("Le titre du topo est invalide.");
 		if ( ! this.topo.getTitle().matches("[- \\w]{3,}") )

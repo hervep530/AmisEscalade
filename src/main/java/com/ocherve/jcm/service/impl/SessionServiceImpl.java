@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.model.User;
 import com.ocherve.jcm.form.ConnexionForm;

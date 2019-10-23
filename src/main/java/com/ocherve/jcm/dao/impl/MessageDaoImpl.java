@@ -6,10 +6,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.contract.MessageDao;
-import com.ocherve.jcm.model.Comment;
-import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Message;
-import com.ocherve.jcm.model.Site;
 
 /**
  * @author herve_dev
