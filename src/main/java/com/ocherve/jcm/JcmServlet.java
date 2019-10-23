@@ -80,9 +80,11 @@ abstract class JcmServlet extends HttpServlet {
 		}
 		request.setAttribute("delivry", this.delivry);
 
+		// When calling session servlet for deconnexion
+		if ( delivry.getSession().containsKey("resetSession") ) resetSession();
 		// Deferred notification (if exists) copied from delivry to session (heriting jcmServlet)
 		this.setSessionNotification();
-
+		
 		// Forwarding to Session jsp or error
 		if ( ! this.delivry.getErrors().isEmpty() ) {
 			DLOG.log(Level.DEBUG, "Forward on errors : " + this.delivry.getErrors().keySet().toString());
@@ -90,7 +92,7 @@ abstract class JcmServlet extends HttpServlet {
 			return;
 		}
 
-		this.setSessionNotification();
+		// ???? this.setSessionNotification();
 		if ( ! this.delivry.getAttributes().containsKey("redirect") ) {
 			DLOG.log(Level.DEBUG, "Forward to view : " + this.layout);
 			this.getServletContext().getRequestDispatcher(this.layout).forward(request, response);
@@ -127,6 +129,11 @@ abstract class JcmServlet extends HttpServlet {
 		}
 
 		request.setAttribute("delivry", this.delivry);
+		// When posting connexion formular
+		if ( delivry.getSession().containsKey("sessionUser") ) {
+			session.setAttribute("sessionUser", (User) delivry.getSession().get("sessionUser") );
+		}
+
 
 		// Forwarding to Site jsp, redirect,  or forwarding error
 		if ( ! this.delivry.getErrors().isEmpty() ) {

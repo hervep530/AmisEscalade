@@ -14,7 +14,6 @@ import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Notification;
 import com.ocherve.jcm.service.NotificationType;
 import com.ocherve.jcm.service.Parameters;
-import com.ocherve.jcm.service.UrlException;
 import com.ocherve.jcm.service.factory.SessionService;
 
 /**
@@ -59,6 +58,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		return parameters;
 	}
 
+/*	
 	@Override
 	public Delivry doGetAction(Parameters parameters) {
 		Delivry delivry = new Delivry();
@@ -85,8 +85,10 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
 	}
-
-	private Delivry getDeconnexion(Parameters parameters) {
+*/
+	
+	@Override
+	public Delivry getDeconnexion(Parameters parameters) {
 		Delivry delivry = new Delivry();
 		
 		// will reset session - value of resetSession doesn't matter... always operate
@@ -103,6 +105,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		return delivry;
 	}
 
+/*
 	public Delivry doPostAction(Parameters parameters) {
 		Delivry delivry = new Delivry();
 		try {
@@ -127,8 +130,10 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		DLOG.log(Level.DEBUG , info);
 		return delivry;
 	}
-	
-	private Delivry postConnexionForm(Parameters parameters) { 
+*/
+
+	@Override
+	public Delivry postConnexionForm(Parameters parameters) { 
 		Delivry delivry = new Delivry();
 		// get Connexion Form stored in parameters and call connectUser()
 		ConnexionForm connexionForm = (ConnexionForm) parameters.getForm();
@@ -145,7 +150,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		delivry.appendSession("sessionUser", user.getSessionInstance());
 		// Settin redirection and notification(s)
 		String notificationLabel = "Connexion";
-		String message = "Bonjour " + user.getUsername() + "! Content de vous revoir.";
+		String message = "Bonjour " + user.getUsername() + " et bienvenue!";
 		Notification notification = new Notification(NotificationType.SUCCESS, message);
 		delivry.appendSessionNotification(notificationLabel, notification);
 		delivry.appendattribute("redirect", parameters.getContextPath());
@@ -153,7 +158,8 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		return delivry;
 	}
 	
-	private Delivry postInscriptionForm(Parameters parameters) {
+	@Override
+	public Delivry postInscriptionForm(Parameters parameters) {
 		Delivry delivry = new Delivry();
 
 		// get Connexion Form stored in parameters and call connectUser()

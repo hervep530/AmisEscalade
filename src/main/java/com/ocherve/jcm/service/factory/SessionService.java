@@ -1,5 +1,8 @@
 package com.ocherve.jcm.service.factory;
 
+import com.ocherve.jcm.service.Delivry;
+import com.ocherve.jcm.service.Parameters;
+
 /**
  * @author herve_dev
  * 
@@ -8,5 +11,29 @@ package com.ocherve.jcm.service.factory;
  *
  */
 public interface SessionService extends Service {
-
+	
+	/**
+	 * Calling Message service method to delete connexion information in session
+	 * 
+	 * @param parameters
+	 * @return Delivry as result of action
+	 */
+	Delivry getDeconnexion(Parameters parameters);
+	
+	/**
+	 * Getting form data, trying to connect user, and return result in delivry
+	 * 
+	 * @param parameters
+	 * @return Delivry as result of action
+	 */
+	Delivry postConnexionForm(Parameters parameters);
+	
+	/**
+	 * Getting form data, trying to register user, and return result in delivry
+	 * 
+	 * @param parameters
+	 * @return Delivry as result of action
+	 */
+	Delivry postInscriptionForm(Parameters parameters);
+	
 }

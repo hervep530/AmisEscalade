@@ -72,6 +72,7 @@ public class ConnexionForm {
 		}
 		
 		if ( errors.isEmpty() ) {
+			DLOG.log(Level.DEBUG, "User / Password validated");
 			result = "Succès de la connexion.";
 		} else {
 			for (String error : this.errors.keySet()) {

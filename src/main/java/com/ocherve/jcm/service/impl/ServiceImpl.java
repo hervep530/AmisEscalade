@@ -159,6 +159,7 @@ public abstract class ServiceImpl implements Service {
 	@Override
 	public Delivry doGetAction(Parameters parameters) {
 		this.delivry = new Delivry();
+		//this.delivry.setParameters(parameters);
 		this.appendMandatoryAttributesToDelivry(parameters);
 		String info = "ServiceGeneric.doGetAction is done.";
 		DLOG.log(Level.DEBUG , info);
@@ -168,6 +169,7 @@ public abstract class ServiceImpl implements Service {
 	@Override
 	public Delivry doPostAction(Parameters parameters) {
 		delivry = new Delivry();
+		//this.delivry.setParameters(parameters);
 		this.appendMandatoryAttributesToDelivry(parameters);
 		String info = "ServiceGeneric.doPostAction is done.";
 		DLOG.log(Level.DEBUG , info);
