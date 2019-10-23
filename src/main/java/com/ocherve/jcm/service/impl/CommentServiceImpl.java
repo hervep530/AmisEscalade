@@ -15,7 +15,6 @@ import com.ocherve.jcm.service.Delivry;
 import com.ocherve.jcm.service.Notification;
 import com.ocherve.jcm.service.NotificationType;
 import com.ocherve.jcm.service.Parameters;
-import com.ocherve.jcm.service.UrlException;
 import com.ocherve.jcm.service.factory.CommentService;
 
 /**
@@ -55,80 +54,26 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 		return parameters;
 	}
 
-	@Override
-	public Delivry doGetAction(Parameters parameters) {
-		Delivry delivry = null;
-		try {
-			switch (parameters.getParsedUrl().getAction()) {
-				case "u" :
-					delivry = getCommentForm(parameters);
-					break;
-				case "upt" :
-				case "upf" :
-					break;
-				case "d" :
-					delivry = deleteComment(parameters);
-					break;
-				default :
-			}			
-		} catch (UrlException e ) {
-			DLOG.log(Level.ERROR , e.getMessage());
-			delivry = new Delivry();
-			delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), e.getMessage());
-		}
-		// We really want to prevent null delivry
-		if ( delivry == null ) delivry = new Delivry();
-		// Finalizing Delivry with including parameters, immediate notifications, and errors
-		delivry.setParameters(parameters);
-		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
-		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
-		DLOG.log(Level.DEBUG , "Service" + this.serviceName + ".doGetAction is done.");
-
-		return delivry;
-	}
 	
-	@Override
-	public Delivry doPostAction(Parameters parameters) {
-		Delivry delivry = null;
-		try {
-			switch (parameters.getParsedUrl().getAction()) {
-				case "u" :
-					delivry = postCommentForm(parameters);
-					break;
-				default :
-			}			
-		} catch (UrlException e ) {
-			DLOG.log(Level.ERROR , e.getMessage());
-			delivry = new Delivry();
-			delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), e.getMessage());
-		}
-		// We really want to prevent null delivry
-		if ( delivry == null ) delivry = new Delivry();
-		// Finalizing Delivry with including parameters, immediate notifications, and errors
-		delivry.setParameters(parameters);
-		if ( ! parameters.getNotifications().isEmpty() ) delivry.appendNotifications(parameters.getNotifications());
-		if ( ! parameters.getErrors().isEmpty() ) delivry.appendErrors(parameters.getErrors());
-		String info = "Service " + this.serviceName + " do PostAction.";
-		DLOG.log(Level.DEBUG , info);
-		return delivry;
-	}
 
-	private Delivry getCommentForm(Parameters parameters) {
-		Delivry delivry = new Delivry();
-		// Add site to Delivry Attributes to display summary in form
+	public Delivry getCommentForm(Parameters parameters) {
+		this.delivry = new Delivry();
+		// Adding site to Delivry Attributes to display summary in form
 		try {
 			Integer siteId = ((CommentForm) parameters.getForm()).getReference().getId();
 			Site site = ((SiteDao) DaoProxy.getInstance().getSiteDao()).get(siteId);
-			delivry.appendattribute("site", site);			
+			this.delivry.appendattribute("site", site);			
 		} catch (Exception ignore) {/* already traced from Dao */}
-		// Adding form to complete fields ( = importing comment in form)
-		delivry.appendattribute("commentForm", (CommentForm) parameters.getForm());
+		// Adding form to complete fields ( = importing comment in form) and appending common data to delivry
+		this.delivry.appendattribute("commentForm", (CommentForm) parameters.getForm());
+		this.appendMandatoryAttributesToDelivry(parameters);
+
 		// return delivry
-		return delivry;
+		return this.delivry;
 	}
 	
-	private Delivry postCommentForm(Parameters parameters) {
-		Delivry result = new Delivry();
+	public Delivry postCommentForm(Parameters parameters) {
+		this.delivry = new Delivry();
 		CommentForm commentForm = (CommentForm) parameters.getForm();
 		Comment comment = commentForm.update();
 		String redirection = parameters.getContextPath();
@@ -139,33 +84,36 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 				// Internal error - we redirect with notification
 				Notification notification = new Notification(NotificationType.ERROR, 
 					"Une erreur interne s'est produite. Le commentaire n'a pas pu être mis à jour.");
-				result.appendSessionNotification("Modification commentaire", notification);
+				this.delivry.appendSessionNotification("Modification commentaire", notification);
 				redirection += "/site/l/1";
-				result.appendattribute("redirect", redirection);
+				this.delivry.appendattribute("redirect", redirection);
 			} else {
 				// content error - we forward error toward formular inside site content
 				Notification notification = new Notification(NotificationType.ERROR, 
 						"Le commentaire n'a pas pu être mis à jour, car le contenu n'est pas valide.");
-				result.appendNotification("Modification commentaire", notification);
-				result.appendattribute("commentForm", commentForm);
-				result.appendattribute("site", (Site) commentForm.getReference());
+				this.delivry.appendNotification("Modification commentaire", notification);
+				this.delivry.appendattribute("commentForm", commentForm);
+				this.delivry.appendattribute("site", (Site) commentForm.getReference());
 			}
-			return result;				
+			// appending common data to delivry and return it
+			this.appendMandatoryAttributesToDelivry(parameters);
+			return this.delivry;				
 		} 
 		// Else we set redirection and notification(s) to display after redirection
 		Notification notification = new Notification(NotificationType.SUCCESS, 
 				"Votre commentaire est mis à jour.");
-		result.appendSessionNotification("Modification commentaire", notification);
+		this.delivry.appendSessionNotification("Modification commentaire", notification);
 		redirection += "/site/r/" + comment.getReference().getId() + "/" + comment.getReference().getSlug();
 		// We redirect except if errors only contains "content" key
 		//if ( ! commentForm.getErrors().containsKey("content") || commentForm.getErrors().size() > 1 ) 
-			result.appendattribute("redirect", redirection);
-		DLOG.log(Level.DEBUG, result.getAttribute("redirect").toString());
-		return result;
+		this.delivry.appendattribute("redirect", redirection);
+		this.appendMandatoryAttributesToDelivry(parameters);
+		DLOG.log(Level.DEBUG, this.delivry.getAttribute("redirect").toString());
+		return this.delivry;
 	}
 	
-	private Delivry deleteComment(Parameters parameters) {
-		Delivry delivry = new Delivry();
+	public Delivry deleteComment(Parameters parameters) {
+		this.delivry = new Delivry();
 		Boolean deleted = false;
 		String redirection = parameters.getReferer();
 		// Default redirection and notification for delete success
@@ -192,8 +140,9 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 		// If it fails, notification is modified
 		if ( deleted ) notification = new Notification(NotificationType.SUCCESS, "Le commentaire est supprimé.");
 		// Append notification and redirection to delivry
-		delivry.appendSessionNotification("Modification commentaire", notification);
-		delivry.appendattribute("redirect", redirection);
+		this.delivry.appendSessionNotification("Modification commentaire", notification);
+		this.delivry.appendattribute("redirect", redirection);
+		this.appendMandatoryAttributesToDelivry(parameters);
 		
 		return delivry;
 	}
