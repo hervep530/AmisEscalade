@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <!-- a SessionFactory instance listed as /jndi/name -->
+    <session-factory name="java:hibernate/SessionFactory">
+        <!-- Database connection settings -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:10432/jcm_amiesca?characterEncoding=utf8</property>
+        <property name="hibernate.connection.username">amiesca</property>
+        <property name="hibernate.connection.password">amiesca</property>
+ 
+        <!-- SQL dialect -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+        <!-- Drop and re-create the database schema on startup -->
+        <!-- property name="hbm2ddl.auto">create-drop</property -->
+        <!-- Hikari pool connexion parameters -->        
+		<property name="hibernate.hikari.maximumPoolSize">20</property>
+		<property name="hibernate.hikari.connectionTimeout">1000</property>
+		<property name="hibernate.hikari.minimumIdle">5</property>
+		<property name="hibernate.hikari.idleTimeout">10000</property>
+		
+		<mapping package="com.ocherve.jcm.model"/>
+		<mapping class="com.ocherve.jcm.model.AccessType"/>
+		<mapping class="com.ocherve.jcm.model.Comment"/>
+		<mapping class="com.ocherve.jcm.model.Cotation"/>
+		<mapping class="com.ocherve.jcm.model.Message"/>
+		<mapping class="com.ocherve.jcm.model.Reference"/>
+		<mapping class="com.ocherve.jcm.model.Role"/>
+		<mapping class="com.ocherve.jcm.model.Site"/>
+		<mapping class="com.ocherve.jcm.model.Topo"/>
+		<mapping class="com.ocherve.jcm.model.User"/>
+				
+    </session-factory>
+
+</hibernate-configuration>
