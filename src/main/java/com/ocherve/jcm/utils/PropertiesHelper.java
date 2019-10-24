@@ -23,6 +23,7 @@ public class PropertiesHelper {
 		properties = new HashMap<>();
 		// storeless ou postgresql
 		properties.put("daoType", "jpa");
+		//properties.put("daoType", "hibernate");
 		return true;
 	}
 	

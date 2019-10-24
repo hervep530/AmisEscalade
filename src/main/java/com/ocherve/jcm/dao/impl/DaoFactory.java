@@ -3,6 +3,7 @@ package com.ocherve.jcm.dao.impl;
 import com.ocherve.jcm.dao.DaoException;
 import com.ocherve.jcm.dao.StorageType;
 import com.ocherve.jcm.dao.contract.Dao;
+import com.ocherve.jcm.dao.hibernate.impl.DaoHibernateFactory;
 
 /**
  * @author herve_dev
@@ -21,6 +22,8 @@ public class DaoFactory {
 	public static Dao getDao(StorageType storageType, Class<?> daoClass) {
 		switch (storageType) {
 			case HIBERNATE:
+				// Dao using Hibernate with session instruction and HikariCP connection pool
+				DaoHibernateFactory.getDao(daoClass);
 			case POSTGRESQL:
 			case JPA:
 			default:
