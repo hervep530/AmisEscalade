@@ -12,3 +12,4 @@
 <c:set var="userId" value="${sessionScope.sessionUser.id}" scope="page"></c:set>
 <c:set var="token" value="${sessionScope.token}" scope="page"></c:set>
 <c:set var="staticToken" value="${sessionScope.staticToken}" scope="page"></c:set>
+<<c:set var="helpIcon" value="${contextPath}/images/help.png" scope="page"></c:set>

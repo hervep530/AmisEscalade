@@ -35,17 +35,29 @@ public class ConnexionForm {
 	public final static String PASSWD_FIELD = "password";
 	private UserDao userDao;
 	
+	private String mailHelp;
+	private String passwdHelp;
 	
 	private String mailAddress;
 	private String password;
 	private String result = "";
 	private int userId = 0;
 	private Map<String,String> errors;
+
+	/**
+	 * constructor  without argument - used to send help to jsp
+	 */
+	public ConnexionForm() {
+		this.mailHelp = "L'adresse mail doit être de la forme mon_nom@domaine.ext où le nom accepte _ - et .";
+		this.passwdHelp = "Le mot de passe doit contenir entre 8 et 16 caractères sans caractères spéciaux avec au moins 2 minuscules, 2 majuscules et 2 chiffres";		
+	}
 	
 	/**
 	 * @param request
 	 */
 	public ConnexionForm(HttpServletRequest request) {
+		this.mailHelp = "L'adresse mail doit être de la forme mon_nom@domaine.ext où le nom accepte _ - et .";
+		this.passwdHelp = "Le mot de passe doit contenir entre 8 et 16 caractères sans caractères spéciaux avec au moins 2 minuscules, 2 majuscules et 2 chiffres";		
 		Configurator.setLevel(DLOG.getName(), DLOGLEVEL);
 		userDao = (UserDao) DaoProxy.getInstance().getUserDao();
 		this.mailAddress = getValeurChamp(request, MAIL_FIELD);
@@ -58,18 +70,16 @@ public class ConnexionForm {
 	 */
 	public User connectUser() {
 		User user = new User();
-	
-		try {
-			this.validationEmail();
-		} catch (FormException e ) {
-			this.errors.put("mailAddress", e.getMessage());
-		}
-		
-		try {
+		// Validating email pattern
+		try { this.validateEmailPattern(); } catch (FormException e ) { this.errors.put("mailPattern", e.getMessage()); }
+		// Validating email address / user is valid
+		try { this.validateEmail(); } catch (FormException e ) { this.errors.put("mailAddress", e.getMessage()); }
+		// Validating password pattern
+		try { this.validatePasswordPattern(); } catch (FormException e ) { this.errors.put("passwdPattern", e.getMessage()); }
+		// Validating password
+		try { 
 			if ( errors.isEmpty() ) user = this.validatePassword();
-		} catch (FormException e ) {
-			this.errors.put("password", e.getMessage());
-		}
+		} catch (FormException e ) { this.errors.put("password", e.getMessage()); }
 		
 		if ( errors.isEmpty() ) {
 			DLOG.log(Level.DEBUG, "User / Password validated");
@@ -88,7 +98,7 @@ public class ConnexionForm {
 	/**
 	 * @throws FormException
 	 */
-	private void validationEmail() throws FormException {
+	private void validateEmailPattern() throws FormException {
 
 		// Rejecting empty mail
 		if ( this.mailAddress.isEmpty() ) 
@@ -97,6 +107,13 @@ public class ConnexionForm {
 		// Rejecting invalid pattern
 		if ( ! this.mailAddress.matches("[\\w\\-]+(\\.\\w+)*@\\w+(\\.\\w+)+") ) 
 			throw new FormException("Merci de saisir une adresse email valide."); 
+
+	}
+	
+	/**
+	 * @throws FormException
+	 */
+	private void validateEmail() throws FormException {
 
 		// Request user id from database with mail address as filter (one Integer result expected... Else rejecting)
 		Map<String,Object> parameters = new HashMap<>();
@@ -111,10 +128,9 @@ public class ConnexionForm {
 	}
 	
 	/**
-	 * @return user
 	 * @throws FormException
 	 */
-	private User validatePassword() throws FormException {
+	private void validatePasswordPattern() throws FormException {
 		
 		// Rejecting empty password
 		if ( this.password.isEmpty()  ) 
@@ -124,8 +140,16 @@ public class ConnexionForm {
 		if ( this.password.trim().length() < 5 )
 			throw new FormException("La regle de mot de passe n'autorise pas moins de 5 caractère. Merci de le saisir à nouveau.");
 
+	}
+	
+	/**
+	 * @return user
+	 * @throws FormException
+	 */
+	private User validatePassword() throws FormException {
+		
 		// Compare password with user password get from database given id from formular
-		User userControl = userDao.get(userId);
+		User userControl = this.userDao.get(this.userId);
 		try {
 			if ( ! BCrypt.checkpw(this.password, userControl.getPassword()) )
 				throw new FormException("Identifiant ou mot de passe invalide.");
@@ -170,4 +194,19 @@ public class ConnexionForm {
         return valeur.trim();
 	}
 
+	/**
+	 * @return the mailHelp
+	 */
+	public String getMailHelp() {
+		return mailHelp;
+	}
+
+	/**
+	 * @return the passwdHelp
+	 */
+	public String getPasswdHelp() {
+		return passwdHelp;
+	}
+
+	
 }

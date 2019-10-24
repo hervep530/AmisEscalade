@@ -13,12 +13,28 @@ import com.ocherve.jcm.service.Parameters;
 public interface SessionService extends Service {
 	
 	/**
-	 * Calling Message service method to delete connexion information in session
+	 * Calling Session service method to delete connexion information in session
 	 * 
 	 * @param parameters
 	 * @return Delivry as result of action
 	 */
 	Delivry getDeconnexion(Parameters parameters);
+	
+	/**
+	 * Calling Session service method to get empty form in delivry (needed for help message)
+	 * 
+	 * @param parameters
+	 * @return Delivry as result of action
+	 */
+	Delivry getConnexionForm(Parameters parameters);
+	
+	/**
+	 * Calling Session service method to get empty form in delivry (needed for help message)
+	 * 
+	 * @param parameters
+	 * @return Delivry as result of action
+	 */
+	Delivry getInscriptionForm(Parameters parameters);
 	
 	/**
 	 * Getting form data, trying to connect user, and return result in delivry

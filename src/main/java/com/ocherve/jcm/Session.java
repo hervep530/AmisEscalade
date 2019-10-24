@@ -68,7 +68,11 @@ public class Session extends JcmServlet {
 			case "d" :
 				// Could be fun but not asked by customer so NOT IMPLEMENTED : nb of topo / site writed, last connexion ...
 			case "connexion" :
+				delivry = ((SessionService) service).getConnexionForm(parameters);
+				break;
 			case "inscription" :
+				delivry = ((SessionService) service).getInscriptionForm(parameters);
+				break;
 			default :
 				delivry = ((SessionService) service).doGetAction(parameters);
 			}			

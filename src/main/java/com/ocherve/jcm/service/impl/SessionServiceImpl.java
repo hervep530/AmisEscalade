@@ -1,8 +1,5 @@
 package com.ocherve.jcm.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -88,78 +85,71 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 	
 	@Override
 	public Delivry getDeconnexion(Parameters parameters) {
-		Delivry delivry = new Delivry();
+		this.delivry = new Delivry();
 		
 		// will reset session - value of resetSession doesn't matter... always operate
-		delivry.appendSession("resetSession", "yes");
+		this.delivry.appendSession("resetSession", "yes");
 		// Setting redirection and notification(s)
-		String notificationLabel = "Déconnexion";
 		String message = "Vous êtes maintenant déconnecté.";
 		Notification notification = new Notification(NotificationType.SUCCESS, message);
-		Map<String,Notification> notifications = new HashMap<>();
-		notifications.put(notificationLabel, notification);
-		delivry.appendSession("notifications", notifications);
-		delivry.appendattribute("redirect", parameters.getContextPath());
+		this.delivry.appendSessionNotification("Déconnexion", notification);
+		this.delivry.appendattribute("redirect", parameters.getContextPath());
+		this.appendMandatoryAttributesToDelivry(parameters);
 		
-		return delivry;
+		return this.delivry;
 	}
 
-/*
-	public Delivry doPostAction(Parameters parameters) {
-		Delivry delivry = new Delivry();
-		try {
-			switch (parameters.getParsedUrl().getAction()) {
-				case "connexion" :
-					delivry = postConnexionForm(parameters);
-					break;
-				case "inscription" :
-					delivry = postInscriptionForm(parameters);
-					break;
-				case "pass" :
-					break;
-				default :
-			}			
-		} catch (UrlException e ) {
-			DLOG.log(Level.ERROR , e.getMessage());
-			delivry.appendError(serviceName + "_" + parameters.getParsedUrl().getAction(), e.getMessage());
-		}
-		delivry.setParameters(parameters);
-		if ( ! parameters.getErrors().isEmpty() ) delivry.setErrors(parameters.getErrors());
-		String info = "Service " + this.serviceName + " do GetAction.";
-		DLOG.log(Level.DEBUG , info);
-		return delivry;
+	@Override
+	public Delivry getConnexionForm(Parameters parameters) {
+		this.delivry = new Delivry();
+		// get Connexion Form stored in parameters and call connectUser()
+		this.delivry.appendattribute("connexionForm", new ConnexionForm());
+		this.appendMandatoryAttributesToDelivry(parameters);
+
+		return this.delivry;
 	}
-*/
+
+	@Override
+	public Delivry getInscriptionForm(Parameters parameters) {
+		this.delivry = new Delivry();
+		this.delivry.appendattribute("inscriptionForm", new InscriptionForm());
+		this.appendMandatoryAttributesToDelivry(parameters);
+
+		return this.delivry;
+	}
 
 	@Override
 	public Delivry postConnexionForm(Parameters parameters) { 
-		Delivry delivry = new Delivry();
+		this.delivry = new Delivry();
 		// get Connexion Form stored in parameters and call connectUser()
 		ConnexionForm connexionForm = (ConnexionForm) parameters.getForm();
 		User user = connexionForm.connectUser();
 		if ( ! connexionForm.getErrors().isEmpty() ) {
 			// if errors, we will forward delivry to formular with errors embedded in connexionForm
-			delivry.setErrors(connexionForm.getErrors());
+			String message = "Identifiant ou mot de passe invalide.";
+			Notification notification = new Notification(NotificationType.ERROR, message);
+			this.delivry.appendNotification("Connexion", notification);
 			delivry.appendattribute("connexionForm", connexionForm);
+			this.appendMandatoryAttributesToDelivry(parameters);
 			
-			return delivry;
+			return this.delivry;
 		} 
 		
 		// if Success, user is stored in session and we will send in the next httpRequest (redirection)
-		delivry.appendSession("sessionUser", user.getSessionInstance());
+		this.delivry.appendSession("sessionUser", user.getSessionInstance());
 		// Settin redirection and notification(s)
-		String notificationLabel = "Connexion";
 		String message = "Bonjour " + user.getUsername() + " et bienvenue!";
 		Notification notification = new Notification(NotificationType.SUCCESS, message);
-		delivry.appendSessionNotification(notificationLabel, notification);
-		delivry.appendattribute("redirect", parameters.getContextPath());
-		
-		return delivry;
+		this.delivry.appendSessionNotification("Connexion", notification);
+		this.delivry.appendattribute("redirect", parameters.getContextPath());
+		this.appendMandatoryAttributesToDelivry(parameters);
+
+		return this.delivry;
 	}
 	
 	@Override
 	public Delivry postInscriptionForm(Parameters parameters) {
-		Delivry delivry = new Delivry();
+		this.delivry = new Delivry();
 
 		// get Connexion Form stored in parameters and call connectUser()
 		InscriptionForm inscriptionForm = (InscriptionForm) parameters.getForm();
@@ -167,23 +157,21 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		User inscriptionUser = inscriptionForm.createUser();
 		if ( ! inscriptionForm.getErrors().isEmpty() ) {
 			// if errors, we will forward delivry to formular with errors embedded in connexionForm
-			delivry.setErrors(inscriptionForm.getErrors());
-			delivry.appendattribute("inscriptionForm", inscriptionForm);
+			this.delivry.appendattribute("inscriptionForm", inscriptionForm);
+			this.appendMandatoryAttributesToDelivry(parameters);
 			
-			return delivry;
+			return this.delivry;
 		} 
 		
 		// Setting redirection and notification(s)
-		String notificationLabel = "Creation de compte";
 		String message = "Votre compte est créé. Vous pouvez maintenant vous connecter.";
 		Notification notification = new Notification(NotificationType.SUCCESS, message);
-		Map<String,Notification> notifications = new HashMap<>();
-		notifications.put(notificationLabel, notification);
-		delivry.appendSession("notifications", notifications);
+		this.delivry.appendSessionNotification("Creation de compte", notification);
 		String urlConnexion = "/session/connexion/0/786775566A7674776D7541724E58766B";
-		delivry.appendattribute("redirect", parameters.getContextPath() + urlConnexion);
+		this.delivry.appendattribute("redirect", parameters.getContextPath() + urlConnexion);
+		this.appendMandatoryAttributesToDelivry(parameters);
 		
-		return delivry;
+		return this.delivry;
 		
 	}
 	

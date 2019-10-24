@@ -41,6 +41,10 @@ public class InscriptionForm {
 	 */
 	public final static String CONFIRM_FIELD = "confirmPassword";
 	
+	private String mailHelp;
+	private String nameHelp;
+	private String passwdHelp;
+	
 	private UserDao userDao;
 
 	private String mailAddress = "";
@@ -52,9 +56,21 @@ public class InscriptionForm {
 	private Map<String,String> errors;
 	
 	/**
+	 * constructor  without argument - used to send help to jsp
+	 */
+	public InscriptionForm() {
+		this.mailHelp = "L'adresse mail doit être de la forme mon_nom@domaine.ext où le nom accepte _ - et .";
+		this.nameHelp = "Le nom d'utilisateur doit contenir entre 8 et 16 caractères sans espace, ni accent, ni caractère spéciaux";
+		this.passwdHelp = "Le mot de passe doit contenir entre 8 et 16 caractères sans caractères spéciaux avec au moins 2 minuscules, 2 majuscules et 2 chiffres";		
+	}
+	
+	/**
 	 * @param request
 	 */
 	public InscriptionForm(HttpServletRequest request) {
+		this.mailHelp = "L'adresse mail doit être de la forme mon_nom@domaine.ext où le nom accepte _ - et .";
+		this.nameHelp = "Le nom d'utilisateur doit contenir entre 8 et 16 caractères sans espace, ni accent, ni caractère spéciaux";
+		this.passwdHelp = "Le mot de passe doit contenir entre 8 et 16 caractères sans caractères spéciaux avec au moins 2 minuscules, 2 majuscules et 2 chiffres";		
 		Configurator.setLevel(DLOG.getName(), DLOGLEVEL);
 		userDao = (UserDao) DaoProxy.getInstance().getUserDao();
 		this.mailAddress = getFieldValue(request, MAIL_FIELD);
@@ -183,7 +199,7 @@ public class InscriptionForm {
 
 		// Rejecting password with wrong length
 		if ( this.password.trim().length() < 8 )
-			throw new FormException("La regle de mot de passe n'autorise pas moins de 5 caractère. Merci de le saisir à nouveau.");
+			throw new FormException("La regle de mot de passe n'autorise pas moins de 8 caractère. Merci de le saisir à nouveau.");
 
 		// Rejecting password if not containing at least 8 char and at most 32 char
 		if ( ! this.password.trim().matches("\\w{8,32}") )
@@ -240,5 +256,27 @@ public class InscriptionForm {
         return valeur.trim();
 	}
 
+	/**
+	 * @return the mailHelp
+	 */
+	public String getMailHelp() {
+		return mailHelp;
+	}
 
+	/**
+	 * @return the nameHelp
+	 */
+	public String getNameHelp() {
+		return nameHelp;
+	}
+
+	/**
+	 * @return the passwdHelp
+	 */
+	public String getPasswdHelp() {
+		return passwdHelp;
+	}
+
+	
+	
 }
