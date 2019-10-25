@@ -10,32 +10,38 @@
 	value="${message.sender.id == userId ? message.receiver.username : message.sender.username}">
 	</c:set>
 	<c:set var="response" scope="page" value="${message.id == message.discussionId ? false : true}"></c:set>
-						<div id="content-${messageCount}" class="card p-2 mb-1 masked-message">
+						<div id="content-${messageCount}" class="camel-box masked-message">
 							<div class="row">
 								<!-- message information -->
-								<div class="col-3">
+								<div class="camel-first-hump camel-box-classic col-3">
+								
+								
 									<!-- sent / received -->
-									<div class="row">
-										<div class="col-3">
-											<img src="${pageContext.request.contextPath}/images/mail-${iconType}.png" 
-												alt="Message ${mailType}" title="Message ${mailType}" width="24" height="24">
-										</div>
-										<div class="col-9">
-											<p class="text-center"><em>Message ${mailType}</em></p>
-										</div>
-									</div>
+									<h3 class="camel-first-title camel-first-title-classic row">
+										<img width="24" height="24" class="col-3"
+											src="${pageContext.request.contextPath}/images/mail-${iconType}.png" 
+											alt="Message ${mailType}" title="Message ${mailType}">
+										<span class="col-9 text-center text-normal text-white py-1">
+											<em>Message ${mailType}</em>
+										</span>
+									</h3>
+									
+									
 									<!-- Date -->
-									<p class="text-center"><strong>${message.displayDtSent}</strong></p>
+									<p class="camel-drawer text-center"><strong>${message.displayDtSent}</strong></p>
+									<div class="camel-separator"></div>
 									<!-- Sender / receiver -->
-									<p>${interlocutorType} :</p>
-									<p class="text-center"><strong>${interlocutor}</strong></p>
+									<h6 class="camel-drawer text-center text-normal text-soft">${interlocutorType} :</h6>
+									<p class="camel-drawer text-center text-l"><strong>${interlocutor}</strong></p>
+									
+									
 								</div>
 								<!-- message content -->
-								<div class="col-9">
+								<div class="camel-second-hump camel-box-classic col-9">
 									<!-- title + btn answer -->
-									<h2>${ response ? 'Re: ' : '' }${message.title}</h2>
+									<h2 class="camel-second-title camel-second-title-classic text-white py-2">${ response ? 'Re: ' : '' }${message.title}</h2>
 									<!-- content -->
-									<p>${message.content}</p>
+									<p class="camel-drawer">${message.content}</p>
 								</div>
 							</div>
 						</div>

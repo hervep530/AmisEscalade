@@ -26,7 +26,6 @@
 </c:choose>
 <%@ include file="jspMessage/View.jsp" %>
 						</div>
-<%@ include file="jspDebug/DebugDelivry.jsp" %>
 <%@ include file="jspSite/Footer.jsp" %>
 				</section>
 				<section id="proposal" class="col-xl-3">
