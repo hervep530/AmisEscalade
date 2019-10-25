@@ -26,7 +26,6 @@
     <c:when test="${action == 'f' && method == 'GET'}"><%@ include file="jspSite/SearchForm.jsp" %></c:when>
     <c:when test="${action == 'f' && method == 'POST'}">
     	<%@ include file="jspSite/View.jsp" %>
-    	<%@ include file="jspDebug/TestForm.jsp" %>
     </c:when>
     <c:when test="${action == 'r' || action == 'uac'}"><%@ include file="jspSite/Content.jsp" %></c:when>
     <c:when test="${action == 'c' || action == 'u'}"><%@ include file="jspSite/CreateUpdateForm.jsp" %></c:when>
@@ -35,9 +34,6 @@
 <c:if test="${action == 'r' || action == 'uac'}">
 <%@ include file="jspComment/EmbeddedComments.jsp" %>
 </c:if>
-
-
-<%@ include file="jspDebug/DebugDelivry.jsp" %>
 <%@ include file="jspSite/Footer.jsp" %>
 				</section>
 				<section id="proposal" class="col-xl-3">

@@ -460,12 +460,16 @@ form .required {
 	color: #444466;
 }
 
+.text-xxxl {
+	font-size: 1.7em;
+}
+
 .text-xxl {
-	font-size: 1.3em;
+	font-size: 1.5em;
 }
 
 .text-xl {
-	font-size: 1.2em;
+	font-size: 1.3em;
 }
 
 .text-l {
