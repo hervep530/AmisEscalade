@@ -28,11 +28,7 @@
     <c:when test="${action == 'u'}"><%@ include file="jspTopo/CreateUpdateForm.jsp" %></c:when>
     <c:otherwise><%@ include file="jspTopo/Content.jsp" %></c:otherwise>
 </c:choose>
-<c:if test="${action == 'r'}">
-<%@ include file="jspSite/SummarizedList.jsp" %>
-</c:if>
 <%@ include file="jspSite/Footer.jsp" %>
-<%@ include file="jspDebug/DebugDelivry.jsp" %>
 				</section>
 				<section id="proposal" class="col-xl-3">
 <%@ include file="jspCommon/SocialLinks.jsp" %>
