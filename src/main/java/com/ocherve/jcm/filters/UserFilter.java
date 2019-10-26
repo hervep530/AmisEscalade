@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Level;
 	"/site/c/*",
 	"/site/uac/*",
 	"/topo/l/*",
+	"/topo/h/*",
 	"/topo/r/*",
 	"/topo/c/*",
 	"/message/lmd/*",
@@ -101,7 +102,7 @@ public class UserFilter extends JcmFilter {
 		} else {
 			String getActions = "(session/deconnexion|session/pass|session/d|"
 								+ "site/c|"
-								+ "topo/r|topo/c|"
+								+ "topo/r|topo/c|topo/h|"
 								+ "message/lmd|message/lfd|message/r|message/ca|message/cft)";
 			String topoListAction = "^/topo/l/[0-9]{1,16}$";
 			return uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$") || uri.matches(topoListAction);
@@ -122,7 +123,7 @@ public class UserFilter extends JcmFilter {
 		if ( method.contentEquals("GET") ) {
 			String getActions = "(session/deconnexion|session/pass|session/d|"
 								+ "site/c|"
-								+ "topo/c|"
+								+ "topo/c|topo/h|"
 								+ "message/lmd|message/lfd|message/r|message/ca|message/cft)";
 			if ( uri.matches("^/" + getActions + "/[0-9]{1,16}/\\w{1,32}$") ) this.isStaticToken = true;
 		} else if ( method.contentEquals("POST") ) {

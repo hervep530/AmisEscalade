@@ -23,6 +23,7 @@
 <c:set var="a" value="${delivry.parameters.parsedUrl.action}" scope="page"/>
 <c:choose>
     <c:when test="${action == 'l'}"><%@ include file="jspTopo/View.jsp" %></c:when>
+    <c:when test="${action == 'h'}"><%@ include file="jspTopo/View.jsp" %></c:when>
     <c:when test="${action == 'r'}"><%@ include file="jspTopo/Content.jsp" %></c:when>
     <c:when test="${action == 'c'}"><%@ include file="jspTopo/CreateUpdateForm.jsp" %></c:when>
     <c:when test="${action == 'u'}"><%@ include file="jspTopo/CreateUpdateForm.jsp" %></c:when>

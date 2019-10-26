@@ -20,6 +20,14 @@ public interface TopoService extends Service {
 	Delivry getPublishedList(Parameters parameters);
 
 	/**
+	 * Execute Topo service action when user requests to display topo list 
+	 * 
+	 * @param parameters
+	 * @return delivry which stores result of action in attributes used by jsp
+	 */
+	Delivry getMyList(Parameters parameters);
+
+	/**
 	 * Execute Topo service action when user requests to display a topo 
 	 * 
 	 * @param parameters

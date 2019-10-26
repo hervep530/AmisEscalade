@@ -61,6 +61,9 @@ public class Topo extends JcmServlet {
 				case "l" :
 					delivry = ((TopoService) service).getPublishedList(parameters);
 					break;
+				case "h" :
+					delivry = ((TopoService) service).getMyList(parameters);
+					break;
 				case "r" :
 					delivry = ((TopoService) service).getTopo(parameters);
 					break;

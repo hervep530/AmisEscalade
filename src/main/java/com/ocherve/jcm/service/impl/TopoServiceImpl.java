@@ -33,6 +33,7 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 	protected final static String SVC_DEFAULT_URL = "";
 	protected final static String[][] SVC_ACTIONS = {
 			{"l","/topo/l/$id"},
+			{"h","/topo/h/$id/$slug"},
 			{"r","/topo/r/$id/$slug"},
 			{"c","/topo/c/$id/$slug"},
 			{"u","/topo/u/$id/$slug"},
@@ -114,6 +115,33 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		// Appending data to result and return it
 		this.delivry.appendattribute("topos", topos);
 		this.delivry.appendattribute("listsCount", listsCount);
+		this.appendMandatoryAttributesToDelivry(parameters);
+		
+		return this.delivry;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Delivry getMyList(Parameters parameters) {
+		this.delivry = new Delivry();
+		List<Topo> topos = null;
+		Map<String,Object> queryParameters = new HashMap<>();
+		
+		// Setting query name and parameters
+		String queryName = "Topo.findByAuthor";
+		int authorId = Integer.valueOf(parameters.getParsedUrl().getId());
+		queryParameters.put("authorId", authorId);
+		// Getting query result
+		try {
+			topos = (List<Topo>) topoDao.getListFromNamedQuery(Topo.class, queryName, queryParameters);
+		} catch (Exception e ) {
+			throw new UrlException("Echec de la requete " + queryName);
+		}
+		if (topos == null) throw new UrlException("Aucun resultat pour la requete " + queryName);
+		// debug
+		if ( topos.isEmpty() ) throw new UrlException("Aucun resultat pour la requete " + queryName);
+		// Appending data to result and return it
+		this.delivry.appendattribute("topos", topos);
 		this.appendMandatoryAttributesToDelivry(parameters);
 		
 		return this.delivry;

@@ -21,7 +21,7 @@
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="#" class="p-2">
+								<a href="${contextPath}/topo/h/${userId}/${staticToken}" class="p-2">
 								<img alt="Mon espace personnel" src="${contextPath}/images/home.png"
 									width="32" height="32">
 								</a>
