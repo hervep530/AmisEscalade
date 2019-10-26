@@ -21,22 +21,21 @@
 				        		<img src="${pageContext.request.contextPath}/medias/site/${site.slug}.jpg"
 									 alt="Kerlouan thumb" width="100%" class="mr-2 rounded"/>
 				        	</div>
-				        	<div class="media-body pt-2 mb-0 small lh-125 col-md-10">
+				        	<div class="col-md-7 media-body pt-2 mb-0 small lh-125">
 				        		<h3 class="row text-normal">
-						            <span class="d-block text-gray-dark col-md-6">
+						            <span class="d-block text-gray-dark col-md-8">
 						            	<a class="pr-3" href="${pageContext.request.contextPath}/site/r/${site.id}/${site.slug}">
 						            		<strong><c:out value="${site.name}"></c:out></strong>
 						            	</a><c:out value="${site.country} - ${site.department}"></c:out></span>
-					            	<span class="col-sm-3">
+					            	<span class="col-md-4">
 					            		${site.pathsNumber} voies de ${site.cotationMin.label} à ${site.cotationMax.label}
 					            	</span>
-					            	<span class="col-sm-3">
-<%@ include file="NavViewEntity.jsp" %>
-					            	</span>
-					            	
 				        		</h3>
 				            	<p><c:out value="${site.summary}"></c:out></p>
 				        	</div>
+					        <div class="col-sm-3">
+<%@ include file="NavViewEntity.jsp" %>
+					        </div>
 				        </div>
 	</c:forEach>
 </c:if>				
