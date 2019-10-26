@@ -35,7 +35,7 @@ public class SiteForm extends Form {
 	 */
 	public SiteForm() {
 		super();
-		filepath = UPLOAD_PATH + "/site" ;
+		this.filepath = UPLOAD_PATH + "/site" ;
 	}
 	
 	/**
@@ -46,6 +46,7 @@ public class SiteForm extends Form {
 	 */
 	public SiteForm(HttpServletRequest request, boolean updating) {
 		super();
+		this.filepath = UPLOAD_PATH + "/site" ;
 		this.request = request;
 		this.slug = "";
 		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
@@ -119,6 +120,7 @@ public class SiteForm extends Form {
 	 */
 	public SiteForm(Integer siteId) {
 		super();
+		this.filepath = UPLOAD_PATH + "/site" ;
 		if (siteId == null) {
 			DLOG.log(Level.ERROR, "Topo form can not be instanciated - siteId is null.");
 			return;

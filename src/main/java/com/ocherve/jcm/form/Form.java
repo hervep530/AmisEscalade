@@ -285,8 +285,8 @@ public abstract class Form {
 		try {
 			File file = new File(this.filepath + "/" + filename);
 			file.renameTo(new File(this.filepath + "/" + this.filename));
-		} catch (Exception ignore) {
-			DLOG.log(Level.ERROR, "Publishing file : " + this.tmpFilename + "uploaded but publishing failed.");
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, "Publishing file : " + filename + " publishing failed.");
 		}
 	}
 
