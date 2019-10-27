@@ -14,6 +14,7 @@ import com.ocherve.jcm.dao.contract.CommentDao;
 import com.ocherve.jcm.model.Comment;
 import com.ocherve.jcm.model.Reference;
 import com.ocherve.jcm.model.User;
+import com.ocherve.jcm.utils.JcmException;
 
 /**
  * @author herve_dev
@@ -21,25 +22,25 @@ import com.ocherve.jcm.model.User;
  */
 public class CommentManager {
 
-	private static final Logger DLOG = LogManager.getLogger("development_file");
+	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static final String[][] COMMENTS_DE_TEST = new String[][] {
-		{"0", "Bonjour pourquoi le titre danse avec les loups il est romancé le topo", "3", "TOPO"},
-		{"0", "Bonjour romancé... pas vraiment mais c'est bien écrit", "6", "TOPO"},
-		{"0", "Et il y a des photos", "3", "TOPO"},
-		{"0", "Ah oui vraiment magnifique", "6", "TOPO"},
-		{"0", "En général c'est plus pour montrer le paysage ou le contexte technique", "6", "TOPO"},
-		{"0", "C est varié un peu des 2 je dirais", "6", "TOPO"},
+		{"3", "Bonjour pourquoi le titre danse avec les loups il est romancé le topo", "1", "SITE"},
+		{"3", "Bonjour romancé... pas vraiment mais c'est bien écrit", "0", "SITE"},
+		{"3", "Et il y a des photos", "1", "SITE"},
+		{"3", "Ah oui vraiment magnifique", "0", "SITE"},
+		{"3", "En général c'est plus pour montrer le paysage ou le contexte technique", "1", "SITE"},
+		{"3", "C est varié un peu des 2 je dirais", "0", "SITE"},
 		{"1", "Bonjour, il a l'air chouette ce site. Il y a des voies accessible pour les ados", "2", "SITE"},
-		{"1", "Bonjour, tout dépend s'ils pratiquent déjà...", "4", "SITE"},
+		{"1", "Bonjour, tout dépend s'ils pratiquent déjà...", "3", "SITE"},
 		{"1", "Bien, il grimpe souvent dans les arbres dans le jardin", "2", "SITE"},
-		{"1", "Ils ont déjà essayé un mur d'escalade", "4", "SITE"},
+		{"1", "Ils ont déjà essayé un mur d'escalade", "3", "SITE"},
 		{"1", "Non, jamais...", "2", "SITE"},
-		{"1", "Je pense qu'il y a des voies pas trop compliquées, mais l'escalade reste un sport dangereux. C'est toujours bien de commencer avec du mur...", "2", "SITE"},
+		{"1", "Je pense qu'il y a des voies pas trop compliquées, mais l'escalade reste un sport dangereux. C'est toujours bien de commencer avec du mur...", "3", "SITE"},
 		{"1", "Je vais probablement suivre ton conseil. Je n'ai pas envie de ramener des blessés", "2", "SITE"},
-		{"4", "Bonjour, Est ce que ce spot est beaucoup fréquenté, stp?", "0", "SITE"},
-		{"4", "En fait, ça dépend de la saison... C'est plutôt calme une grande partie de l'année", "4", "SITE"},
-		{"4", "Donc là, à l'automne... grimper la journée oui... mais la fête le soir, c'est plus compliqué?", "0", "SITE"},
-		{"4", "Il faut voir le bon coté des choses. Cela permet d'avoir une bonne nuit de repos pour repartir le lendemain.", "4", "SITE"},
+		{"2", "Bonjour, Est ce que ce spot est beaucoup fréquenté, stp?", "0", "SITE"},
+		{"2", "En fait, ça dépend de la saison... C'est plutôt calme une grande partie de l'année", "4", "SITE"},
+		{"2", "Donc là, à l'automne... grimper la journée oui... mais la fête le soir, c'est plus compliqué?", "0", "SITE"},
+		{"2", "Il faut voir le bon coté des choses. Cela permet d'avoir une bonne nuit de repos pour repartir le lendemain.", "4", "SITE"},
 	};
 	private static Integer[] ids;
 	private static CommentDao dao;
@@ -87,11 +88,6 @@ public class CommentManager {
 		} catch (Exception e) {
 			DLOG.log(Level.DEBUG, String.format("Error on creating comments"));
 			//DLOG.log(Level.DEBUG, String.format(e.getMessage()));
-			String trace = "";
-			for (int t = 0; t < e.getStackTrace().length; t++) {
-				trace += "%n" + e.getStackTrace()[t].toString();
-			}
-			DLOG.log(Level.DEBUG, String.format(trace));
 		}
 
 
@@ -100,7 +96,7 @@ public class CommentManager {
 	/**
 	 * Create several comments on existent topo and site
 	 */
-	public static void create() {
+	public static void createDeMerde() {
 		initialization();
 		ids = new Integer[COMMENTS_DE_TEST.length];
 		Integer authorId;
@@ -150,6 +146,52 @@ public class CommentManager {
 
 	}
 	
+	public static void create() {
+		initialization();
+		ids = new Integer[COMMENTS_DE_TEST.length];
+		Integer entityId;
+		User author;
+		Reference targetReference;
+		Comment comment;
+		
+		try {
+			for (int c = 0; c < COMMENTS_DE_TEST.length; c++) {
+				targetReference = null;
+				comment = null;
+				author = null;
+				// Get reference
+				entityId = 0 ;
+				if ( COMMENTS_DE_TEST[c][3].contentEquals("SITE") ) {
+					entityId = SiteManager.getIds()[Integer.valueOf(COMMENTS_DE_TEST[c][0])];
+					targetReference = SiteManager.getDao().get(entityId);
+				} else { 
+					entityId = TopoManager.getIds()[Integer.valueOf(COMMENTS_DE_TEST[c][0])];
+					targetReference = TopoManager.getDao().get(entityId);
+				}
+				if ( targetReference == null ) { 
+					DLOG.log(Level.ERROR, "Target reference is null for id " + entityId);
+				} else {
+					DLOG.log(Level.DEBUG, "ref id / name : " + targetReference.getType() + " " + targetReference.getId() + " / " + targetReference.getName());					
+				}
+				// Get author
+				entityId = 0 ;
+				entityId = UserManager.getIds()[Integer.valueOf(COMMENTS_DE_TEST[c][2])];
+				author = UserManager.getDao().get(entityId);
+				if ( author == null ) { 
+					DLOG.log(Level.ERROR, "Author is null for id " + entityId);
+				} else {
+					DLOG.log(Level.DEBUG, "Author id / username : " + author.getId() + " / " + author.getUsername());
+				}
+				comment = new Comment(targetReference, COMMENTS_DE_TEST[c][1], author);
+				ids[c] = dao.create(comment).getId(); 
+			}
+		} catch ( Exception e ) {
+			DLOG.log(Level.ERROR, "Cannot create comments");
+			DLOG.log(Level.ERROR, JcmException.formatStackTrace(e));
+		}
+
+	}
+
 	/**
 	 * Delete comment dedicated for test
 	 */

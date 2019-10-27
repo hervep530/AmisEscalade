@@ -22,7 +22,7 @@ import com.ocherve.jcm.model.User;
  */
 public class UserManager {
 
-	private static final Logger DLOG = LogManager.getLogger("development_file");
+	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static final String[][] USERS_DE_TEST = new String[][] {
 		{"herve.oc@amiescalade.fr", "hervesca", "paSS13word", "salt", "","2"},
 		{"aurelie.lavant@amiescalade.fr", "alavantie", "paSS12word", "salt", "","3"},

@@ -18,7 +18,7 @@ import com.ocherve.jcm.model.User;
  */
 public class MessageManager {
 
-	private static final Logger DLOG = LogManager.getLogger("development_file");
+	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static final String[][] MESSAGES_DE_TEST = new String[][] {
 		{"0", "1", "Test", "Hello", null},
 		{"1", "0", "Test", "Oui Hello c est pour quoi", "0"},

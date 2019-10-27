@@ -11,6 +11,7 @@ import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.SiteDao;
 import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Site;
+import com.ocherve.jcm.utils.JcmException;
 
 /**
  * Service to create, delete Site and store id created in static object dedicated for tests
@@ -20,7 +21,7 @@ import com.ocherve.jcm.model.Site;
  */
 public class SiteManager {
 
-	private static final Logger DLOG = LogManager.getLogger("development_file");
+	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static final String[][] SITES_DE_TEST = new String[][] {
 		{"Autoire", "France", "Lot", "Autoire est un spot du lot", "true", "false","true","false",
 		"5", "25", "Est / Sud-Est", "271", "5a", "8b", "1", "false",
@@ -84,7 +85,7 @@ public class SiteManager {
 			}			
 		} catch (Exception e) {
 			DLOG.log(Level.DEBUG, String.format("Error on creating sites"));
-			DLOG.log(Level.DEBUG, String.format(e.getMessage()));
+			DLOG.log(Level.DEBUG, JcmException.formatStackTrace(e));
 		}		
 	}
 	
@@ -136,6 +137,10 @@ public class SiteManager {
 	 * @param siteExpected string to describe kind of list expected (where clause)
 	 */
 	public static void LogSiteList(List<Site> sites, String siteExpected) {
+		if (sites == null ) {
+			DLOG.log(Level.ERROR, "Sites list is null. Nothing can be logged.");
+			return;
+		}
 		initialization();
 		String message = "%n Display list of " + siteExpected + " in database%n";
 		message += "Id / Site name / Departement / Cotation Min / Cotation max / Auteur / Date creation%n";

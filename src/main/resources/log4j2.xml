@@ -9,13 +9,13 @@
     <Console name="console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %F:%L - %m%n"/>
     </Console>
-    <File name="supportFile" fileName="${sys:catalina.home}/logs/AmisEscalade/jcm_support.log">
+    <File name="supportFile" fileName="${sys:catalina.base}/logs/AmisEscalade/jcm_support.log">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %F:%L - %m%n"/>
     </File>
-    <File name="developmentFile" fileName="${sys:catalina.home}/logs/AmisEscalade/jcm_development.log">
+    <File name="developmentFile" fileName="${sys:catalina.base}/logs/AmisEscalade/jcm_development.log">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %F:%L - %m%n"/>
     </File>
-    <File name="testFile" fileName="${sys:catalina.home}/logs/AmisEscalade/jcm_test.log">
+    <File name="testFile" fileName="logs/AmisEscalade/jcm_test.log">
       <!-- ${PROJECT_LOC} -->
       <PatternLayout pattern="%d %-7level %logger{36} - %msg%n"/>
     </File>

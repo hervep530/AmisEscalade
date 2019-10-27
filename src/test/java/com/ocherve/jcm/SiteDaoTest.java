@@ -24,7 +24,7 @@ import com.ocherve.jcm.model.User;
  */
 public class SiteDaoTest {
 
-		private static final Logger DLOG = LogManager.getLogger("development_file");
+		private static final Logger DLOG = LogManager.getLogger("test_file");
 		private static Integer id;
 		private static Site siteControl;
 
@@ -40,8 +40,8 @@ public class SiteDaoTest {
 			siteControl = null;
 			/* Call SiteManager to create all sites */ 
 			assertNull(id);
-			SiteManager.create();
 			UserManager.create();
+			SiteManager.create();
 			siteControl = SiteManager.getDao().get(SiteManager.getIds()[3]);
 			SiteManager.logSite(siteControl);
 		}

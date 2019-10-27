@@ -29,7 +29,7 @@ import com.ocherve.jcm.model.User;
  */
 public class UserDaoTest {
 
-	private static final Logger DLOG = LogManager.getLogger("development_file");
+	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static Integer id;
 	private static Integer[] userIds;
 	private static User userControl;

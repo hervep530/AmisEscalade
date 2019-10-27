@@ -18,7 +18,7 @@ import com.ocherve.jcm.model.Message;
  */
 public class MessageDaoTest {
 
-	private static final Logger DLOG = LogManager.getLogger("development_file");
+	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static Integer id;
 	private static Message messageControl;
 

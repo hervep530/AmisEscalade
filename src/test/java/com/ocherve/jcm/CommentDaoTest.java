@@ -20,7 +20,7 @@ import org.junit.Test;
  */
 public class CommentDaoTest {
 
-	private static final Logger DLOG = LogManager.getLogger("development_file");
+	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static Integer id;
 	//private static Site commentControl;
 

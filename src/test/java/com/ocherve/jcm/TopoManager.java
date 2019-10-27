@@ -20,7 +20,7 @@ import com.ocherve.jcm.model.User;
  */
 public class TopoManager {
 	
-	private static final Logger DLOG = LogManager.getLogger("development_file");
+	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static final String[][] TOPOS_DE_TEST = new String[][] {
 		{"Danse avec les loups", "Topos sur les Gorges du loup dans les Alpes Maritimes", "true",
 			"Manouel Desurvi", "30/08/2008", "null", "3"},
