@@ -3,6 +3,8 @@ package com.ocherve.jcm.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,7 +18,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+
 import com.ocherve.jcm.utils.JcmDate;
+import com.ocherve.jcm.utils.JcmException;
 
 /**
  * The persistent class for the jcm_comment database table.
@@ -158,8 +166,10 @@ public class Comment implements Serializable {
 	 */
 	public void setReference(Reference reference) {
 		if ( reference != null ) {
-			reference.getComments().add(this);
-			reference.setComments(reference.getComments());
+			List<Comment> newComments = new ArrayList<Comment>();
+			if (reference.getComments() != null ) newComments = reference.getComments();
+			newComments.add(this);
+			reference.setComments(newComments);
 		}
 		this.reference = reference;
 	}
