@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
@@ -36,7 +37,8 @@ public abstract class DaoImpl implements Dao {
 		objects = null;
 		if (em == null) {
 			//em = Persistence.createEntityManagerFactory("HibernateHikariPersistenceUnit").createEntityManager();
-			em = Persistence.createEntityManagerFactory("JpaPersistenceUnit").createEntityManager();			
+			EntityManagerFactory emf = Persistence.createEntityManagerFactory("JpaPersistenceUnit");
+			em = emf.createEntityManager();			
 			em.setFlushMode(FlushModeType.COMMIT);
 			DLOG.log(Level.DEBUG, String.format(this.getClass().getSimpleName() + "is now initialized"));
 		}
