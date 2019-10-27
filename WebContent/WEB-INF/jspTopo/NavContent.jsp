@@ -20,7 +20,7 @@
 <c:if test="${ (roleId > 1 && userId == authorId) || roleId > 2 }">
 	<c:set var="uaAction" value="${ topo.available ? 'uaf' : 'uat' }" scope="page"></c:set>
 	<c:set var="uaIcon" value="${ topo.available ? 'unavailable' : 'available' }" scope="page"></c:set>
-	<c:set var="uaDisplayStatus" value="${ topo.available ? 'disponible' : 'réservé' }" scope="page"></c:set>
+	<c:set var="uaDisplayStatus" value="${ topo.available ? 'réservé' : 'disponible' }" scope="page"></c:set>
 							<li class="nav-item">
 								<a href="${contextPath}/topo/${uaAction}/${topo.id}/${token}" class="p-2">
 									<img alt="Icon ${uaIcon}" src="${contextPath}/images/make_${uaIcon}.png" 
