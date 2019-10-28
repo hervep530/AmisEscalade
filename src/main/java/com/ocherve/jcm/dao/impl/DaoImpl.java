@@ -3,11 +3,14 @@ package com.ocherve.jcm.dao.impl;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.sql.DataSource;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -36,14 +39,33 @@ public abstract class DaoImpl implements Dao {
 		object = null;
 		objects = null;
 		EntityManagerFactory emf = null;
+		@SuppressWarnings("unused")
+		DataSource ds = null;
+		
+		try {
+			// Obtain environment naming context
+			Context initialContext = new InitialContext();
+			Context jcmContext = (Context) initialContext.lookup("java:comp/env");
+			// Look up our data source
+			ds = (DataSource) jcmContext.lookup("jdbc/amiesca");
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, "Can't get DataSource jdbc/amiesca");
+		}
+
+		
 		if (em == null) {
 			//em = Persistence.createEntityManagerFactory("HibernateHikariPersistenceUnit").createEntityManager();
 			try {
-				emf = Persistence.createEntityManagerFactory("SEPersistenceUnit");
+					emf = Persistence.createEntityManagerFactory("EEPersistenceUnit");
+					em = emf.createEntityManager();
+			} catch (Exception e) {
+				DLOG.log(Level.WARN, "Error on getting DataSource persistence unit and creating Entity Manager");
+			}
+			if ( em == null) try {
+				emf = Persistence.createEntityManagerFactory("SEPersistenceUnit");				
 				em = emf.createEntityManager();			
 			} catch (Exception e) {
-				emf = Persistence.createEntityManagerFactory("EEPersistenceUnit");				
-				em = emf.createEntityManager();			
+				DLOG.log(Level.WARN, "Error on getting direct persistence unit and creating Entity Manager");
 			}
 			em.setFlushMode(FlushModeType.COMMIT);
 			DLOG.log(Level.DEBUG, String.format(this.getClass().getSimpleName() + "is now initialized"));
