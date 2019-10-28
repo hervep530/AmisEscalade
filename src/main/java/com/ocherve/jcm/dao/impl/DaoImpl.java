@@ -35,10 +35,16 @@ public abstract class DaoImpl implements Dao {
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
 		object = null;
 		objects = null;
+		EntityManagerFactory emf = null;
 		if (em == null) {
 			//em = Persistence.createEntityManagerFactory("HibernateHikariPersistenceUnit").createEntityManager();
-			EntityManagerFactory emf = Persistence.createEntityManagerFactory("JpaPersistenceUnit");
-			em = emf.createEntityManager();			
+			try {
+				emf = Persistence.createEntityManagerFactory("SEPersistenceUnit");
+				em = emf.createEntityManager();			
+			} catch (Exception e) {
+				emf = Persistence.createEntityManagerFactory("EEPersistenceUnit");				
+				em = emf.createEntityManager();			
+			}
 			em.setFlushMode(FlushModeType.COMMIT);
 			DLOG.log(Level.DEBUG, String.format(this.getClass().getSimpleName() + "is now initialized"));
 		}
