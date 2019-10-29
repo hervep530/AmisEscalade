@@ -55,7 +55,7 @@ public class TopoForm extends Form {
 		this.selectedIds = new HashMap<>();
 		this.slug = "";
 		
-		this.filepath = UPLOAD_PATH + "/topo";
+		this.filepath = System.getProperty("catalina.base") + UPLOAD_PATH + "/topo";
 		this.topoDao = (TopoDao) DaoProxy.getInstance().getTopoDao();
 		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 		
@@ -115,8 +115,7 @@ public class TopoForm extends Form {
 			return;
 		}
 		this.selectedIds = new HashMap<>();
-
-		this.filepath = UPLOAD_PATH + "/topo";
+		this.filepath = System.getProperty("catalina.base") + UPLOAD_PATH + "/topo";
 		this.topoDao = (TopoDao) DaoProxy.getInstance().getTopoDao();
 		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
 		// Getting topo from id, then setting Topo form and selectedId

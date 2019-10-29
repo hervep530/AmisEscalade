@@ -20,7 +20,7 @@ import com.ocherve.jcm.service.factory.SiteService;
  * Servlet implementation class Site
  */
 @WebServlet("/site/*")
-@MultipartConfig(location="/home/1072/3/.dev/Donnees/Projets/JavaEE/Eclipse/workspace/AmisEscalade/tmp",
+@MultipartConfig(location="/tmp",
 				fileSizeThreshold=1024*1024,
 				maxFileSize=1024*1024*5,
 				maxRequestSize=1024*1024*5*5)

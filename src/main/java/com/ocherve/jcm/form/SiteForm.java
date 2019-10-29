@@ -35,7 +35,8 @@ public class SiteForm extends Form {
 	 */
 	public SiteForm() {
 		super();
-		this.filepath = UPLOAD_PATH + "/site" ;
+		this.filepath = System.getProperty("catalina.base") + UPLOAD_PATH + "/site" ;
+		DLOG.log(Level.TRACE, "filepath : " + this.filepath);
 	}
 	
 	/**
@@ -46,7 +47,8 @@ public class SiteForm extends Form {
 	 */
 	public SiteForm(HttpServletRequest request, boolean updating) {
 		super();
-		this.filepath = UPLOAD_PATH + "/site" ;
+		this.filepath = System.getProperty("catalina.base") + UPLOAD_PATH + "/site" ;
+		DLOG.log(Level.TRACE, "filepath : " + this.filepath);
 		this.request = request;
 		this.slug = "";
 		this.siteDao = (SiteDao) DaoProxy.getInstance().getSiteDao();
@@ -120,7 +122,8 @@ public class SiteForm extends Form {
 	 */
 	public SiteForm(Integer siteId) {
 		super();
-		this.filepath = UPLOAD_PATH + "/site" ;
+		this.filepath = System.getProperty("catalina.base") + UPLOAD_PATH + "/site" ;
+		DLOG.log(Level.TRACE, "filepath : " + this.filepath);
 		if (siteId == null) {
 			DLOG.log(Level.ERROR, "Topo form can not be instanciated - siteId is null.");
 			return;
@@ -308,7 +311,7 @@ public class SiteForm extends Form {
 	private void validateFileWhenCreatingSite() throws FormException {
 		String rawName = "";
 		String rawType = "jpg";
-		String filePath = UPLOAD_PATH + "/site";
+		String filePath = System.getProperty("catalina.base") + UPLOAD_PATH + "/site";
 		// Test Slug because filename and slug must match 
 		if ( this.slug.isEmpty() ) 
 			throw new FormException("Le fichier ne peut pas être sauvagardé car le nom du site est invalide.");
@@ -336,7 +339,7 @@ public class SiteForm extends Form {
 	private void validateFileWhenUpdatingSite() throws FormException {
 		String rawName = "";
 		String rawType = "jpg";
-		String filePath = UPLOAD_PATH + "/site";
+		String filePath = System.getProperty("catalina.base") + UPLOAD_PATH + "/site";
 		// Test Slug because filename and slug must match 
 		if ( this.slug.isEmpty() ) 
 			throw new FormException("Le fichier ne peut pas être sauvagardé car le nom du site est invalide.");

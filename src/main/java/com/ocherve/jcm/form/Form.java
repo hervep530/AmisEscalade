@@ -27,7 +27,8 @@ public abstract class Form {
 	
     protected static final Logger DLOG = LogManager.getLogger("development_file");
     protected static final Level DLOGLEVEL = Level.TRACE;
-    public static final String UPLOAD_PATH = "/home/1072/3/.dev/Donnees/Projets/JavaEE/Eclipse/workspace/AmisEscalade/WebContent/medias";
+    //public static final String UPLOAD_PATH = "/home/1072/3/.dev/Donnees/Projets/JavaEE/Eclipse/workspace/AmisEscalade/WebContent/medias";
+    public static final String UPLOAD_PATH = "/webapps/AmisEscalade/medias";
     protected static final Integer UPLOAD_BUFFER_SIZE = 1024*1024;
     
 	

@@ -18,7 +18,7 @@ import com.ocherve.jcm.service.factory.TopoService;
  * Servlet implementation class Topo
  */
 @WebServlet("/topo/*")
-@MultipartConfig(location="/home/1072/3/.dev/Donnees/Projets/JavaEE/Eclipse/workspace/AmisEscalade/tmp",
+@MultipartConfig(location="/tmp",
 	fileSizeThreshold=1024*1024,
 	maxFileSize=1024*1024*2,
 	maxRequestSize=1024*1024*2*2)
