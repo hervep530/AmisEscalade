@@ -126,4 +126,9 @@ public interface Dao {
 	 */
 	void refresh(Class<?> entityClass, Object entity);
 	
+	/**
+	 * Kind of destructor when stopping application
+	 */
+	void close();
+	
 }

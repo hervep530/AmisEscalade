@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+
 import com.ocherve.jcm.dao.contract.TopoDao;
 import com.ocherve.jcm.model.Site;
 import com.ocherve.jcm.model.Topo;
 import com.ocherve.jcm.model.User;
+import com.ocherve.jcm.utils.JcmException;
 
 class TopoDaoImpl extends DaoImpl implements TopoDao {
 
@@ -42,9 +45,66 @@ class TopoDaoImpl extends DaoImpl implements TopoDao {
 		return topos;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Topo update(Integer id, Map<String, Object> fields) {
-		return (Topo) super.update(Topo.class, id, fields);
+		Topo topo = null;
+		try {
+			topo = this.em.find(Topo.class, id);
+			if ( topo != null ) {
+				this.em.getTransaction().begin();
+				for (String field : fields.keySet()) {
+					switch (field) {
+						case "name":
+							topo.setName((String)fields.get(field));
+							break;
+						case "title" :
+							topo.setTitle((String)fields.get(field));
+							break;
+						case "summary":
+							topo.setSummary((String)fields.get(field));
+							break;
+						case "writer":
+							topo.setWriter((String)fields.get(field));
+							break;
+						case "writedAt":
+							topo.setWritedAt((String)fields.get(field));
+							break;
+						case "author":
+							topo.setAuthor((User)fields.get(field));
+							break;
+						case "addingSite":
+							topo.addSite((Site)fields.get(field));
+							break;
+						case "removingSite":
+							topo.removeSite((Site)fields.get(field));
+							break;
+						case "addingSites":
+							// Site ids must be given under string form "number1:number2:..."
+							topo.addSites((List<Site>)fields.get(field));
+							break;
+						case "addingSitesGivenIds":
+							// Site ids must be given under string form "number1:number2:..."
+							topo.addSites((String)fields.get(field));
+							break;
+						case "published":
+							topo.setPublished((Boolean)fields.get(field));
+							break;
+						case "available":
+							topo.setAvailable((Boolean)fields.get(field));
+							break;
+						default :
+					}
+				}
+				topo.setTsModified(Timestamp.from(Instant.now()));
+				this.em.getTransaction().commit();
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, Topo.class.getSimpleName() + " can not update object.");
+			DLOG.log(Level.DEBUG, JcmException.formatStackTrace(e));
+			if ( this.em.getTransaction().isActive() ) this.em.getTransaction().rollback();
+		}	
+		return topo;
 	}
 
 	@Override
@@ -100,55 +160,6 @@ class TopoDaoImpl extends DaoImpl implements TopoDao {
 	@Override
 	public boolean delete(Integer id) {
 		return super.delete(Topo.class, id);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void setUpdateAttributes(Map<String,Object> fields) {
-		for (String field : fields.keySet()) {
-			switch (field) {
-				case "name":
-					((Topo) object).setName((String)fields.get(field));
-					break;
-				case "title" :
-					((Topo) object).setTitle((String)fields.get(field));
-					break;
-				case "summary":
-					((Topo) object).setSummary((String)fields.get(field));
-					break;
-				case "writer":
-					((Topo) object).setWriter((String)fields.get(field));
-					break;
-				case "writedAt":
-					((Topo) object).setWritedAt((String)fields.get(field));
-					break;
-				case "author":
-					((Topo) object).setAuthor((User)fields.get(field));
-					break;
-				case "addingSite":
-					((Topo) object).addSite((Site)fields.get(field));
-					break;
-				case "removingSite":
-					((Topo) object).removeSite((Site)fields.get(field));
-					break;
-				case "addingSites":
-					// Site ids must be given under string form "number1:number2:..."
-					((Topo) object).addSites((List<Site>)fields.get(field));
-					break;
-				case "addingSitesGivenIds":
-					// Site ids must be given under string form "number1:number2:..."
-					((Topo) object).addSites((String)fields.get(field));
-					break;
-				case "published":
-					((Topo) object).setPublished((Boolean)fields.get(field));
-					break;
-				case "available":
-					((Topo) object).setAvailable((Boolean)fields.get(field));
-					break;
-				default :
-			}
-		}
-		((Topo) object).setTsModified(Timestamp.from(Instant.now()));
 	}
 
 	@Override

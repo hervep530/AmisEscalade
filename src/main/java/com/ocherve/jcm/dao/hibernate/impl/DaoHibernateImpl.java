@@ -431,5 +431,10 @@ public class DaoHibernateImpl implements Dao {
 	protected void setQueryParameters(Map<String,Object> fields) {
 		// Add code with overriding in each EntityDaoImpl
 	}
+	
+	@Override
+	public void close() {
+		
+	}
 
 }

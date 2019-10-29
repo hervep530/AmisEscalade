@@ -1,5 +1,8 @@
 package com.ocherve.jcm;
 
+import java.io.File;
+import java.util.Map.Entry;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -19,19 +22,53 @@ import com.ocherve.jcm.service.ServiceProxy;
 @WebListener
 public class JcmServletContextListener implements ServletContextListener{
 	
-	protected static final Logger DLOG = LogManager.getLogger("development_file");
-
-	@Override
-	public void contextDestroyed(ServletContextEvent arg0) {
-		DLOG.log(Level.DEBUG, "Jcm Web application is now stopped.");
-	}
+	private static final Logger DLOG = LogManager.getLogger("development_file");
+    private static final String UPLOAD_PATH = "/webapps/AmisEscalade/medias";
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
+		for ( Entry<Object,Object> property : System.getProperties().entrySet() ) {
+			DLOG.log(Level.DEBUG, property.getKey().toString() + " => " + property.getValue() );
+		}
 		ServiceProxy.getInstance();
 		DaoProxy.getInstance();
+		validateMediaPath();
 		DLOG.log(Level.DEBUG, "Jcm Web application is now started.");		
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent arg0) {
+		DaoProxy.closeInstance();
+		DLOG.log(Level.DEBUG, "Jcm Web application is now stopped.");
+	}
+	
+	private void validateMediaPath() {
+		File tmp = new File(System.getProperty("user.home") + "webapps/tmp");
+		File topoImageDir = new File(System.getProperty("catalina.base") + UPLOAD_PATH + "/topo");
+		File siteImageDir = new File(System.getProperty("catalina.base") + UPLOAD_PATH + "/site");
+		try {
+			if ( ! topoImageDir.exists() ) 
+				topoImageDir.mkdirs();
+			else if ( ! topoImageDir.isDirectory() ) {
+				topoImageDir.delete();
+				topoImageDir.mkdirs();				
+			}
+			if ( ! siteImageDir.exists() )
+				siteImageDir.mkdirs();			
+			else if ( ! topoImageDir.isDirectory() ) {
+				siteImageDir.delete();
+				siteImageDir.mkdirs();				
+			}
+			if ( ! tmp.exists() )
+				tmp.mkdirs();			
+			else if ( ! tmp.isDirectory() ) {
+				tmp.delete();
+				tmp.mkdirs();				
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.WARN, "Cannot create medias directory.");			
+		}
 	}
 
 }

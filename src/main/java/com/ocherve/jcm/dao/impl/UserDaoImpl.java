@@ -5,10 +5,12 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
 
 import com.ocherve.jcm.dao.contract.UserDao;
 import com.ocherve.jcm.model.Role;
 import com.ocherve.jcm.model.User;
+import com.ocherve.jcm.utils.JcmException;
 
 /**
  * @author herve_dev
@@ -64,7 +66,50 @@ public class UserDaoImpl extends DaoImpl implements UserDao {
 
 	@Override
 	public User update(Integer id, Map<String,Object> fields) {
-		return (User) super.update(User.class, id, fields);
+		User user = null;
+		try {
+			user = this.em.find(User.class, id);
+			if ( user != null ) {
+				this.em.getTransaction().begin();
+				for (String field : fields.keySet()) {
+					switch (field) {
+						case "username":
+							user.setUsername((String)fields.get(field));
+							break;
+						case "mailAddress" :
+							user.setUsername((String)fields.get(field));
+							break;
+						case "password":
+							user.setPassword((String)fields.get(field));
+							break;
+						case "token":
+							user.setToken((String)fields.get(field));
+							break;
+						case "salt":
+							user.setSalt((String)fields.get(field));
+							break;
+						case "tsAccess":
+							Timestamp tsAccess = Timestamp.from(Instant.now());
+							user.setTsAccess(tsAccess);
+							break;
+						case "role":
+							user.setRole((Role)fields.get(field));
+							break;
+						case "roleId":
+							Role role = getRole((Integer)fields.get(field));
+							user.setRole(role);
+							break;
+						default :
+					}
+				}
+				this.em.getTransaction().commit();
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, User.class.getSimpleName() + " can not update object.");
+			DLOG.log(Level.DEBUG, JcmException.formatStackTrace(e));
+			if ( this.em.getTransaction().isActive() ) this.em.getTransaction().rollback();
+		}	
+		return user;
 	}
 
 	@Override
@@ -79,45 +124,14 @@ public class UserDaoImpl extends DaoImpl implements UserDao {
 
 	@Override
 	public Role getRole(Integer id) {
-		daoInit();
-		Role role = em.find(Role.class, id);
-		return role;		
-	}
-
-	//	protected Object setEntityProperties(Class<User> user, Map<String,String> fields) {
-	@Override
-	protected void setUpdateAttributes(Map<String,Object> fields) {
-		for (String field : fields.keySet()) {
-			switch (field) {
-				case "username":
-					((User) object).setUsername((String)fields.get(field));
-					break;
-				case "mailAddress" :
-					((User) object).setUsername((String)fields.get(field));
-					break;
-				case "password":
-					((User) object).setPassword((String)fields.get(field));
-					break;
-				case "token":
-					((User) object).setToken((String)fields.get(field));
-					break;
-				case "salt":
-					((User) object).setSalt((String)fields.get(field));
-					break;
-				case "tsAccess":
-					Timestamp tsAccess = Timestamp.from(Instant.now());
-					((User) object).setTsAccess(tsAccess);
-					break;
-				case "role":
-					((User) object).setRole((Role)fields.get(field));
-					break;
-				case "roleId":
-					Role role = getRole((Integer)fields.get(field));
-					((User) object).setRole(role);
-					break;
-				default :
-			}
+		Role role = null;
+		try {
+			role = this.em.find(Role.class, id);
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, User.class.getSimpleName() + " can not update object.");
+			DLOG.log(Level.DEBUG, JcmException.formatStackTrace(e));
 		}
+		return role;		
 	}
 
 }

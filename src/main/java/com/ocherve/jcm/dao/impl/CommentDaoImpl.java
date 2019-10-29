@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+
 import com.ocherve.jcm.dao.contract.CommentDao;
 import com.ocherve.jcm.model.Comment;
 import com.ocherve.jcm.model.Reference;
 import com.ocherve.jcm.model.User;
+import com.ocherve.jcm.utils.JcmException;
 
 /**
  * @author herve_dev
@@ -24,7 +27,34 @@ class CommentDaoImpl extends DaoImpl implements CommentDao {
 
 	@Override
 	public Comment update(Integer id, Map<String, Object> fields) {
-		return (Comment) super.update(Comment.class, id, fields);
+		Comment comment = null;
+		try {
+			comment = this.em.find(Comment.class, id);
+			if ( comment != null ) {
+				this.em.getTransaction().begin();
+				for (String field : fields.keySet()) {
+					switch (field) {
+						case "content":
+							comment.setContent((String)fields.get(field));
+							break;
+						case "user" :
+							comment.setAuthor((User)fields.get(field));
+							break;
+						case "reference" :
+							comment.setReference((Reference)fields.get(field));
+							break;
+						default :
+					}
+				}
+				comment.setTsModified(Timestamp.from(Instant.now()));
+				this.em.getTransaction().commit();
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, Comment.class.getSimpleName() + " can not update comment.");
+			DLOG.log(Level.DEBUG, JcmException.formatStackTrace(e));
+			if ( this.em.getTransaction().isActive() ) this.em.getTransaction().rollback();
+		}	
+		return comment;
 	}
 
 	@Override
@@ -88,26 +118,6 @@ class CommentDaoImpl extends DaoImpl implements CommentDao {
 	@Override
 	public boolean delete(Integer id) {
 		return delete(Comment.class, id);
-	}
-
-	@Override
-	protected void setUpdateAttributes(Map<String,Object> fields) {
-		for (String field : fields.keySet()) {
-			switch (field) {
-				case "content":
-					((Comment) object).setContent((String)fields.get(field));
-					break;
-				case "user" :
-					((Comment) object).setAuthor((User)fields.get(field));
-					break;
-				case "reference" :
-					((Comment) object).setReference((Reference)fields.get(field));
-					break;
-				default :
-			}
-		}
-		((Comment) object).setTsModified(Timestamp.from(Instant.now()));
-
 	}
 
 }

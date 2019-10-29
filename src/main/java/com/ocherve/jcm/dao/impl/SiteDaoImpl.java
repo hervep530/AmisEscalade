@@ -4,10 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+import org.apache.logging.log4j.Level;
+
 import com.ocherve.jcm.dao.contract.SiteDao;
 import com.ocherve.jcm.model.Comment;
 import com.ocherve.jcm.model.Cotation;
 import com.ocherve.jcm.model.Site;
+import com.ocherve.jcm.utils.JcmException;
 
 /**
  * @author herve_dev
@@ -31,16 +35,7 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 		Site site = (Site) super.get(Site.class, id);
 		return site.getSlug();
 	}
-/*
-	@Override
-	public Integer getIdFromNamedQuery(String queryName, Map<String, Object> parameters) {
-		try {
-			return ((Integer) super.getColumnsFromNamedQuery(Integer.class, queryName, parameters));
-		} catch (Exception e) {
-			return 0;
-		}
-	}
-*/
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Site> getList() {
@@ -83,7 +78,63 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 
 	@Override
 	public Site update(Integer id, Map<String, Object> fields) {
-		return (Site) super.update(Site.class, id, fields);
+		Site site = null;
+		try {
+			site = this.em.find(Site.class, id);
+			if ( site != null ) {
+				this.em.getTransaction().begin();
+				for (String field : fields.keySet()) {
+					switch (field) {
+						case "country":
+							site.setCountry((String)fields.get(field));
+							break;
+						case "department" :
+							site.setDepartment((String)fields.get(field));
+							break;
+						case "block":
+							site.setBlock((Boolean)fields.get(field));
+							break;
+						case "cliff":
+							site.setCliff((Boolean)fields.get(field));
+							break;
+						case "wall":
+							site.setWall((Boolean)fields.get(field));
+							break;
+						case "minHeight":
+							site.setMinHeight((Integer)fields.get(field));
+							break;
+						case "maxHeight":
+							site.setMaxHeight((Integer)fields.get(field));
+							break;
+						case "pathsNumber":
+							site.setPathsNumber((Integer)fields.get(field));
+							break;
+						case "orientation":
+							site.setOrientation((String)fields.get(field));
+							break;
+						case "cotationMin":
+							site.setCotationMin((Cotation)fields.get(field));
+							break;
+						case "cotationMax":
+							site.setCotationMax((Cotation)fields.get(field));
+							break;
+						case "friendTag":
+							site.setFriendTag((Boolean)fields.get(field));
+							break;
+						case "removeComment":
+							site.removeComment((Comment)fields.get(field));
+							break;
+						default :
+					}
+				}
+				this.em.getTransaction().commit();
+			}
+		} catch (Exception e) {
+			DLOG.log(Level.ERROR, Site.class.getSimpleName() + " can not update object.");
+			DLOG.log(Level.DEBUG, JcmException.formatStackTrace(e));
+			if ( this.em.getTransaction().isActive() ) this.em.getTransaction().rollback();
+		}
+		return site;
 	}
 
 	@Override
@@ -126,60 +177,4 @@ class SiteDaoImpl extends DaoImpl implements SiteDao {
 		return super.delete(Site.class, id);
 	}
 	
-	@Override
-	protected void setUpdateAttributes(Map<String,Object> fields) {
-		for (String field : fields.keySet()) {
-			switch (field) {
-				case "country":
-					((Site) object).setCountry((String)fields.get(field));
-					break;
-				case "department" :
-					((Site) object).setDepartment((String)fields.get(field));
-					break;
-				case "block":
-					((Site) object).setBlock((Boolean)fields.get(field));
-					break;
-				case "cliff":
-					((Site) object).setCliff((Boolean)fields.get(field));
-					break;
-				case "wall":
-					((Site) object).setWall((Boolean)fields.get(field));
-					break;
-				case "minHeight":
-					((Site) object).setMinHeight((Integer)fields.get(field));
-					break;
-				case "maxHeight":
-					((Site) object).setMaxHeight((Integer)fields.get(field));
-					break;
-				case "pathsNumber":
-					((Site) object).setPathsNumber((Integer)fields.get(field));
-					break;
-				case "orientation":
-					((Site) object).setOrientation((String)fields.get(field));
-					break;
-					
-				case "cotationMin":
-					((Site) object).setCotationMin((Cotation)fields.get(field));
-					break;
-				case "cotationMax":
-					((Site) object).setCotationMax((Cotation)fields.get(field));
-					break;
-
-				case "friendTag":
-					((Site) object).setFriendTag((Boolean)fields.get(field));
-					break;
-				case "removeComment":
-					((Site) object).removeComment((Comment)fields.get(field));
-					break;
-				case "roleId":
-					/*
-					Role role = getRole((Integer)fields.get(field));
-					((User) object).setRole(role);
-					break;
-					*/
-				default :
-			}
-		}
-	}
-
 }

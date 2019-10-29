@@ -51,6 +51,24 @@ public class DaoProxy {
 	}
 
 	/**
+	 * Attempt to cclose all Dao connexions
+	 */
+	public static void closeInstance() {
+		try {
+			if (instance != null ) {
+				DaoFactory.getDao(daoType, UserDao.class).close();
+				DaoFactory.getDao(daoType, SiteDao.class).close();
+				DaoFactory.getDao(daoType, TopoDao.class).close();
+				DaoFactory.getDao(daoType, CommentDao.class).close();
+				DaoFactory.getDao(daoType, MessageDao.class).close();
+			}
+			DaoFactory.close();
+		} catch (Exception e) {
+			DLOG.log(Level.DEBUG,"Errors on closing Dao connexions");
+		}
+	}
+	
+	/**
 	 * Getter
 	 * 
 	 * @return the userDao
