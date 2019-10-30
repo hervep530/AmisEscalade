@@ -30,7 +30,7 @@
 				<section id="proposal" class="col-xl-3">
 <%@ include file="jspCommon/SocialLinks.jsp" %>
 <%@ include file="jspCommon/Identity.jsp" %>
-<%@ include file="jspCommon/SiteThread.jsp" %>
+<%@ include file="jspCommon/Help.jsp" %>
 <%@ include file="jspCommon/Legals.jsp" %>
 				</section>
 			</div>

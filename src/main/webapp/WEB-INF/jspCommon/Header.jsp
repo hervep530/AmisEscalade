@@ -7,7 +7,7 @@
 			<a class="navbar-brand" href="${contextPath}/"> <img
 				class="align-middle" alt="Logo Amis escalade"
 				src="${contextPath}/images/escalade.png" width="36" height="36" />
-				<span class="h2 align-middle px-4 text-classic-light">Les Amis de l'escalade</span>
+				<span class="h2 align-middle px-4 text-help">Les Amis de l'escalade</span>
 			</a>
 			<!-- Toggler/collapsibe Button visible up to md -->
 			<button class="navbar-toggler d-inline d-lg-none" type="button" data-toggle="collapse"

@@ -241,7 +241,7 @@ form .required {
 }
 
 .monkey-box-help{
-	border-left-color: #1555b5;	
+	border-left-color: #90a0c9;	
 }
 
 .monkey-box-classic{
@@ -266,7 +266,7 @@ form .required {
 }
 
 .monkey-hat-help {
-	background-image: linear-gradient(to right, #1555b5 , #ddd);
+	background-image: linear-gradient(to right, #90a0c9 , #ddd);
 }
 
 .monkey-hat-classic {
@@ -304,7 +304,7 @@ form .required {
 }
 
 .monkey-title-help {
-	background-image: linear-gradient(to right, #1555b5 , #ddd);
+	background-image: linear-gradient(to right, #90a0c9 , #ddd);
 }
 
 .monkey-title-classic {
@@ -472,6 +472,10 @@ form .required {
 	color: #444466;
 }
 
+.text-help {
+	color: #d9d9f9;
+}
+	
 .text-classic-light {
 	color: #CCCCEE;
 }
@@ -504,3 +508,4 @@ form .required {
 .text-xs {
 	font-size: 0.8em;
 }
+
