@@ -240,6 +240,10 @@ form .required {
 	border-left-color: #28a745;	
 }
 
+.monkey-box-help{
+	border-left-color: #1555b5;	
+}
+
 .monkey-box-classic{
 	border-left-color: #444466;	
 }
@@ -259,6 +263,10 @@ form .required {
 
 .monkey-hat-success {
 	background-image: linear-gradient(to right, #28a745 , #ddd);
+}
+
+.monkey-hat-help {
+	background-image: linear-gradient(to right, #1555b5 , #ddd);
 }
 
 .monkey-hat-classic {
@@ -293,6 +301,10 @@ form .required {
 
 .monkey-title-success {
 	background-image: linear-gradient(to right, #28a745 , #ddd);
+}
+
+.monkey-title-help {
+	background-image: linear-gradient(to right, #1555b5 , #ddd);
 }
 
 .monkey-title-classic {
