@@ -20,11 +20,11 @@
 			</div>
 			<div id="detail" class="container mx-4">
 				<section id="teaser" class="row">
-					<div id="medias" class="col-xl-8">
-						<img alt="" src="${pageContext.request.contextPath}/medias/site/${site.slug}.jpg"
-							width="96%" height="96%" />
+					<div id="medias" class="col-lg-8 mb-2">
+						<img alt="${site.slug}" width="100%" height="100%"
+							src="${pageContext.request.contextPath}/medias/site/${site.slug}.jpg"/>
 					</div>
-					<div id="technicalSheet" class="col-xl-4">
+					<div id="technicalSheet" class="col-lg-4 mb-2">
 <c:if test="${ delivry.attributes.site.friendTag }">
 						<p class="jcm-tag-box"><span class="jcm-tag jcm-tag-warning text-warning">
 							<img alt="Icone certification" src="${pageContext.request.contextPath}/images/certifying.png"

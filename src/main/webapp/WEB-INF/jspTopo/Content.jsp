@@ -18,11 +18,11 @@
 			</div>
 			<div id="detail" class="container mx-4">
 				<section id="teaser" class="row">
-					<div id="medias" class="col-xl-8">
+					<div id="medias" class="col-lg-8 mb-2">
 						<img alt="" src="${pageContext.request.contextPath}/medias/topo/${topo.slug}.jpg"
 							width="96%" height="96%" />
 					</div>
-					<div id="" class="col-xl-4">
+					<div id="" class="col-lg-4 mb-2">
 <c:set var="tagContent" value="${ delivry.attributes.topo.available ? 'Disponible' : 'Réservé'}" scope="page"></c:set>
 <c:set var="tagType" value="${ delivry.attributes.topo.available ? 'success' : 'danger'}" scope="page"></c:set>
 						<p class="jcm-tag-box"><span class="jcm-tag jcm-tag-${tagType} text-${tagType}">${tagContent}</span></p>
