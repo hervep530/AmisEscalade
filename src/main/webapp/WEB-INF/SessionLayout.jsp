@@ -9,11 +9,10 @@
 		<title>Accueil</title>
 	</head>
 	<body>
+<%@ include file="jspCommon/Header.jsp" %>
 		<div id="container">
 			<div class="row">
 				<section id="main" class="col-xl-9">
-<%@ include file="jspCommon/Header.jsp" %>
-<%@ include file="jspCommon/NavBar.jsp" %>
 <c:if test="${ not empty delivry.notifications }">
 	<%@ include file="jspCommon/Notification.jsp" %>
 </c:if>

@@ -1,40 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-		<header class="jumbotron jumbotron-fluid py-2 mb-0">
-			<div class="container">
-				<div class="row">
-					<div id="logo" class="col-xl-2">
-						<img alt="Logo Amis escalade" src="${contextPath}/images/escalade.png"
-								width="64" height="64">
-					</div>
-					<div id="title" class="col-xl-7">
-						<p class="h1 text-center pt-2">Les Amis de l'escalade</p>
-					</div>
-<c:if test="${userId > 1}">
-					<nav id="condensedNav" class="navbar navbar-expand-lg col-xl-3">
-						<ul class="navbar-nav">
-							<li class="nav-item">
-								<a href="${contextPath}/session/d/0/${staticToken}" class="p-2">
-									<img alt="Mon compte" src="${contextPath}/images/user.png" 
-										title="<c:out value="${sessionScope.sessionUser.username}"></c:out>"
-										width="32" height="32">
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="${contextPath}/topo/h/${userId}/${staticToken}" class="p-2">
-								<img alt="Mon espace personnel" src="${contextPath}/images/home.png"
-									width="32" height="32">
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="${contextPath}/message/lmd/1/${staticToken}" class="p-2">
-								<img alt="Messagerie" src="${contextPath}/images/mailbox.png"
-									width="32" height="32">
-								</a>
-							</li>
-						</ul>
-					</nav>
-</c:if>
-				</div>				
-			</div>
-		</header>
+	pageEncoding="UTF-8"%>
+<header class="bg-dark py-2 mb-0">
+	<nav id="navBar"
+		class="navbar navbar-expand-lg navbar-dark bg-dark row py-0">
+		<div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
+			<a class="navbar-brand" href="${contextPath}/"> <img
+				class="align-middle" alt="Logo Amis escalade"
+				src="${contextPath}/images/escalade.png" width="36" height="36" />
+				<span class="h2 align-middle px-4 text-classic-light">Les Amis de l'escalade</span>
+			</a>
+			<!-- Toggler/collapsibe Button visible up to md -->
+			<button class="navbar-toggler d-inline d-lg-none" type="button" data-toggle="collapse"
+				data-target="#collapsibleNavbar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+		</div>
+		<%@ include file="HeaderLinks.jsp"%>
+		<%@ include file="HeaderIcons.jsp"%>
+	</nav>
+</header>
