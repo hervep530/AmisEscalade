@@ -4,6 +4,44 @@
 	color: red;
 }
 
+.bg-classic {
+	background-color: #444466;
+}
+
+.navbar-classic {
+	color : #d9d9f9;
+}
+
+.nav-link-classic {
+  color: rgba(217, 217, 249, 0.5);
+  color: #b9b9d9;
+}
+
+.nav-link-classic:active ,
+.nav-link-classic:hover {
+  color: rgba(217, 217, 249, 1);
+  color: #d9d9f9;
+}
+
+.link-classic {
+  color: #777799;
+}
+
+.link-classic:active ,
+.link-classic:hover {
+  color: #444466;
+}
+
+.navbar-toggler-classic {
+  color: rgba(217, 217, 249, 0.5);
+  border-color: rgba(217, 217, 249, 0.1);
+}
+
+.navbar-toggler-icon-classic {
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(217, 217, 249, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+
 body{
 	background-color: #EFEFEF;
 	background-image: linear-gradient(to top, #F4F4F6 , #FFFFFF);
