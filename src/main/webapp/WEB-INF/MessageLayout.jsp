@@ -17,7 +17,7 @@
 <c:if test="${ not empty delivry.notifications }">
 	<%@ include file="jspCommon/Notification.jsp" %>
 </c:if>
-						<div class="message-box">
+						<div class="message-box pt-2">
 <%@ include file="jspMessage/Title.jsp" %>
 <c:choose>
     <c:when test="${action == 'r' || action == 'lfd' }"><%@ include file="jspMessage/Content.jsp" %></c:when>

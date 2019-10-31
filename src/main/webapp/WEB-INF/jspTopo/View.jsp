@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <div id="main" class="container mt-2 mb-2">
-	<h1 class="h2 text-center text-classic text-xxl py-2 col-md-9">
+	<h1 class="h2 text-center text-classic text-xxl py-2">
 		<c:out value="${ delivry.attributes.title }" />
 	</h1>
 	<div class="my-1 pt-1 px-3 bg-white rounded box-shadow">
