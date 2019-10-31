@@ -12,6 +12,11 @@
 				<%@ include file="NavView.jsp"%>
 			</div>
 		</div>
+		<c:if test="${fn:length(delivry.attributes.topos) == 0}">
+			<p class="text-center text-soft mt-5">
+				<em>Aucun topo à afficher dans la vue.</em>
+			</p>
+		</c:if>
 		<c:if test="${fn:length(delivry.attributes.topos) gt 0}">
 			<c:forEach items="${delivry.attributes.topos}" var="topo">
 				<div class="media text-muted border-bottom border-gray pt-1 row">

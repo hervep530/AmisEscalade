@@ -34,36 +34,44 @@
 			</div>
 		</form>
 	</c:if>
-	<c:forEach items="${delivry.attributes.site.comments}" var="comment">
-		<div class="card mb-1">
-			<div class="row no-gutters">
-				<div class="col-md-1">
-					<img
-						src="${pageContext.request.contextPath}/images/comment-writer.png"
-						class="card-img" alt="Comment writer">
-				</div>
-				<div class="col-md-9">
-					<div class="card-body">
-						<div class="row">
-							<h6 class="card-title col-md-8">${comment.author.username}</h6>
-							<p class="card-text col-md-4">
-								<small class="text-muted"> il y a
-									${comment.modifiedElapsedTime} </small>
+	<c:if test="${fn:length(delivry.attributes.site.comments) == 0}">
+		<p class="text-center text-soft mt-5">
+			<em>Aucun commentaire à afficher sur ce site.</em>
+		</p>
+	</c:if>
+	<c:if test="${fn:length(delivry.attributes.site.comments) gt 0}">
+
+		<c:forEach items="${delivry.attributes.site.comments}" var="comment">
+			<div class="card mb-1">
+				<div class="row no-gutters">
+					<div class="col-md-1">
+						<img
+							src="${pageContext.request.contextPath}/images/comment-writer.png"
+							class="card-img" alt="Comment writer">
+					</div>
+					<div class="col-md-9">
+						<div class="card-body">
+							<div class="row">
+								<h6 class="card-title col-md-8">${comment.author.username}</h6>
+								<p class="card-text col-md-4">
+									<small class="text-muted"> il y a
+										${comment.modifiedElapsedTime} </small>
+								</p>
+							</div>
+							<p class="card-text">
+								<c:out value="${comment.content}"></c:out>
 							</p>
 						</div>
-						<p class="card-text">
-							<c:out value="${comment.content}"></c:out>
-						</p>
+					</div>
+					<div class="col-md-2">
+						<nav id="NavComment" class="navbar navbar-expand-lg">
+							<ul class="navbar-nav">
+								<%@ include file="../jspComment/NavComment.jsp"%>
+							</ul>
+						</nav>
 					</div>
 				</div>
-				<div class="col-md-2">
-					<nav id="NavComment" class="navbar navbar-expand-lg">
-						<ul class="navbar-nav">
-							<%@ include file="../jspComment/NavComment.jsp"%>
-						</ul>
-					</nav>
-				</div>
 			</div>
-		</div>
-	</c:forEach>
+		</c:forEach>
+	</c:if>
 </aside>
