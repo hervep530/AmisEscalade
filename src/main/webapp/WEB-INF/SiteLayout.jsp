@@ -30,10 +30,10 @@
     <c:when test="${action == 'c' || action == 'u'}"><%@ include file="jspSite/CreateUpdateForm.jsp" %></c:when>
     <c:otherwise><%@ include file="jspSite/Content.jsp" %></c:otherwise>
 </c:choose>
+<%@ include file="jspSite/Footer.jsp" %>
 <c:if test="${action == 'r' || action == 'uac'}">
 <%@ include file="jspComment/EmbeddedComments.jsp" %>
 </c:if>
-<%@ include file="jspSite/Footer.jsp" %>
 				</section>
 				<section id="proposal" class="col-xl-3">
 <%@ include file="jspCommon/SocialLinks.jsp" %>

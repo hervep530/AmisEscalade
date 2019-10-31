@@ -20,6 +20,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.ocherve.jcm.utils.JcmDate;
+
 /**
  * The persistent class for the jcm_document database table.
  * 
@@ -198,6 +200,13 @@ public class Reference implements Serializable {
 	 */
 	public Timestamp getTsModified() {
 		return this.tsModified;
+	}
+	
+	/**
+	 * @return elapsed time as string (usefull for jsp)
+	 */
+	public String getModifiedElapsedTime() {
+		return JcmDate.getElapseTime(tsModified);
 	}
 
 	/**

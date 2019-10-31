@@ -33,26 +33,30 @@
 							action="${postAction}" method="POST" enctype="multipart/form-data">
 							<input type="hidden" name="siteId" value="${delivry.attributes.siteForm.site.id}"/>
 							<div class="form-row mb-3">
-								<div class="col-md-9"><p class="h4">Nouveau site d'escalade</p></div>
+								<h1 class="h2 text-center text-classic text-xxl py-2 col-md-9">
+									<c:out value="${ delivry.attributes.title }" />
+								</h1>
 								<div class="col-md-3">
-							  		<button type="submit" class="btn btn-primary">${labelAction}</button>
+							  		<button type="submit" class="btn btn-classic">${labelAction}</button>
 								</div>
 								
 							</div>
 					    
 <ul class="nav nav-tabs mb-3" id="siteTab" role="tablist">
   <li class="nav-item col-md-4">
-    <a class="nav-link active col-md-12" id="siteInformation-tab" data-toggle="tab" href="#siteInformation" role="tab" aria-controls="siteInformation" aria-selected="true">
+    <a class="nav-link link-help active col-md-12" id="siteInformation-tab" 
+    	data-toggle="tab" href="#siteInformation" role="tab" 
+    	aria-controls="siteInformation" aria-selected="true">
     	<span class="${siteInformationError}">Informations globales</span>
     </a>
   </li>
   <li class="nav-item col-md-4">
-    <a class="nav-link col-md-12" id="siteMedia-tab" data-toggle="tab" href="#siteMedia" role="tab" aria-controls="siteMedia" aria-selected="false">
+    <a class="nav-link link-help col-md-12" id="siteMedia-tab" data-toggle="tab" href="#siteMedia" role="tab" aria-controls="siteMedia" aria-selected="false">
     	<span class="${siteMediasError}">Medias</span>
     </a>
   </li>
   <li class="nav-item col-md-4">
-    <a class="nav-link col-md-12" id="siteContent-tab" data-toggle="tab" href="#siteContent" role="tab" aria-controls="siteContent" aria-selected="false">
+    <a class="nav-link link-help col-md-12" id="siteContent-tab" data-toggle="tab" href="#siteContent" role="tab" aria-controls="siteContent" aria-selected="false">
     	<span class="${siteContentError}">Contenu</span>
     </a>
   </li>

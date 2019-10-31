@@ -1,17 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     	<c:set var="site" value="${ delivry.attributes.site}" scope="page" />
-		<article id="siteContent">
+		<article class="mt-2" id="siteContent">
 			<div class="mx-4">
 				<div class="row">
 					<h1 class="h2 text-center text-classic text-xxl py-2 col-md-9">
-						<c:out value="Site d'escalade - ${ delivry.attributes.site.name }" />
+						<c:out value="${ delivry.attributes.title }" />
 					</h1>
 					<div class="col-md-3">
 						<nav id="NavContent" class="navbar navbar-expand-lg">
 							<ul class="navbar-nav">
-<%@ include file="AuthorNavContent.jsp" %>
-<%@ include file="MemberNavContent.jsp" %>
+<%@ include file="NavContent.jsp" %>
 							</ul>
 						</nav>
 					</div>

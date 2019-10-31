@@ -124,6 +124,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		// Appending data to result and return it
 		this.delivry.appendattribute("sites", sites);
 		this.delivry.appendattribute("listsCount", listsCount);
+		this.delivry.appendattribute("title", "Liste de sites d'escalade");
 		this.appendMandatoryAttributesToDelivry(parameters);
 
 		return this.delivry;
@@ -149,6 +150,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		
 		// Appending data to delivry and return it
 		this.delivry.appendattribute("site", site);
+		this.delivry.appendattribute("title", "Site d'escalade - " + site.getName());
 		this.appendMandatoryAttributesToDelivry(parameters);
 
 		return this.delivry;
@@ -157,6 +159,9 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	@Override
 	public Delivry getSiteForm(Parameters parameters) {
 		this.delivry = new Delivry();
+		Map<String,String> title = new HashMap<>();
+		title.put("c", "Création d'un nouveau site");
+		title.put("f", "Recherche de site(s)");
 		
 		try {
 			// When preparing SiteForm for update, get SiteForm instanciate from siteId
@@ -164,6 +169,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 				Integer siteId = Integer.valueOf(parameters.getParsedUrl().getId());
 				SiteForm siteForm = new SiteForm(siteId);
 				this.delivry.appendattribute("siteForm", siteForm);
+				title.put("u","Mise à jour du site - " + siteForm.getSite().getName());
 			}
 			// Getting cotation (needed by form), and append it to delivry
 			this.delivry.appendattribute("cotations", siteDao.getCotations());
@@ -171,8 +177,10 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			this.delivry.appendError("Site search", "Error on displaying search site formular.");
 			DLOG.log(Level.ERROR, "Error on displaying search site formular Cotation references can not be reached.");
 		}
-		
+
 		// Finalize delivry and return it
+		
+		this.delivry.appendattribute("title", title.get(parameters.getParsedUrl().getAction()));
 		this.appendMandatoryAttributesToDelivry(parameters);
 		return this.delivry;
 	}
@@ -273,6 +281,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			// If errors return form and cotations do display form containing data and errors
 			this.delivry.appendattribute("siteForm", siteForm);
 			this.delivry.appendattribute("cotations", siteDao.getCotations());
+			this.delivry.appendattribute("title", "Creation d'un nouveau site");
 			this.appendMandatoryAttributesToDelivry(parameters);
 			DLOG.log(Level.TRACE, "CreateSiteFom - Errors on createSite() : delivry return form, cotations and parameters.");
 			return this.delivry;
@@ -304,6 +313,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			}
 			try {
 				this.delivry.appendattribute("siteForm", siteForm);
+				this.delivry.appendattribute("title", "Mise à jour du site - " + siteForm.getSite().getName());
 				this.delivry.appendattribute("cotations", siteDao.getCotations());
 			} catch (Exception ignore) {}
 			this.appendMandatoryAttributesToDelivry(parameters);
@@ -357,6 +367,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		
 		// Appending data to delivry and return it
 		this.delivry.appendattribute("sites", sites);
+		this.delivry.appendattribute("title", "Résultat de la recherche");
 		this.delivry.appendattribute("query", form.getQuery());
 		this.appendMandatoryAttributesToDelivry(parameters);
 

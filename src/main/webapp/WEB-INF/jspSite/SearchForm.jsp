@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 					<form id="searchForm" class="text-center border border-light p-3" action="" method="POST">
 					    <p class="h4 mb-4">Filtres</p>
-						<div class="row mb-3">
+						<div class="row mb-3 d-none">
 							<div class="input-group col-xl-6">
 								<div class="input-group-prepend">
 									<div class="input-group-text">
@@ -66,5 +66,5 @@
 						</div>
 
 					    <!-- Search button -->
-					    <button class="btn btn-info btn-block my-4" type="submit">Rechercher</button>
+					    <button class="btn btn-classic btn-block my-4" type="submit">Rechercher</button>
 					</form>
