@@ -114,6 +114,7 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		if ( topos.isEmpty() ) throw new UrlException("Aucun resultat pour la requete " + queryName);
 		// Appending data to result and return it
 		this.delivry.appendattribute("topos", topos);
+		this.delivry.appendattribute("title", "Liste des topos");
 		this.delivry.appendattribute("listsCount", listsCount);
 		this.appendMandatoryAttributesToDelivry(parameters);
 		
@@ -142,6 +143,7 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		if ( topos.isEmpty() ) throw new UrlException("Aucun resultat pour la requete " + queryName);
 		// Appending data to result and return it
 		this.delivry.appendattribute("topos", topos);
+		this.delivry.appendattribute("title", "Liste de mes topos");
 		this.appendMandatoryAttributesToDelivry(parameters);
 		
 		return this.delivry;
@@ -164,6 +166,7 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		if ( ! topo.getSlug().contentEquals(parameters.getParsedUrl().getSlug()) )
 			throw new UrlException("L'id et le slug fourni par l'url ne correspondent pas.");
 		delivry.appendattribute("topo", topo);
+		this.delivry.appendattribute("title", "Topo - " + topo.getName());
 		this.appendMandatoryAttributesToDelivry(parameters);
 
 		return delivry;
@@ -177,10 +180,11 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		try {
 			this.delivry.appendattribute("sites", sites);
 		} catch (Exception e ) {
-			this.delivry.appendError("Site search", "Error on displaying search site formular.");
-			DLOG.log(Level.ERROR, "Error on displaying search site formular Cotation references can not be reached.");
+			this.delivry.appendError("Creating topo", "Error on displaying topo formular.");
+			DLOG.log(Level.ERROR, "Error on displaying topo formular.");
 		}
 		this.appendMandatoryAttributesToDelivry(parameters);
+		this.delivry.appendattribute("title", "Création d'un nouveau topo");
 		return this.delivry;
 	}
 
@@ -193,6 +197,7 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 			topoForm = new TopoForm(Integer.valueOf(parameters.getParsedUrl().getId()));
 			this.delivry.appendattribute("topoForm", topoForm);
 			sites = siteDao.getList();
+			this.delivry.appendattribute("title", "Mise à jour du topo - " + topoForm.getTopo().getName());
 			this.delivry.appendattribute("sites", sites);
 		} catch (Exception e ) {
 			this.delivry.appendError("Site search", "Error on displaying search site formular.");
@@ -290,6 +295,7 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 			try {
 				List<Site> sites = this.siteDao.getList();
 				this.delivry.appendattribute("topoForm", topoForm);
+				this.delivry.appendattribute("title", "Création d'un nouveau topo");
 				this.delivry.appendattribute("sites", sites);
 			} catch (Exception ignore) {}
 			this.appendMandatoryAttributesToDelivry(parameters);
@@ -324,6 +330,7 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 			try {
 				List<Site> sites = this.siteDao.getList();
 				this.delivry.appendattribute("topoForm", topoForm);
+				this.delivry.appendattribute("title", "Mise à jour du topo - " + topoForm.getTopo().getName());
 				this.delivry.appendattribute("sites", sites);
 			} catch (Exception ignore) {}
 			this.appendMandatoryAttributesToDelivry(parameters);
