@@ -15,7 +15,6 @@
 				<section id="main" class="col-xl-9">
 <%@ include file="jspCommon/Notification.jsp" %>
 <%@ include file="jspDefault/Content.jsp" %>
-<%@ include file="jspDebug/DebugDelivry.jsp" %>
 <%@ include file="jspCommon/Footer.jsp" %>
 				</section>
 				<section id="proposal" class="col-xl-3">
