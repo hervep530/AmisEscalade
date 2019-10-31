@@ -65,6 +65,7 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 			this.delivry.appendattribute("site", site);			
 		} catch (Exception ignore) {/* already traced from Dao */}
 		// Adding form to complete fields ( = importing comment in form) and appending common data to delivry
+		this.delivry.appendattribute("title", "Modifier un commentaire");
 		this.delivry.appendattribute("commentForm", (CommentForm) parameters.getForm());
 		this.appendMandatoryAttributesToDelivry(parameters);
 
@@ -92,6 +93,7 @@ public class CommentServiceImpl extends ServiceImpl implements CommentService {
 				Notification notification = new Notification(NotificationType.ERROR, 
 						"Le commentaire n'a pas pu être mis à jour, car le contenu n'est pas valide.");
 				this.delivry.appendNotification("Modification commentaire", notification);
+				this.delivry.appendattribute("title", "Modifier un commentaire");
 				this.delivry.appendattribute("commentForm", commentForm);
 				this.delivry.appendattribute("site", (Site) commentForm.getReference());
 			}
