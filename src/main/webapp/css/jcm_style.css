@@ -6,6 +6,7 @@
 
 .bg-classic {
 	background-color: #444466;
+	background-image: linear-gradient(to right, #444466 , #ddd);
 }
 
 .navbar-classic {
@@ -13,8 +14,11 @@
 }
 
 .nav-link-classic {
+/*	
   color: rgba(217, 217, 249, 0.5);
   color: #b9b9d9;
+*/  
+  color: #444466;
 }
 
 .nav-link-classic:active ,

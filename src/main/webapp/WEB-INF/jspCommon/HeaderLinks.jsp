@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <div class="b-block d-lg-none">
-	<ul id="collapsibleNavbar" class="navbar-nav collapse navbar-collapse ml-3 mr-auto">
+	<ul id="collapsibleNavbar" class="navbar-nav collapse navbar-collapse ml-3 mr-auto pl-5 text-left">
 		<li class="nav-item"><a class="nav-link nav-link-classic px-4 py-3"
 			href="${contextPath}/site/l/1">Sites</a></li>
 		<c:if test="${ userId  > 1 }">
