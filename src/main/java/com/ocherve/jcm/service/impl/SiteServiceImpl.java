@@ -1,6 +1,7 @@
 package com.ocherve.jcm.service.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,9 +118,10 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 		try {
 			sites = (List<Site>) siteDao.getListFromNamedQuery(Site.class, queryName, queryParameters);
 		} catch (Exception e ) {
-			throw new UrlException("Echec de la requete " + queryName);
+			//throw new UrlException("Echec de la requete " + queryName);
+			DLOG.log(Level.DEBUG, "Error on executing query " + queryName);
 		}
-		if (sites == null) throw new UrlException("Aucun resultat pour la requete " + queryName);
+		if ( sites == null ) sites = new ArrayList<Site>();
 
 		// Appending data to result and return it
 		this.delivry.appendattribute("sites", sites);
@@ -360,11 +362,7 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 			DLOG.log(Level.ERROR, "Search Query : " + queryString);
 			throw new UrlException("Echec de la requete de recherche");
 		}
-		/*
-		if (sites == null) throw new UrlException("Aucun resultat pour la requete");
-		if ( sites.isEmpty() ) throw new UrlException("Aucun resultat pour la requete");
-		*/
-		
+		if ( sites == null ) sites = new ArrayList<Site>();
 		// Appending data to delivry and return it
 		this.delivry.appendattribute("sites", sites);
 		this.delivry.appendattribute("title", "Résultat de la recherche");

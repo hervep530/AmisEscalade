@@ -1,5 +1,6 @@
 package com.ocherve.jcm.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +87,8 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		try {
 			toposCount = topoDao.getCountFromNamedQuery(Topo.class, "Topo.countByPublishingStatus", queryParameters);
 		} catch (Exception e ) {
-			throw new UrlException("Echec de la requete Topo.countAll");
+			//throw new UrlException("Echec de la requete " + queryName);
+			DLOG.log(Level.DEBUG, "Error on executing query Topo.countByPublishingStatus");
 		}
 		if ( LIST_LIMIT > 0 ) {
 			listsCount = toposCount / LIST_LIMIT ;
@@ -107,11 +109,11 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		try {
 			topos = (List<Topo>) topoDao.getListFromNamedQuery(Topo.class, queryName, queryParameters);
 		} catch (Exception e ) {
-			throw new UrlException("Echec de la requete " + queryName);
+			//throw new UrlException("Echec de la requete " + queryName);
+			DLOG.log(Level.DEBUG, "Error on executing query Topo.countByPublishingStatus");
 		}
-		if (topos == null) throw new UrlException("Aucun resultat pour la requete " + queryName);
-		// debug
-		if ( topos.isEmpty() ) throw new UrlException("Aucun resultat pour la requete " + queryName);
+		if (topos == null) topos = new ArrayList<Topo>();
+
 		// Appending data to result and return it
 		this.delivry.appendattribute("topos", topos);
 		this.delivry.appendattribute("title", "Liste des topos");
@@ -136,11 +138,10 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 		try {
 			topos = (List<Topo>) topoDao.getListFromNamedQuery(Topo.class, queryName, queryParameters);
 		} catch (Exception e ) {
-			throw new UrlException("Echec de la requete " + queryName);
+			//throw new UrlException("Echec de la requete " + queryName);
+			DLOG.log(Level.DEBUG, "Error on executing query " + queryName);
 		}
-		if (topos == null) throw new UrlException("Aucun resultat pour la requete " + queryName);
-		// debug
-		if ( topos.isEmpty() ) throw new UrlException("Aucun resultat pour la requete " + queryName);
+		if (topos == null) topos = new ArrayList<Topo>();
 		// Appending data to result and return it
 		this.delivry.appendattribute("topos", topos);
 		this.delivry.appendattribute("title", "Liste de mes topos");
