@@ -104,6 +104,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		this.delivry = new Delivry();
 		// get Connexion Form stored in parameters and call connectUser()
 		this.delivry.appendattribute("connexionForm", new ConnexionForm());
+		this.delivry.appendattribute("title", "Connexion");
 		this.appendMandatoryAttributesToDelivry(parameters);
 
 		return this.delivry;
@@ -113,6 +114,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 	public Delivry getInscriptionForm(Parameters parameters) {
 		this.delivry = new Delivry();
 		this.delivry.appendattribute("inscriptionForm", new InscriptionForm());
+		this.delivry.appendattribute("title", "Création d'un compte");
 		this.appendMandatoryAttributesToDelivry(parameters);
 
 		return this.delivry;
@@ -129,6 +131,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 			String message = "Identifiant ou mot de passe invalide.";
 			Notification notification = new Notification(NotificationType.ERROR, message);
 			this.delivry.appendNotification("Connexion", notification);
+			this.delivry.appendattribute("title", "Connexion");
 			delivry.appendattribute("connexionForm", connexionForm);
 			this.appendMandatoryAttributesToDelivry(parameters);
 			
@@ -158,6 +161,7 @@ public class SessionServiceImpl extends ServiceImpl implements SessionService {
 		if ( ! inscriptionForm.getErrors().isEmpty() ) {
 			// if errors, we will forward delivry to formular with errors embedded in connexionForm
 			this.delivry.appendattribute("inscriptionForm", inscriptionForm);
+			this.delivry.appendattribute("title", "Création d'un compte");
 			this.appendMandatoryAttributesToDelivry(parameters);
 			
 			return this.delivry;

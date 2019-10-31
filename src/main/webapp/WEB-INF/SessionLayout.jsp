@@ -26,11 +26,6 @@
     <c:when test="${action == 'pass'}"><%@ include file="jspSession/UpdatePasswordForm.jsp" %></c:when>
     <c:otherwise><%@ include file="jspSession/ConnexionForm.jsp" %></c:otherwise>
 </c:choose>
-
-
-
-<%@ include file="jspDebug/DebugDelivry.jsp" %>
-<%@ include file="jspSite/Footer.jsp" %>
 				</section>
 				<section id="proposal" class="col-xl-3">
 <%@ include file="jspCommon/SocialLinks.jsp" %>
