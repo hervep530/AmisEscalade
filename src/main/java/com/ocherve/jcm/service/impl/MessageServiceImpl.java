@@ -87,6 +87,7 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 			DLOG.log(Level.DEBUG, "Error when creating message box.");
 		}
 		// Appending data to result and return it
+		this.delivry.appendattribute("title", "Messagerie");
 		this.delivry.appendattribute("messageBox", messageBox);
 		this.appendMandatoryAttributesToDelivry(parameters);
 		
@@ -102,6 +103,8 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 			int userId = Integer.valueOf(parameters.getSessionUser().getId());
 			int discussionId = Integer.valueOf(parameters.getParsedUrl().getId());
 			messageBox = new MessageBox(userId, discussionId, "DiscussionFocus");			
+			this.delivry.appendattribute("title", "Messagerie - discussion " + 
+					messageBox.getDiscussions().get(0).getTitle());
 		} catch (Exception e) {
 			messageBox = new MessageBox();
 		}
@@ -121,6 +124,7 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 			int userId = Integer.valueOf(parameters.getSessionUser().getId());
 			int messageId = Integer.valueOf(parameters.getParsedUrl().getId());
 			messageBox = new MessageBox(userId, messageId, "MessageFocus");			
+			this.delivry.appendattribute("title", "Message " + messageBox.getFocusedMessage());
 		} catch (Exception e) {
 			messageBox = new MessageBox();
 		}
@@ -147,11 +151,13 @@ public class MessageServiceImpl extends ServiceImpl implements MessageService {
 				form = new MessageForm(messageBox.getFocusedMessage());
 				DLOG.log(Level.DEBUG, "Form message id : " + form.getMessage().getId());
 				// Appending messageBox to delivry
+				this.delivry.appendattribute("title", "Nouveau message");
 				this.delivry.appendattribute("messageBox", messageBox);
 			} else if ( parameters.getParsedUrl().getAction().contentEquals("cft") ) {
 				// Getting form for topo request, we first get topo and build messageForm from it
 				int topoId = Integer.valueOf(parameters.getParsedUrl().getId());
 				topo = ((TopoDao) DaoProxy.getInstance().getTopoDao()).get(topoId);
+				this.delivry.appendattribute("title", "Demande de réservation de topo");
 				form = new MessageForm(topo);
 			}
 		} catch (Exception e ) {

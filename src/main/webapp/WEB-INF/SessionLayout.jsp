@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="UTF-8">
 <%@ include file="jspCommon/meta/Style.jsp" %>
-		<title>Accueil</title>
+		<title>${delivry.attributes.title}</title>
 	</head>
 	<body>
 <%@ include file="jspCommon/Header.jsp" %>
