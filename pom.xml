@@ -28,6 +28,7 @@
 		<log4j-api-version>2.11.2</log4j-api-version>
 		<postgresql-version>42.2.5</postgresql-version>
 		<jstl-version>1.2</jstl-version>
+		<jmagick-version>6.6.9</jmagick-version>
 	</properties>
 
 	<dependencies>
@@ -107,6 +108,15 @@
 			<artifactId>junit</artifactId>
 			<version>4.8.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/jmagick/jmagick
+		<dependency>
+		    <groupId>jmagick</groupId>
+		    <artifactId>jmagick</artifactId>
+		    <version>${jmagick-version}</version>
+		    <scope>system</scope>
+            <systemPath>/home/1072/3/.dev/.m2/repository/jmagick/jmagick/6.6.9/jmagick-6.6.9.jar</systemPath>
+		</dependency>
+		 -->
 	</dependencies>
 
 	<build>

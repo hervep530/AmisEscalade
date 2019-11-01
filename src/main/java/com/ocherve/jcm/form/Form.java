@@ -37,6 +37,7 @@ public abstract class Form {
 	protected Boolean partMethod;
 	protected String filepath = "";
 	protected String filename = "";
+	protected String thumbFilename = "";
 	protected String tmpFilename = "";
 	protected String image = "";
 	protected boolean updatingName = false;
@@ -285,7 +286,9 @@ public abstract class Form {
 	protected void publishFile(String filename) throws FormException {
 		try {
 			File file = new File(this.filepath + "/" + filename);
+			DLOG.log(Level.DEBUG, "Fichier en input : " + this.filepath + "/" + filename);
 			file.renameTo(new File(this.filepath + "/" + this.filename));
+			DLOG.log(Level.DEBUG, "Fichier en output : " + this.filepath + "/" + this.filename);
 		} catch (Exception e) {
 			DLOG.log(Level.ERROR, "Publishing file : " + filename + " publishing failed.");
 		}
