@@ -293,7 +293,7 @@ public class TopoForm extends Form {
 	 */
 	private void validateWritedAt() throws FormException {
 		if ( this.topo.getWritedAt() == null ) throw new FormException("La saisie de la date de publication n'est pas valide.");
-		if ( ! this.topo.getWritedAt().matches("[0-9]{1,2}/[0-9]{2}/[0-9]{4}") ) 
+		if ( ! this.isValidDate(this.topo.getWritedAt(), "dd/MM/yyyy") ) 
 			throw new FormException("La date de publication ne respecte pas le format jj/mm/aaaa");
 	}
 	

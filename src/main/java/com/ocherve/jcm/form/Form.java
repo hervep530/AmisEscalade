@@ -7,6 +7,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -294,6 +297,25 @@ public abstract class Form {
 		}
 	}
 
+    /**
+     * Validate date format
+     * 
+     * @param strdate
+     * @param format
+     * @return true if date is valid
+     */
+    public boolean isValidDate(String strdate, String format) {
+        SimpleDateFormat df = new SimpleDateFormat(format);
+        try {
+        	df.setLenient(false);
+            @SuppressWarnings("unused")
+			Date date = df.parse(strdate);
+            return true;
+        } catch (ParseException ex) {
+        	DLOG.log(Level.ERROR, "Parsing date failed : " + strdate);
+            return false;
+        }
+    }
 
     /**
      * @return errors
