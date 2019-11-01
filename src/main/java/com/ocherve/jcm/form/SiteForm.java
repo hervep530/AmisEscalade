@@ -28,6 +28,7 @@ public class SiteForm extends Form {
 	private Site site;
 	private String slug;
 	private Part uploadFile;
+	private Map<String,String> help;
 
 	
 	/**
@@ -147,6 +148,7 @@ public class SiteForm extends Form {
 		try { validateName(); } catch (FormException e ) { this.errors.put("name",e.getMessage()); }
 		DLOG.log(Level.DEBUG, "Author : " + this.site.getAuthor().getUsername());
 		this.filename = this.slug + ".jpg";
+		this.thumbFilename = this.slug + "-thumb.jpg";
 		this.tmpFilename = this.slug + "-tmp.jpg";
 		// validate country
 		try { validateCountry() ; } catch (FormException e) { this.errors.put("country", e.getMessage()); }
@@ -191,6 +193,7 @@ public class SiteForm extends Form {
 			if ( this.updatingName ) validateName(); 
 		} catch (FormException e ) { this.errors.put("name",e.getMessage()); }
 		this.filename = this.slug + ".jpg";
+		this.thumbFilename = this.slug + "-thumb.jpg";
 		this.tmpFilename = this.slug + "-tmp.jpg";
 		try { validateCountry() ; } catch (FormException e) { this.errors.put("country", e.getMessage()); }
 		try { validateDepartment() ; } catch (FormException e) { this.errors.put("department", e.getMessage()); }
@@ -395,5 +398,28 @@ public class SiteForm extends Form {
 		return this.site;
 	}	
 	
-
+	/**
+	 * Method to get help content for formular bullets
+	 * 
+	 * @return help contents 
+	 */
+	public Map<String,String> getHelp() {
+		if ( this.help == null ) {
+			this.help = new HashMap<>();
+			this.help.put("name", "Le nom doit contenir au moins 3 caractères parmi lettres, chiffres, espace ou tiret.");
+			this.help.put("country", "Le pays doit contenir au moins 3 caractères parmi lettres, chiffres, espace ou tiret.");
+			this.help.put("department", "Le departement doit contenir au moins 3 caractères parmi lettres, chiffres, espace ou tiret.");
+			this.help.put("pathsNumber", "Le nombre de voies doit être supérieur à 0.");
+			this.help.put("orientation", "L'orientation doit contenir au moins 3 caractères parmi lettres, espace ou tiret.");
+			this.help.put("type", "Choisir un ou plusieurs type d'escalade");
+			this.help.put("minHeight", "La hauteur de voie minimum (en mètres) doit être comprise entre 1 et 1000.");
+			this.help.put("maxHeight", "La hauteur de voie maximum (en mètres) doit être comprise entre 1 et 3000, et supérieur à la hauteur minimum.");
+			this.help.put("cotationMin", "Choisir une cotation dans la liste.");
+			this.help.put("cotationMax", "Choisir dans la liste, une cotation supérieure à la cotation minimum.");
+			this.help.put("image", "Les photos sont re-dimensionnées en 1280x720. Choisissez donc un format compatible pour éviter toute déformation lors du redimensionnement. La taille du fichier ne doit pas dépassé 1M");
+			this.help.put("summary", "Le résumé doit contenir entre 20 et 150 caractères.");
+			this.help.put("content", "Le contenu doit contenir au minimum 20 caractère.");
+		}
+		return this.help;
+	}
 }

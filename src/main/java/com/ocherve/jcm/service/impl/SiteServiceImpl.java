@@ -162,8 +162,6 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 	public Delivry getSiteForm(Parameters parameters) {
 		this.delivry = new Delivry();
 		Map<String,String> title = new HashMap<>();
-		title.put("c", "Création d'un nouveau site");
-		title.put("f", "Recherche de site(s)");
 		
 		try {
 			// When preparing SiteForm for update, get SiteForm instanciate from siteId
@@ -172,6 +170,12 @@ public class SiteServiceImpl extends ServiceImpl implements SiteService {
 				SiteForm siteForm = new SiteForm(siteId);
 				this.delivry.appendattribute("siteForm", siteForm);
 				title.put("u","Mise à jour du site - " + siteForm.getSite().getName());
+			} else if (parameters.getParsedUrl().getAction().contentEquals("f")) {
+				this.delivry.appendattribute("searchForm", new SearchForm() );
+				title.put("f", "Recherche de site(s)");
+			} else {
+				this.delivry.appendattribute("siteForm", new SiteForm() );
+				title.put("c", "Création d'un nouveau site");				
 			}
 			// Getting cotation (needed by form), and append it to delivry
 			this.delivry.appendattribute("cotations", siteDao.getCotations());

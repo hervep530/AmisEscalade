@@ -71,6 +71,14 @@ public class SearchForm {
 	private String query = "";
 	
 	private Map<String,String> errors;
+	private Map<String,String> help;
+
+	/**
+	 * Just create empty form in order to get help, for example...
+	 */
+	public SearchForm() {
+		super();
+	}
 
 	/**
 	 * @param request
@@ -292,7 +300,21 @@ public class SearchForm {
 		return errors;
 	}
 	
-	
+	/**
+	 * Method to get help content for formular bullets
+	 * 
+	 * @return help contents 
+	 */
+	public Map<String,String> getHelp() {
+		if (this.help == null ) {
+			this.help = new HashMap<>();
+			this.help.put("type", "Selectionnez un des choix proposés.");
+			this.help.put("height", "La recherche donnera pour résultat les sites pour lesquels cette hauteur est comprise entre le mininum et le maximum.");
+			this.help.put("cotation", "La recherche donnera pour résultat les sites pour lesquels cette cotation est comprise entre le mininum et le maximum.");
+			this.help.put("content", "Entrez un ou plusieurs mots, qui seront recherchés dans le titre, le résumé ou le contenu");
+		}
+		return this.help;
+	}
 	
 
 }
