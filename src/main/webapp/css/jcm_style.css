@@ -598,3 +598,18 @@ form .required {
 	font-size: 0.8em;
 }
 
+
+/* Adjusting width to have responsive formular */
+
+@media (max-width: 766px) {
+	#accountProperties,
+	#testSearchForm,
+	#searchForm,
+	#InscriptionForm,
+	#connexionForm,
+	.file-panel {
+		width: 88%;
+		margin : 15px 6% 15px auto;
+	}
+}
+
