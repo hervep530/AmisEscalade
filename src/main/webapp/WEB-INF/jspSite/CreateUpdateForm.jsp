@@ -263,7 +263,7 @@
 		<div class="tab-pane fade" id="siteMedia" role="tabpanel"
 			aria-labelledby="siteMedia-tab">
 
-			<div class="file-panel">
+			<div class="file-panel pt-5">
 				<input type="hidden" id="filename" name="filename" value=${ image } />
 				<c:if test="${ ! empty image }">
 					<div class="input-group">

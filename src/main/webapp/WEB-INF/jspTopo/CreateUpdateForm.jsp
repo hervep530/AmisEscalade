@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<c:set var="form" scope="page" value="${delivry.attributes.topoForm}"></c:set>
 <c:set var="postAction" scope="page"
 	value="${contextPath}/topo/${action}/${ action == 'u' ? id : '0'}/${token}">
 </c:set>
@@ -17,26 +18,17 @@
 	value="${ action == 'u' ? ' readonly' : ''}"></c:set>
 
 
-<c:set var="nameError"
-	value="${delivry.attributes.topoForm.errors.name}" scope="page"></c:set>
-<c:set var="titleError"
-	value="${delivry.attributes.topoForm.errors.title}" scope="page"></c:set>
-<c:set var="writerError"
-	value="${delivry.attributes.topoForm.errors.writer}" scope="page"></c:set>
-<c:set var="writedAtError"
-	value="${delivry.attributes.topoForm.errors.writedAt}" scope="page"></c:set>
-<c:set var="sitesError"
-	value="${delivry.attributes.topoForm.errors.sites}" scope="page"></c:set>
-<c:set var="fileError"
-	value="${delivry.attributes.topoForm.errors.file}" scope="page"></c:set>
-<c:set var="mediaError"
-	value="${delivry.attributes.topoForm.errors.media}" scope="page"></c:set>
-<c:set var="summaryError"
-	value="${delivry.attributes.topoForm.errors.summary}" scope="page"></c:set>
-<c:set var="contentError"
-	value="${delivry.attributes.topoForm.errors.content}" scope="page"></c:set>
-<c:set var="publishedError"
-	value="${delivry.attributes.topoForm.errors.published}" scope="page"></c:set>
+<c:set var="nameError" value="${form.errors.name}" scope="page"></c:set>
+<c:set var="titleError" value="${form.errors.title}" scope="page"></c:set>
+<c:set var="writerError" value="${form.errors.writer}" scope="page"></c:set>
+<c:set var="writedAtError" value="${form.errors.writedAt}" scope="page"></c:set>
+<c:set var="sitesError" value="${form.errors.sites}" scope="page"></c:set>
+<c:set var="fileError" value="${form.errors.file}" scope="page"></c:set>
+<c:set var="mediaError" value="${form.errors.media}" scope="page"></c:set>
+<c:set var="summaryError" value="${form.errors.summary}" scope="page"></c:set>
+<c:set var="contentError" value="${form.errors.content}" scope="page"></c:set>
+<c:set var="publishedError" value="${form.errors.published}"
+	scope="page"></c:set>
 <c:set var="topoInformationError" scope="page"
 	value="${ empty nameError && empty titleError && empty writerError && empty writedAtError && empty sitesError ? '' : 'tab-error'}">
 </c:set>
@@ -92,7 +84,9 @@
 			<div class="form-row">
 				<div class="form-group col-md-12">
 					<label class="basic-top-label" for="title"> <em>Titre
-							du topo </em><span class="required">*</span>
+							du topo </em><span class="required">*</span><span class="ml-2"><img
+							alt="Icone aide" src="${helpIcon}" width="20" height="20"
+							title="${form.help.title}" /></span>
 					</label> <input type="text" id="title" name="title"
 						class="form-control${empty titleError?'':' is-invalid'}"
 						aria-label="Title" aria-describedby="labelTitle"
@@ -106,7 +100,9 @@
 			<div class="form-row">
 				<div class="form-group col-md-9">
 					<label class="basic-top-label" for="writer"> <em>Nom
-							de l'auteur </em><span class="required">*</span>
+							de l'auteur </em><span class="required">*</span><span class="ml-2"><img
+							alt="Icone aide" src="${helpIcon}" width="20" height="20"
+							title="${form.help.writer}" /></span>
 					</label> <input type="text" id="writer" name="writer"
 						class="form-control${empty writerError?'':' is-invalid'}"
 						aria-label="Writer" aria-describedby="labelWriter"
@@ -117,7 +113,9 @@
 				</div>
 				<div class="form-group col-md-3">
 					<label class="basic-top-label" for="writedAt"> <em>Publié
-							le </em><span class="required">*</span>
+							le </em><span class="required">*</span><span class="ml-2"><img
+							alt="Icone aide" src="${helpIcon}" width="20" height="20"
+							title="${form.help.writedAt}" /></span>
 					</label> <input type="text" id="writedAt" name="writedAt"
 						class="form-control${empty writedAtError?'':' is-invalid'}"
 						aria-label="WritedAt" aria-describedby="labelWritedAt"
@@ -132,7 +130,9 @@
 				<div class="form-group col-md-2"></div>
 				<div class="form-group col-md-8">
 					<label class="basic-top-label" for="sites"> <em>Selectionner
-							le(s) site(s) à rattacher à ce topo </em><span class="required">*</span>
+							le(s) site(s) à rattacher à ce topo </em><span class="required">*</span><span
+						class="ml-2"><img alt="Icone aide" src="${helpIcon}"
+							width="20" height="20" title="${form.help.sites}" /></span>
 					</label> <select multiple id="sites" name="sites"
 						class="form-control${empty sitesError?'':' is-invalid'}"
 						aria-label="Sites" aria-describedby="labelSites">
@@ -154,19 +154,39 @@
 		</div>
 		<div class="tab-pane fade" id="topoMedia" role="tabpanel"
 			aria-labelledby="topoMedia-tab">
-			<div class="form-group">
-				<label class="basic-top-label" for="uploadFile">Photo(s)</label> <input
-					type="file" id="uploadFile" name="uploadFile"
-					class="form-control-file${empty fileError?'':' is-invalid'}">
-				<div class="invalid-feedback${empty fileError?' invisible':''}"
-					id="fileError">${fileError}</div>
+			<div class="file-panel pt-5">
+				<input type="hidden" id="filename" name="filename" value=${ form.image } />
+				<c:if test="${ ! empty form.image }">
+					<div class="input-group">
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="displayFileName">Nom
+									du Fichier</span>
+							</div>
+							<input type="text" class="form-control" value="${ form.image }"
+								aria-label="displayFileName" aria-describedby="displayFileName"
+								readonly>
+						</div>
+					</div>
+				</c:if>
+				<div class="form-group">
+					<label class="basic-top-label" for="uploadFile">Photo(s)<span class="ml-2"><img
+							alt="Icone aide" src="${helpIcon}" width="20" height="20"
+							title="${form.help.image}" /></span></label> <input type="file" id="uploadFile"
+						name="uploadFile"
+						class="form-control-file${empty fileError?'':' is-invalid'}">
+					<div class="invalid-feedback${empty fileError?' invisible':''}"
+						id="fileError">${fileError}</div>
+				</div>
+				<input type="hidden" id="partMethod" name="partMethod" value="false">
 			</div>
-			<input type="hidden" id="partMethod" name="partMethod" value="false">
 		</div>
 		<div class="tab-pane fade" id="topoContent" role="tabpanel"
 			aria-labelledby="topoContent-tab">
 			<div class="form-group">
-				<label class="basic-top-label" for="summary">Résumé</label>
+				<label class="basic-top-label" for="summary">Résumé<span class="ml-2"><img
+							alt="Icone aide" src="${helpIcon}" width="20" height="20"
+							title="${form.help.summary}" /></span></label>
 				<textarea id="summary" name="summary" rows="1"
 					class="form-control${empty summaryError?'':' is-invalid'}"><c:out
 						value='${delivry.attributes.topoForm.topo.summary}'></c:out></textarea>
@@ -174,7 +194,9 @@
 					id="summaryError">${summaryError}</div>
 			</div>
 			<div class="form-group">
-				<label class="basic-top-label" for="content">Contenu</label>
+				<label class="basic-top-label" for="content">Contenu<span class="ml-2"><img
+							alt="Icone aide" src="${helpIcon}" width="20" height="20"
+							title="${form.help.content}" /></span></label>
 				<textarea id="content" name="content" rows="6"
 					class="form-control${empty contentError?'':' is-invalid'}"><c:out
 						value='${delivry.attributes.topoForm.topo.content}'></c:out></textarea>

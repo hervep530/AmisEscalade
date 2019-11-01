@@ -34,6 +34,7 @@ public class TopoForm extends Form {
 	private String slug;
 	private Part uploadFile;
 	private Map<String,String> selectedIds;
+	private Map<String,String> help;
 
 	
 	/**
@@ -428,7 +429,27 @@ public class TopoForm extends Form {
 		if ( this.topo.getContent().length() < 20 )
 			throw new FormException("Le contenu doit contenir au minimum 20 caractère.");		
 	}
- 
+	
+	/**
+	 * Method to get help content for formular bullets
+	 * 
+	 * @return help contents 
+	 */
+	public Map<String,String> getHelp() {
+		if ( this.help == null ) {
+			this.help = new HashMap<>();
+			help.put("name", "Le nom doit contenir au moins 3 caractères parmi lettres, chiffres, espace ou tiret.");
+			help.put("title", "Le titre doit contenir au moins 3 caractères parmi lettres, chiffres, espace ou tiret.");
+			help.put("writer", "Indiquez l'auteur de votre topo.");
+			help.put("writedAt", "Indiquez la date de publication du topo au format jj/mm/aaaa.");
+			help.put("sites", "Sélectionnez le ou les sites concernés par ce topo");
+			help.put("image", "Les photos sont re-dimensionnées en 1280x720. Choisissez donc un format compatible pour éviter toute déformation lors du redimensionnement. La taille du fichier ne doit pas dépassé 1M");
+			help.put("summary", "Le résumé doit contenir entre 20 et 150 caractères.");
+			help.put("content", "Le contenu doit contenir au minimum 20 caractère.");
+		}
+		return this.help;
+	}
+	
 	/**
 	 * @return the errors
 	 */

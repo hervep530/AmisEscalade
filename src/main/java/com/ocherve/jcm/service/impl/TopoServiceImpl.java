@@ -185,6 +185,7 @@ public class TopoServiceImpl extends ServiceImpl implements TopoService {
 			DLOG.log(Level.ERROR, "Error on displaying topo formular.");
 		}
 		this.appendMandatoryAttributesToDelivry(parameters);
+		this.delivry.appendattribute("topoForm", new TopoForm());
 		this.delivry.appendattribute("title", "Création d'un nouveau topo");
 		return this.delivry;
 	}
