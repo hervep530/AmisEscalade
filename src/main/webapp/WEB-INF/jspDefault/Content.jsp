@@ -12,17 +12,25 @@
 	</div>
 	<div id="detail" class="container mx-4">
 		<section id="teaser" class="row">
-			<div id="medias" class="col-xl-8">
-				<img alt="" src="">
+			<div id="medias" class="col-lg-8 mb-2">
+				<img alt="Les amis de l'escalade" width="100%" height="100%"
+					src="${pageContext.request.contextPath}/medias/welcome.jpg" />
 			</div>
 			<div id="technicalSheet" class="col-xl-4">
-				<p>Vous trouverez :</p>
-				<ul>
-					<li>Photos</li>
-					<li>Données techniques</li>
-					<li>Descriptions</li>
-					<li>Conseils</li>
-				</ul>
+				<div class="monkey-box monkey-box-classic">
+					<div class="monkey-hat monkey-hat-classic"></div>
+					<p class="monkey-drawer">
+						<strong>Vous trouverez :</strong>
+					</p>
+					<div class="monkey-separator"></div>
+					<p class="monkey-drawer">Photos</p>
+					<div class="monkey-separator"></div>
+					<p class="monkey-drawer row">Données techniques</p>
+					<div class="monkey-separator"></div>
+					<p class="monkey-drawer">Descriptions</p>
+					<div class="monkey-separator"></div>
+					<p class="monkey-drawer">Conseils</p>
+				</div>
 			</div>
 		</section>
 		<section id="content">
