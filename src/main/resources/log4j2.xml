@@ -9,10 +9,10 @@
     <Console name="console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %F:%L - %m%n"/>
     </Console>
-    <File name="supportFile" fileName="${sys:catalina.base}/logs/AmisEscalade/jcm_support.log">
+    <File name="supportFile" fileName="${sys:catalina.base}/logs/AmisEscalade/jcm_error.log">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %F:%L - %m%n"/>
     </File>
-    <File name="developmentFile" fileName="${sys:catalina.base}/logs/AmisEscalade/jcm_development.log">
+    <File name="developmentFile" fileName="${sys:catalina.base}/logs/AmisEscalade/jcm_error.log">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %F:%L - %m%n"/>
     </File>
     <File name="testFile" fileName="logs/AmisEscalade/jcm_test.log">
@@ -24,7 +24,7 @@
     <logger name="test_file" level="WARN" additivity="false">
       <appender-ref ref="testFile" />
     </logger>
-    <logger name="development_file" level="WARN" additivity="false">
+    <logger name="development_file" level="DEBUG" additivity="false">
       <appender-ref ref="developmentFile" />
     </logger>
     <logger name="development_console" level="WARN" additivity="false">

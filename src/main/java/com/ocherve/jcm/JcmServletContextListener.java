@@ -23,18 +23,23 @@ import com.ocherve.jcm.service.ServiceProxy;
 public class JcmServletContextListener implements ServletContextListener{
 	
 	private static final Logger DLOG = LogManager.getLogger("development_file");
+	private static final Logger logger = LogManager.getLogger("root");
     private static final String UPLOAD_PATH = "/webapps/AmisEscalade/medias";
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
+		// Property helper implemented but unused because all needed properties are managed by log4j
+		// PropertyHelper.loadConfig("filepath/config.properties");
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
 		for ( Entry<Object,Object> property : System.getProperties().entrySet() ) {
-			DLOG.log(Level.DEBUG, property.getKey().toString() + " => " + property.getValue() );
+			DLOG.log(Level.INFO, property.getKey().toString() + " => " + property.getValue() );
 		}
 		ServiceProxy.getInstance();
 		DaoProxy.getInstance();
 		validateMediaPath();
-		DLOG.log(Level.DEBUG, "Jcm Web application is now started.");		
+		DLOG.log(Level.DEBUG, "Jcm Web application is now started.");	
+		Configurator.setLevel(logger.getName(), Level.INFO);
+		logger.log(Level.INFO, getStartingMessage());		
 	}
 
 	@Override
@@ -71,4 +76,12 @@ public class JcmServletContextListener implements ServletContextListener{
 		}
 	}
 
+	private static String getStartingMessage() {
+		String message = "%n%n    #  #### #   #   #### #####   #   ####  ##### ##### #### %n"
+				+ "    # #     ## ##  #       #    ###  #   #   #   #     #   #%n" 
+				+ "    # #     # # #   ###    #    # #  ####    #   ####  #   #%n"
+				+ "#   # #     #   #      #   #   ##### #  #    #   #     #   #%n"
+				+ " ###   #### #   #  ####    #   #   # #   #   #   ##### #### %n%n";
+		return String.format(message);
+	}
 }
