@@ -4,6 +4,12 @@
 	value="${delivry.attributes.siteForm.site.id}"></c:set>
 <c:set var="postAction" scope="page"
 	value="${contextPath}/site/${action}/${siteId gt 0 ? siteId : (id ? id : 0)}/${token}"></c:set>
+<c:set var="cancelActionCreate" scope="page"
+	value="${contextPath}/site/l/1"></c:set>
+<c:set var="cancelActionUpdate" scope="page"
+	value="${contextPath}/site/r/${id}/${delivry.attributes.siteForm.site.slug}"></c:set>
+<c:set var="cancelAction" scope="page"
+	value="${action == 'c' ? cancelActionCreate : cancelActionUpdate}"></c:set>
 <c:set var="labelAction" scope="page"
 	value="${action == 'u' ? 'Mettre à jour' : 'Créer'}"></c:set>
 <c:set var="image" value="${delivry.attributes.siteForm.image}"
@@ -53,6 +59,8 @@
 		</h1>
 		<div class="col-md-3">
 			<button type="submit" class="btn btn-classic">${labelAction}</button>
+			<button type="button" class="btn btn-danger"
+				onclick="location='${cancelAction}'">Annuler</button>
 		</div>
 
 	</div>

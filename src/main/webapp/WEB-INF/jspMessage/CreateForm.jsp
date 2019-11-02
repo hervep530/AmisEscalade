@@ -1,5 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<c:set var="cancelActionAnswer" scope="page"
+	value="${contextPath}/message/lmd/1/${staticToken}"></c:set>
+<c:set var="cancelActionReserve" scope="page"
+	value="${contextPath}/topo/l/1"></c:set>
+<c:set var="cancelAction" scope="page"
+	value="${action == 'ca' ? cancelActionAnswer : cancelActionReserve}"></c:set>
+
 <c:set var="messageContentError"
 	value="${delivry.attributes.siteForm.errors.content}" scope="page"></c:set>
 <form id="MessageForm" class="text-center border border-light p-1 my-1"
@@ -19,6 +26,8 @@
 			</div>
 			<div class="col-md-3 mb-1">
 				<button type="submit" class="btn btn-classic py-1 text-normal">Envoyer</button>
+				<button type="button" class="btn btn-danger py-1 text-normal"
+					onclick="location='${cancelAction}'">Annuler</button>
 			</div>
 		</div>
 		<textarea id="content" name="content" rows="2"

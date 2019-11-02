@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    	<section id="notification" class="mx-4 mt-3">
+    	<section id="notification" class="mx-4 mt-4">
 <c:forEach var="notification" items="${delivry.notifications}">
 			<p class="alert alert-${notification.value.type.alias}">
 				<strong>${notification.key}</strong> : ${notification.value.message}
