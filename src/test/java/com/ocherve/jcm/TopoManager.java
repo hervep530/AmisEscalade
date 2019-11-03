@@ -23,11 +23,14 @@ public class TopoManager {
 	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static final String[][] TOPOS_DE_TEST = new String[][] {
 		{"Grimpe en auvergne", "exercitation ullamco laboris nisi utaliquip ex ea commodo", "true",
-			"Benoit Cantalou", "30/08/2008", "null", "3"},
-		{"Tout l'aveyron", "dolore magna aliqua. Ut enimad minim veniam, quis", "true",
-				"Manouel Desurvi", "12/10/2013", "3", "1"},
+			"Benoit Cantalou", "30/08/2008", "null", "3",
+			"labore et dolore magna aliqua. Ut enimad minim veniam, quis nostrud exercitation ullamco laboris nis"},
+		{"Tout l aveyron", "dolore magna aliqua. Ut enimad minim veniam, quis", "true",
+			"Manouel Desurvi", "12/10/2013", "3", "1",
+			"aliqua. Ut enimad minim veniam, quis nostrud exercitation"},
 		{"Falaises de Marne", "incididunt ut labore et dolore magna aliqua", "true",
-					"Marcel Reblochon", "05/03/2018", "0", "4"}
+			"Marcel Reblochon", "05/03/2018", "0", "4",
+			"tempor incididunt ut labore et dolore magna aliqua. Ut enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip ex ea commodo consequat. Duis aute irure dolor inreprehenderit in voluptate velit"}
 	};
 	private static Integer[] ids;
 	private static TopoDao dao;

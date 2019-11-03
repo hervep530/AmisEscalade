@@ -14,7 +14,7 @@
 			<property name="javax.persistence.jdbc.driver"
 				value="org.postgresql.Driver" />
 			<property name="javax.persistence.jdbc.url"
-				value="jdbc:postgresql://localhost:5432/jcm_amiesca?characterEncoding=utf8" />
+				value="jdbc:postgresql://localhost:5432/jcm_demo?characterEncoding=utf8" />
 			<property name="javax.persistence.jdbc.user" value="amiesca" />
 			<property name="javax.persistence.jdbc.password"
 				value="amiesca" />

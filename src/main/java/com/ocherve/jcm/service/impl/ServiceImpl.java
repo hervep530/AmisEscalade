@@ -36,7 +36,7 @@ public abstract class ServiceImpl implements Service {
     private static final Level SLOGLEVEL = Level.ERROR;
     private static final Level DLOGLEVEL = Level.TRACE;
     
-	protected final static long LIST_LIMIT = 3;
+	protected final static long LIST_LIMIT = 7;
 
     
 	// Persistent variable because each service are initialized once and keep as cache in proxy
