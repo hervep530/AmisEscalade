@@ -8,16 +8,15 @@ L'objectif est mettre en place :
 - Un outils de réservation de topos.
 - Un site sécurisé et responsive.
 
-Statut embryonnaire du projet - Rien n'est fonctionnel pour le moment.
+Les scripts de création de la base sont fournis dans database_pg.zip
+Un des script (jcm_demo_data.sql) n'est à utiilser que pour tester avec un jeu de demo. Et le fichier media.zip vient complèter ce jeu de démo.
 
 #### Instruction d'installation et d'utilisation
+
 ##### Pre-requis
  - serveur web avec Tomcat v8.5 (java 1.8)
  - serveur de base de données Postgresql
  - à minima d'une environnement de developpement avec maven et java8 (Eclipse peut également être utilisé pour la compilation et le packaging avec maven)
-
-
-Avant de relancer une éventuelle compilation, il est recommander de supprimer les fichiers .class
 
 
 ##### Deploiement 1 - la base de données
@@ -33,9 +32,12 @@ Avant de relancer une éventuelle compilation, il est recommander de supprimer l
    Ouvrez un terminal sur votre système en vous plaçant dans le répertoire ou sont les sql. 
    Et lancer les commandes suivantes :
 
-		$ psql -h localhost -p 5432 -U amiesca -W -f jcm_schema.sql jcm_demo     (entrez le mot de passe amiesca et validez)
-		$ psql -h localhost -p 5432 -U amiesca -W -f jcm_referentiel.sql jcm_demo
+		$ psql -h localhost -p 5432 -U amiesca -W -f jcm_schema.sql jcm_demo     
+		$ psql -h localhost -p 5432 -U amiesca -W -f jcm_referentiel.sql jcm_demo   
 
+  Entrez le mot de passe (amiesca) puis validez pour chacune des commandes
+  
+  
 ##### Deploiement 2 - compilation et installation sur le serveur tomcat
 
 Dans un environnement qui devrait être différent de votre serveur, créer un repertoire (AmisEscalade, par exemple).  
@@ -70,7 +72,12 @@ A ce stade de l'installation, l'application est vide. Elle affiche seulement la 
 Pour utiliser le jeu de données, exécutez le script jcm_demo_data.ql sur la base jcm_demo. Et decompressez l'archive media.zip sur le serveur web, dans le répertoire de tomcat : .../webapps/AmisEscalade/medias/.  
 Pour le script, il suffit de lancer dans un terminal, à partir du dossier où est placer le script :  
 
-	$ psql -h localhost -p 5432 -U amiesca -W -f jcm_demo_data.sql jcm_demo   (mot de passe amiesca puis validez)
+	$ psql -h localhost -p 5432 -U amiesca -W -f jcm_demo_data.sql jcm_demo   
+
+Entrez le mot de passe (amiesca) et validez.
+
+Pour complétez et affichez les images dans les différentes pages du site, décompressez le fichier medias.zip sur le serveur tomcat dans le répertoire :  
+.../webapps/Amiescalade/medias/
 
 
 ##### Deploiement 4 - Personnalisation de votre environnement.
