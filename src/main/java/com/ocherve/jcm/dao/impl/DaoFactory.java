@@ -33,11 +33,11 @@ public class DaoFactory {
 	 */
 	public static Dao getDao(StorageType storageType, Class<?> daoClass) {
 		switch (storageType) {
-			case HIBERNATE:
+			case HIBERNATE_SESSION:
 				// Dao using Hibernate with session instruction and HikariCP connection pool
 				DaoHibernateFactory.getDao(daoClass);
 			case POSTGRESQL:
-			case JPA:
+			case HIBERNATE_EM:
 			default:
 				new DaoFactory();
 				switch (daoClass.getSimpleName()) {

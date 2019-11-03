@@ -7,16 +7,16 @@ package com.ocherve.jcm.dao;
 public enum StorageType {
 	
 	/**
-	 * Postgresql storage implementation
+	 * Postgresql implementation without hibernate - removed
 	 */
 	POSTGRESQL,
 	/**
-	 * Hibernate storage implementation
+	 * Hibernate implementation with using session
 	 */
-	HIBERNATE,
+	HIBERNATE_SESSION,
 	/**
-	 * Jpa storage implementation
+	 * Hibernate implementation with using EntityManager
 	 */
-	JPA;
+	HIBERNATE_EM;
 
 }

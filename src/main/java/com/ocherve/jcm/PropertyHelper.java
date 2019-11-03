@@ -25,7 +25,6 @@ public class PropertyHelper {
 	 */
 	public static void loadConfig() {
 		loadDefaultConfig();
-//		loadConfigFromFile("resources/config.properties");
 	}
 	
     /**
@@ -42,6 +41,7 @@ public class PropertyHelper {
 		System.setProperty("jcm.log.support.level", "WARN");
 		System.setProperty("jcm.debug", "false");
 		System.setProperty("jcm.log.dev.level", "DEBUG");
+		System.setProperty("jcm.dao", "hibernate_em");
     }
     
     private static void loadConfigFromFile(String filename) {

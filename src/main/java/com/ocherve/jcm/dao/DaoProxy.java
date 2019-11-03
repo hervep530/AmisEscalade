@@ -7,7 +7,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import com.ocherve.jcm.dao.contract.*;
 import com.ocherve.jcm.dao.impl.DaoFactory;
-import com.ocherve.jcm.utils.PropertiesHelper;
 
 /**
  * @author herve_dev
@@ -29,7 +28,8 @@ public class DaoProxy {
 	private DaoProxy() {
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
 		DLOG.log(Level.DEBUG,"Instanciate Dao Proxy");
-		String daoConfig = PropertiesHelper.getConfigValue("daoType");
+		// String daoConfig = PropertiesHelper.getConfigValue("daoType");
+		String daoConfig = System.getProperty("jcm.dao");
 		if ( daoConfig == null ) throw new RuntimeException();
 		daoType = StorageType.valueOf(daoConfig.toUpperCase());
 		this.userDao = DaoFactory.getDao(daoType, UserDao.class);

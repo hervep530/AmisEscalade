@@ -28,8 +28,8 @@ public class JcmServletContextListener implements ServletContextListener{
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
-		// Property helper implemented but unused because all needed properties are managed by log4j
-		// PropertyHelper.loadConfig("filepath/config.properties");
+		//Property helper just used for dao choice (only hibernate_em works, so using without file)
+		PropertyHelper.loadConfig();
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
 		for ( Entry<Object,Object> property : System.getProperties().entrySet() ) {
 			DLOG.log(Level.INFO, property.getKey().toString() + " => " + property.getValue() );

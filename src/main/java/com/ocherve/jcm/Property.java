@@ -13,7 +13,11 @@ public enum Property {
 	/**
 	 * Mode debug
 	 */
-	JCM_DEBUG("jcm.log.debug","^(true|yes|1|false|no|0)$");
+	JCM_DEBUG("jcm.log.debug","^(true|yes|1|false|no|0)$"),
+	/**
+	 * Mode debug
+	 */
+	JCM_DAO("jcm.dao","^(hibernate_em|hibernate_session|postgresql)$");
 	
 	private String key;
 	private String rule;
