@@ -25,15 +25,15 @@ Un des script (jcm_demo_data.sql) n'est à utiilser que pour tester avec un jeu 
 
    - Connectez vous à postgres. Les commandes suivantes permettent la création de la base et d'un utilisateur "amiesca":
 
-		> CREATE USER 'amiesca' WITH ENCRYPTED PASSWORD 'amiesca';
-		> CREATE DATABASE jcm_demo WITH OWNER amiesca ENCODING 'UTF8' LC_COLLATE='fr_FR.UTF-8' LC_CTYPE='fr_FR.UTF-8';
+	> CREATE USER 'amiesca' WITH ENCRYPTED PASSWORD 'amiesca';  
+	> CREATE DATABASE jcm_demo WITH OWNER amiesca ENCODING 'UTF8' LC_COLLATE='fr_FR.UTF-8' LC_CTYPE='fr_FR.UTF-8';
 
    - Déconnecter vous de postgres. Décompresser le zip contenant les fichiers sql sur votre environnement. 
    Ouvrez un terminal sur votre système en vous plaçant dans le répertoire ou sont les sql. 
    Et lancer les commandes suivantes :
 
-		$ psql -h localhost -p 5432 -U amiesca -W -f jcm_schema.sql jcm_demo     
-		$ psql -h localhost -p 5432 -U amiesca -W -f jcm_referentiel.sql jcm_demo   
+	$ psql -h localhost -p 5432 -U amiesca -W -f jcm_schema.sql jcm_demo     
+	$ psql -h localhost -p 5432 -U amiesca -W -f jcm_referentiel.sql jcm_demo   
 
   Entrez le mot de passe (amiesca) puis validez pour chacune des commandes
   
