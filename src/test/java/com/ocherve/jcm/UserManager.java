@@ -24,10 +24,10 @@ public class UserManager {
 
 	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static final String[][] USERS_DE_TEST = new String[][] {
-		{"herve.oc@amiescalade.fr", "hervesca", "paSS13word", "salt", "","2"},
-		{"aurelie.lavant@amiescalade.fr", "alavantie", "paSS12word", "salt", "","3"},
+		{"sebastien.oc@amiescalade.fr", "sebastien", "paSS13word", "salt", "","2"},
+		{"aurelie.lavant@amiescalade.fr", "alavantie", "paSS13word", "salt", "","3"},
 		{"julien.lami@amiescalade.fr", "lamijiii", "paSS13word", "salt", "","4"},
-		{"christine.chappard@amiescalade.fr", "chachristi", "paSS14word", "salt", "","2"},
+		{"christine.chappard@amiescalade.fr", "chachristi", "paSS13word", "salt", "","2"},
 		{"solene.marsault@amiescalade.fr", "solemarsa", "PaSS13worD", "salt", "","2"}
 	};
 	private static Integer[] ids;

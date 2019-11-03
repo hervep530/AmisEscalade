@@ -20,16 +20,16 @@ public class MessageManager {
 
 	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static final String[][] MESSAGES_DE_TEST = new String[][] {
-		{"0", "1", "Test", "Hello", null},
-		{"1", "0", "Test", "Oui Hello c est pour quoi", "0"},
-		{"0", "1", "Test", "Juste pour savoir s il y a quelqu un", "1"},
-		{"1", "0", "Test", "Ok bon bien au revoir", "2"},
-		{"0", "1", "Test", "Au revoir", "3"},
-		{"3", "0", "Tendu", "Alors elle t a repondu quoi", null},
-		{"0", "3", "Tendu", "...au revoir", "5"},
-		{"3", "0", "Tendu", "ah c'est pas cool ça... pas d'humour", "6"},
-		{"0", "3", "Tendu", "et si le message est trop long pour la log, est ce qu on coupe a 70 caractere comme prevu ou est ce que ça affiche tout une tartine", "7"},
-		{"3", "0", "Tendu", "on va voir...", "8"}
+		{"0", "1", "Demande de prêt du topo Grimpe en Auvergne", "Bonjour, il a l'air bien ce topo. Peux tu me le prêter s'il te plait", null},
+		{"1", "0", "Demande de prêt du topo Grimpe en Auvergne", "Pas de soucis, comme tu as vu, il est dispo ;-). Par contre j'en aurai besoin dans une vingtaine de jours...", "0"},
+		{"0", "1", "Demande de prêt du topo Grimpe en Auvergne", "Ok, je le consulterai sans attendre.", "1"},
+		{"1", "0", "Demande de prêt du topo Grimpe en Auvergne", "Donc on fait comme ça", "2"},
+		{"0", "1", "Demande de prêt du topo Grimpe en Auvergne", "Merci", "3"},
+		{"3", "0", "Demande de prêt du topo Falaise de marne", "Bonjour, il est bien diponible ton topo?", null},
+		{"0", "3", "Demande de prêt du topo Falaise de marne", "Bonjour. Eh non... Je plaisante. En effet il est dispo.", "5"},
+		{"3", "0", "Demande de prêt du topo Falaise de marne", "Est ce que tu peux me le prêter s'il te plait? Je vais faire un séjour en Haute-Marne, donc j'aimerais préparer le terrain.", "6"},
+		{"0", "3", "Demande de prêt du topo Falaise de marne", "Est ce que ça te va, si je te le prête à partir de la fin de semaine?", "7"},
+		{"3", "0", "Demande de prêt du topo Falaise de marne", "oui, ça serait cool :-)", "8"}
 	};
 	private static Integer[] ids;
 	private static MessageDao dao;

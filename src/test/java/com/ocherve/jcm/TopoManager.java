@@ -22,11 +22,11 @@ public class TopoManager {
 	
 	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static final String[][] TOPOS_DE_TEST = new String[][] {
-		{"Danse avec les loups", "Topos sur les Gorges du loup dans les Alpes Maritimes", "true",
-			"Manouel Desurvi", "30/08/2008", "null", "3"},
-		{"Ni dans le Cantal ni en octobre", "Topos sur le site de Cantobre dans l'Aveyron", "true",
-				"Nicolas Cantalou", "12/10/2013", "3", "1"},
-		{"Medonnet", "Topos sur Medonnet en Haute-Savoie", "true",
+		{"Grimpe en auvergne", "exercitation ullamco laboris nisi utaliquip ex ea commodo", "true",
+			"Benoit Cantalou", "30/08/2008", "null", "3"},
+		{"Tout l'aveyron", "dolore magna aliqua. Ut enimad minim veniam, quis", "true",
+				"Manouel Desurvi", "12/10/2013", "3", "1"},
+		{"Falaises de Marne", "incididunt ut labore et dolore magna aliqua", "true",
 					"Marcel Reblochon", "05/03/2018", "0", "4"}
 	};
 	private static Integer[] ids;

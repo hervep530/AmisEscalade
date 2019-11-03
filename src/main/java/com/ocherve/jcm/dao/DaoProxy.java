@@ -30,7 +30,7 @@ public class DaoProxy {
 		DLOG.log(Level.DEBUG,"Instanciate Dao Proxy");
 		// String daoConfig = PropertiesHelper.getConfigValue("daoType");
 		String daoConfig = System.getProperty("jcm.dao");
-		if ( daoConfig == null ) throw new RuntimeException();
+		if ( daoConfig == null ) daoConfig = "hibernate_em";
 		daoType = StorageType.valueOf(daoConfig.toUpperCase());
 		this.userDao = DaoFactory.getDao(daoType, UserDao.class);
 		this.siteDao = DaoFactory.getDao(daoType, SiteDao.class);

@@ -24,23 +24,21 @@ public class CommentManager {
 
 	private static final Logger DLOG = LogManager.getLogger("test_file");
 	private static final String[][] COMMENTS_DE_TEST = new String[][] {
-		{"3", "Bonjour pourquoi le titre danse avec les loups il est romancé le topo", "1", "SITE"},
-		{"3", "Bonjour romancé... pas vraiment mais c'est bien écrit", "0", "SITE"},
-		{"3", "Et il y a des photos", "1", "SITE"},
-		{"3", "Ah oui vraiment magnifique", "0", "SITE"},
-		{"3", "En général c'est plus pour montrer le paysage ou le contexte technique", "1", "SITE"},
-		{"3", "C est varié un peu des 2 je dirais", "0", "SITE"},
-		{"1", "Bonjour, il a l'air chouette ce site. Il y a des voies accessible pour les ados", "2", "SITE"},
-		{"1", "Bonjour, tout dépend s'ils pratiquent déjà...", "3", "SITE"},
-		{"1", "Bien, il grimpe souvent dans les arbres dans le jardin", "2", "SITE"},
-		{"1", "Ils ont déjà essayé un mur d'escalade", "3", "SITE"},
-		{"1", "Non, jamais...", "2", "SITE"},
-		{"1", "Je pense qu'il y a des voies pas trop compliquées, mais l'escalade reste un sport dangereux. C'est toujours bien de commencer avec du mur...", "3", "SITE"},
-		{"1", "Je vais probablement suivre ton conseil. Je n'ai pas envie de ramener des blessés", "2", "SITE"},
-		{"2", "Bonjour, Est ce que ce spot est beaucoup fréquenté, stp?", "0", "SITE"},
-		{"2", "En fait, ça dépend de la saison... C'est plutôt calme une grande partie de l'année", "4", "SITE"},
-		{"2", "Donc là, à l'automne... grimper la journée oui... mais la fête le soir, c'est plus compliqué?", "0", "SITE"},
-		{"2", "Il faut voir le bon coté des choses. Cela permet d'avoir une bonne nuit de repos pour repartir le lendemain.", "4", "SITE"},
+		{"3", "sed doeiusmod tempor incididunt ut labore et", "1", "SITE"},
+		{"3", "Ut enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip ex ea commodo", "0", "SITE"},
+		{"3", "incididunt ut labore et dolore magna aliqua. Ut enimad minim veniam, quis nostrud exercitation", "1", "SITE"},
+		{"3", "labore et dolore magna aliqua. Ut enimad minim veniam, quis nostrud exercitation ullamco laboris", "0", "SITE"},
+		{"3", "mollit anim id est laborum. Lorem ipsum dolor", "1", "SITE"},
+		{"3", "enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip", "0", "SITE"},
+		{"1", "Ut enimad minim veniam, quis nostrud exercitation ullamco laboris", "2", "SITE"},
+		{"1", "enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip", "3", "SITE"},
+		{"1", "mollit anim id est laborum. Lorem ipsum dolor", "2", "SITE"},
+		{"1", "enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip", "3", "SITE"},
+		{"1", "incididunt ut labore et dolore magna aliqua", "2", "SITE"},
+		{"2", "Ut enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip ex ea commodo", "0", "SITE"},
+		{"2", "quis nostrud exercitation ullamco laboris ?", "4", "SITE"},
+		{"2", "enimad minim veniam, quis nostrud exercitation ullamco laboris nisi utaliquip", "0", "SITE"},
+		{"2", "mollit anim id est laborum. Lorem ipsum dolor", "4", "SITE"},
 	};
 	private static Integer[] ids;
 	private static CommentDao dao;

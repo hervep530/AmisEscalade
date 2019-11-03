@@ -55,9 +55,9 @@ public class CreateData {
 		List<Message> messages = MessageManager.getDao().getList();
 		assertNotNull(user);
 		assertEquals(users.size(), 6);
-		assertEquals(sites.size(), 5);
+		assertEquals(sites.size(), 14);
 		assertEquals(topos.size(), 3);
-		assertEquals(comments.size(), 17);
+		assertEquals(comments.size(), 15);
 		assertEquals(messages.size(), 10);
 	}
 
