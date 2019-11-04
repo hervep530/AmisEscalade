@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import com.ocherve.jcm.model.User;
+import com.ocherve.jcm.PropertyHelper;
 import com.ocherve.jcm.dao.DaoProxy;
 import com.ocherve.jcm.dao.contract.UserDao;
 import com.ocherve.jcm.service.AccessLevel;
@@ -36,7 +37,7 @@ public abstract class ServiceImpl implements Service {
     private static final Level SLOGLEVEL = Level.ERROR;
     private static final Level DLOGLEVEL = Level.TRACE;
     
-	protected final static long LIST_LIMIT = 7;
+	protected final static long LIST_LIMIT = Integer.valueOf(PropertyHelper.getProperty("jcm.list.limit"));
 
     
 	// Persistent variable because each service are initialized once and keep as cache in proxy
