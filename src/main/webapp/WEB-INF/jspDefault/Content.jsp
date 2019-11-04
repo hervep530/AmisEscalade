@@ -16,7 +16,7 @@
 				<img alt="Les amis de l'escalade" width="100%" height="100%"
 					src="${pageContext.request.contextPath}/medias/welcome.jpg" />
 			</div>
-			<div id="technicalSheet" class="col-xl-4">
+			<div id="technicalSheet" class="col-lg-4">
 				<div class="monkey-box monkey-box-classic">
 					<div class="monkey-hat monkey-hat-classic"></div>
 					<p class="monkey-drawer">

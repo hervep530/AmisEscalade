@@ -34,22 +34,29 @@
 
 						<div class="monkey-box monkey-box-classic">
 							<div class="monkey-hat monkey-hat-classic"></div>
-							<p class="monkey-drawer"><strong><c:out value="${ delivry.attributes.site.country }" /> - 
+							<p class="monkey-drawer text-center"><strong><c:out value="${ delivry.attributes.site.country }" /> - 
 							<c:out value="${ delivry.attributes.site.department }" /></strong></p>
 							<div class="monkey-separator"></div>
-							<p class="monkey-drawer"><c:out value="${ site.block ? 'Bloc' : ''}"/>
+							<p class="monkey-drawer"><strong>Type de spot : </strong>
+								<c:out value="${ site.block ? 'Bloc' : ''}"/>
 								<c:out value="${ site.block && ( site.cliff || site.wall ) ? ' / ' : ''}"/>
 								<c:out value="${ site.cliff ? 'Falaise' : ''}"/>
 								<c:out value="${ ( site.block || site.cliff ) && site.wall ? ' / ' : ''}"/>
 								<c:out value="${ site.wall ? 'Mur' : ''}"/></p>
 							<div class="monkey-separator"></div>
-							<p class="monkey-drawer row">de <c:out value="${ site.minHeight }" />m à 
-							<c:out value="${ site.maxHeight }"/>m</p>
+							<p class="monkey-drawer"><strong>Voies : </strong>
+								<c:out value="${ site.pathsNumber }" /></p>
 							<div class="monkey-separator"></div>
-							<p class="monkey-drawer">De <c:out value="${ site.cotationMin.label }" /> à 
-							<c:out value="${ site.cotationMax.label }"/></p>
+							<p class="monkey-drawer row"><strong>Hauteur : </strong>de 
+								<c:out value="${ site.minHeight }" />m à 
+								<c:out value="${ site.maxHeight }"/>m</p>
 							<div class="monkey-separator"></div>
-							<p class="monkey-drawer"><c:out value="${ site.orientation }" /></p>
+							<p class="monkey-drawer"><strong>Cotation : </strong>
+								de <c:out value="${ site.cotationMin.label }" /> à 
+								<c:out value="${ site.cotationMax.label }"/></p>
+							<div class="monkey-separator"></div>
+							<p class="monkey-drawer"><strong>Orientation : </strong>
+								<c:out value="${ site.orientation }" /></p>
 						</div>
 					</div>
 				</section>
