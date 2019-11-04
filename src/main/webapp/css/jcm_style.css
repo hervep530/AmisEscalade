@@ -1,8 +1,5 @@
 @charset "UTF-8";
 
-.test {
-	color: red;
-}
 
 .bg-classic {
 	background-color: #444466;
@@ -14,10 +11,6 @@
 }
 
 .nav-link-classic {
-/*	
-  color: rgba(217, 217, 249, 0.5);
-  color: #b9b9d9;
-*/  
   color: #444466;
 }
 
@@ -112,12 +105,21 @@ body{
 	background-image: linear-gradient(to top, #F4F4F6 , #FFFFFF);
 }
 
-.jumbotron {
-	background: none;
+form .basic-top-label {
+	float: left;
+	width: 96%;
+	margin :0 2% 0 2%;
+	text-align: left;
+	color: #505050
 }
 
-#proposal p {
-	font-size: 0.8em;
+form .required {
+    color: #c00;
+}
+
+#navMessage .nav-mailbox {
+	margin: 0;
+	padding: 0;
 }
 
 #accountProperties,
@@ -128,6 +130,25 @@ body{
 .file-panel {
 	width: 60%;
 	margin : 15px 20% 15px auto;
+}
+
+#accountProperties .form-control[readonly],
+#testSearchForm .form-control:disabled,
+#testSearchForm .form-control[readonly],
+#debugGroup .form-control:disabled,
+#debugGroup .form-control[readonly] {
+  background-color: #F3F6F9;
+  opacity: 0.6;
+}
+
+#comment-group{
+	width: 88%;
+	margin-left: 6%;
+	font-size: 0.8em;
+}
+
+#proposal p {
+	font-size: 0.8em;
 }
 
 #error{
@@ -147,27 +168,11 @@ body{
 	margin : 15px 3% 15px auto;
 }
 
-form .basic-top-label {
-	float: left;
-	width: 96%;
-	margin :0 2% 0 2%;
-	text-align: left;
-	color: #505050
+#createSiteForm .form-row{
+	align-items: flex-start;
 }
 
-form .required {
-    color: #c00;
-}
-
-
-#accountProperties .form-control[readonly],
-#testSearchForm .form-control:disabled,
-#testSearchForm .form-control[readonly],
-#debugGroup .form-control:disabled,
-#debugGroup .form-control[readonly] {
-  background-color: #F3F6F9;
-  opacity: 0.6;
-}
+/* overloading or appending bootstrap */
 
 .search-prepend-label {
 	flex: 0 0 25%;
@@ -175,10 +180,6 @@ form .required {
 
 .search-label {
 	width: 100%;
-}
-
-#createSiteForm .form-row{
-	align-items: flex-start;
 }
 
 .form-check-group {
@@ -203,12 +204,6 @@ form .required {
 	color: #dc3545;
 }
 
-#comment-group{
-	width: 88%;
-	margin-left: 6%;
-	font-size: 0.8em;
-}
-
 .message-box {
 	width :90%;
 	margin-left: 5%;
@@ -221,11 +216,6 @@ form .required {
 
 .active-message-link {
 	background-color: #DDCCFF;	
-}
-
-#navMessage .nav-mailbox {
-	margin: 0;
-	padding: 0;
 }
 
 .bd-callout {
@@ -256,6 +246,9 @@ form .required {
 .bd-callout-info{
 	border-left-color: #17a2b8;
 }
+
+
+/* Small box for tag ami for example */
 
 .jcm-tag-box{
 	padding: 0.5rem;
@@ -291,9 +284,8 @@ form .required {
 	border-color: #17a2b8;
 }
 
-.desc-box {
-	
-}
+
+/* Customizing box in order to follox a theme */
 
 .desc-separator {
 	background-color: #aaa;
@@ -306,19 +298,6 @@ form .required {
 	color: #555;
 	font-size: 1.3em;
 	text-align: center;	
-}
-
-.desc-content {
-	
-}
-
-.rabbit-box,
-.fox-box,
-.bear-box,
-.shark-box,
-.snail-box,
-.dragon-box {
-	
 }
 
 
@@ -566,6 +545,9 @@ form .required {
 .camel-second-title-classic {
 	background-image: linear-gradient(to right, #444466 , #ddd);
 }
+
+
+/* customizing text */
 
 .text-default {
 	color: #000;
