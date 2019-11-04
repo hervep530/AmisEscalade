@@ -29,10 +29,11 @@ public class JcmServletContextListener implements ServletContextListener{
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		//Property helper just used for dao choice (only hibernate_em works, so using without file)
-		PropertyHelper.loadConfig();
+		PropertyHelper.loadConfig("config.properties");
 		Configurator.setLevel(DLOG.getName(), Level.TRACE);
-		for ( Entry<Object,Object> property : System.getProperties().entrySet() ) {
-			DLOG.log(Level.INFO, property.getKey().toString() + " => " + property.getValue() );
+		for ( Entry<Object,Object> property : PropertyHelper.getProperties().entrySet() ) {
+			if ( property.getKey().toString().contains("jcm.") )
+				DLOG.log(Level.INFO, property.getKey().toString() + " => " + property.getValue() );
 		}
 		ServiceProxy.getInstance();
 		DaoProxy.getInstance();

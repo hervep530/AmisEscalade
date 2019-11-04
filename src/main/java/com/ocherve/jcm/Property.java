@@ -1,23 +1,25 @@
 package com.ocherve.jcm;
 
+/**
+ * Filter for PropertyHelper input as ENUM(key,regexp_value_filter)
+ * 
+ * @author herve_dev
+ *
+ */
 public enum Property {
 
 	/**
-	 * Log level for support
-	 */
-	JCM_LOG_SUPPORT_LEVEL("jcm.log.support.level","^(fatal|error|warn|debug|info|trace)$"),
-	/**
-	 * Log level for development
-	 */
-	JCM_LOG_DEV_LEVEL("jcm.log.dev.level","^(fatal|error|warn|debug|info|trace)$"),
-	/**
 	 * Mode debug
 	 */
-	JCM_DEBUG("jcm.log.debug","^(true|yes|1|false|no|0)$"),
+	JCM_DEBUG("jcm.log.debug","^(debug|info|trace)$"),
 	/**
-	 * Mode debug
+	 * Dao type
 	 */
-	JCM_DAO("jcm.dao","^(hibernate_em|hibernate_session|postgresql)$");
+	JCM_DAO("jcm.dao","^(hibernate_em|hibernate_session|postgresql)$"),
+	/**
+	 * Maximum entries count displayed in views (lists return by dao query)
+	 */
+	JCM_LIST_LIMIT("jcm.list.limit","^[1-9][0-9]?$");
 	
 	private String key;
 	private String rule;
